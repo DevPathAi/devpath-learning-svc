@@ -17,7 +17,7 @@
 
 - Spring Boot 4.0.x · Java 21 · Gradle (Kotlin DSL)
 - [devpath-svc-template](https://github.com/DevPathAi/devpath-svc-template) 기반
-- DB 의존성(JPA + MySQL, Redis)은 `build.gradle.kts` 주석 해제로 활성화
+- DB 의존성(JPA + PostgreSQL, Redis)은 `build.gradle.kts` 주석 해제로 활성화
 - Claude API 호출은 [devpath-ai-svc](https://github.com/DevPathAi/devpath-ai-svc)를 경유
 
 ## 빌드 / 실행
