@@ -17,6 +17,18 @@ spring:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: false   # 마이그레이션은 devpath-shared(중앙)에서 실행, 서비스는 validate만
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: devpath-learning
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 server:
   port: 8080
