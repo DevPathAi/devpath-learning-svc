@@ -44,6 +44,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+	// Boot 4는 autoconfigure가 모듈 분리됨 → Flyway 자동구성(FlywayAutoConfiguration)은 spring-boot-flyway에 있다.
+	testImplementation("org.springframework.boot:spring-boot-flyway")
 	testImplementation("org.flywaydb:flyway-core")
 	testImplementation("org.flywaydb:flyway-database-postgresql")
 	testCompileOnly("org.projectlombok:lombok")
