@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class AssessmentService {
@@ -17,16 +18,21 @@ public class AssessmentService {
   private final QuestionBankRepository questions;
   private final AdaptiveEngine engine;
   private final NextQuestionSelector selector;
+  private final AssessmentEventPublisher publisher;
+  private final JsonMapper jsonMapper;
 
   public AssessmentService(AssessmentRepository assessments, AssessmentItemRepository items,
       AssessmentResultRepository results, QuestionBankRepository questions,
-      AdaptiveEngine engine, NextQuestionSelector selector) {
+      AdaptiveEngine engine, NextQuestionSelector selector,
+      AssessmentEventPublisher publisher, JsonMapper jsonMapper) {
     this.assessments = assessments;
     this.items = items;
     this.results = results;
     this.questions = questions;
     this.engine = engine;
     this.selector = selector;
+    this.publisher = publisher;
+    this.jsonMapper = jsonMapper;
   }
 
   @Transactional
@@ -74,7 +80,7 @@ public class AssessmentService {
 
   @Transactional
   public void answer(long userId, long assessmentId, AnswerRequest req) {
-    Assessment a = ownedInProgress(userId, assessmentId);
+    ownedInProgress(userId, assessmentId);
     List<AssessmentItem> all = items.findByAssessmentIdOrderByOrderNumAsc(assessmentId);
     AssessmentItem item = all.stream().filter(i -> i.getAnsweredAt() == null).findFirst()
         .orElseThrow(() -> new IllegalStateException("응답할 outstanding 문항이 없음(먼저 next 호출)"));
@@ -82,6 +88,7 @@ public class AssessmentService {
       throw new IllegalArgumentException("현재 출제된 문항이 아님");
     }
     QuestionBank q = questions.findById(req.questionId()).orElseThrow();
+    Assessment a = assessments.findById(assessmentId).orElseThrow();
     item.setAnsweredAt(Instant.now());
     item.setTimeSpentSec(req.timeSpentSec());
     AdaptiveEngine.AnswerOutcome outcome;
@@ -121,6 +128,24 @@ public class AssessmentService {
     long scored = all.stream().filter(i -> !i.isSkipped()).count();
     double confidence = all.isEmpty() ? 0.0 : (double) scored / all.size();
 
+    // concept_tags별 정답률 집계(skip 제외)
+    Map<String, double[]> agg = new HashMap<>();
+    for (AssessmentItem i : all) {
+      if (i.isSkipped()) continue;
+      QuestionBank q = byId.get(i.getQuestionBankId());
+      for (String tag : parseTags(q.getConceptTags())) {
+        double[] cw = agg.computeIfAbsent(tag, k -> new double[2]);
+        if (Boolean.TRUE.equals(i.getIsCorrect())) cw[0] += 1;
+        cw[1] += 1;
+      }
+    }
+    Map<String, Double> conceptScores = new HashMap<>();
+    agg.forEach((tag, cw) -> conceptScores.put(tag, cw[1] == 0 ? 0.0 : cw[0] / cw[1]));
+    List<String> strengths = conceptScores.entrySet().stream()
+        .filter(e -> e.getValue() >= 0.7).map(Map.Entry::getKey).sorted().collect(Collectors.toList());
+    List<String> weaknesses = conceptScores.entrySet().stream()
+        .filter(e -> e.getValue() < 0.4).map(Map.Entry::getKey).sorted().collect(Collectors.toList());
+
     a.setStatus("COMPLETED");
     a.setCompletedAt(Instant.now());
     assessments.save(a);
@@ -129,7 +154,12 @@ public class AssessmentService {
     r.setAssessmentId(assessmentId);
     r.setDiagnosedLevel(level);
     r.setConfidenceWeight(confidence);
+    r.setConceptScores(writeJson(conceptScores));
+    r.setStrengthConcepts(writeJson(strengths));
+    r.setWeaknessConcepts(writeJson(weaknesses));
     results.save(r);
+
+    publisher.publishCompleted(assessmentId, a.getUserId(), a.getTrack(), level, conceptScores);
     return new AssessmentResultView(level, r.getConceptScores(), r.getStrengthConcepts(),
         r.getWeaknessConcepts(), confidence);
   }
@@ -157,6 +187,20 @@ public class AssessmentService {
       throw new IllegalStateException("진행 중 세션 아님");
     }
     return a;
+  }
+
+  private List<String> parseTags(String json) {
+    if (json == null || json.isBlank()) return List.of();
+    try {
+      return jsonMapper.readValue(json, new tools.jackson.core.type.TypeReference<List<String>>() {});
+    } catch (Exception e) {
+      return List.of();
+    }
+  }
+
+  private String writeJson(Object o) {
+    try { return jsonMapper.writeValueAsString(o); }
+    catch (Exception e) { throw new IllegalStateException(e); }
   }
 
   private static String normalize(String json) {
