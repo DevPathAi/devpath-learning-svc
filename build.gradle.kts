@@ -34,9 +34,9 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-	// 서비스 특성에 따라 주석 해제해서 사용한다.
-	// implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	// implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.boot:spring-boot-kafka")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
@@ -45,6 +45,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	// Boot 4는 autoconfigure가 모듈 분리됨 → Flyway 자동구성(FlywayAutoConfiguration)은 spring-boot-flyway에 있다.
+	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.awaitility:awaitility")
 	testImplementation("org.springframework.boot:spring-boot-flyway")
 	testImplementation("org.flywaydb:flyway-core")
 	testImplementation("org.flywaydb:flyway-database-postgresql")
