@@ -3,6 +3,7 @@ package ai.devpath.learning.path;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +16,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class LearningPathController {
   private final LearningPathGenerationService generation;
   private final LearningPathQueryService queries;
+  private final long sseTimeoutMs;
 
-  public LearningPathController(LearningPathGenerationService generation, LearningPathQueryService queries) {
+  public LearningPathController(LearningPathGenerationService generation, LearningPathQueryService queries,
+      @Value("${devpath.path.sse-timeout-ms:180000}") long sseTimeoutMs) {
     this.generation = generation;
     this.queries = queries;
+    this.sseTimeoutMs = sseTimeoutMs;
   }
 
   @PostMapping(path = "/me/generate", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -26,7 +30,7 @@ public class LearningPathController {
       @RequestBody(required = false) GeneratePathRequest request) {
     long userId = uid(jwt);
     String goal = request == null ? null : request.goal();
-    SseEmitter emitter = new SseEmitter(30_000L);
+    SseEmitter emitter = new SseEmitter(sseTimeoutMs);
     CompletableFuture.runAsync(() -> {
       try {
         generation.generate(userId, goal, event -> send(emitter, event));
