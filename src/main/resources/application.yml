@@ -1,3 +1,10 @@
+devpath:
+  auth:
+    jwt-secret: ${JWT_SECRET:test-secret-please-change-min-32-bytes-long-0123456789}
+  ai-svc:
+    base-url: ${AI_SVC_BASE_URL:http://localhost:8081}
+    timeout: ${AI_SVC_TIMEOUT:PT8S}
+
 spring:
   application:
     name: devpath-learning-svc
@@ -13,6 +20,18 @@ spring:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: false   # 마이그레이션은 devpath-shared(중앙)에서 실행, 서비스는 validate만
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: devpath-learning
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 server:
   port: 8080

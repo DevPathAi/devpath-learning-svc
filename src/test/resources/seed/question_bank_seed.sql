@@ -1,0 +1,18 @@
+INSERT INTO question_bank (track, question_type, content, options, answer_key, bloom_level, difficulty, concept_tags) VALUES
+('BACKEND_SPRING','MCQ','스프링 빈 스코프 기본값은?','["singleton","prototype"]','{"correct":0}','REMEMBER',0.1,'["spring-core"]'),
+('BACKEND_SPRING','MCQ','@Transactional 전파 기본값은?','["REQUIRED","REQUIRES_NEW"]','{"correct":0}','UNDERSTAND',0.3,'["spring-tx"]'),
+('BACKEND_SPRING','CODE_READING','이 JPA 코드의 N+1 문제는?','["지연로딩","즉시로딩"]','{"correct":0}','ANALYZE',0.6,'["jpa"]'),
+('BACKEND_SPRING','MCQ','HTTP 멱등 메서드가 아닌 것은?','["GET","POST"]','{"correct":1}','UNDERSTAND',0.4,'["http"]'),
+('BACKEND_SPRING','MCQ','인덱스가 가장 효과적인 경우는?','["고선택도","저선택도"]','{"correct":0}','APPLY',0.5,'["db-index"]'),
+('BACKEND_SPRING','MCQ','스프링 시큐리티 필터체인 순서를 결정하는 것은?','["@Order","임의"]','{"correct":0}','APPLY',0.7,'["spring-security"]'),
+('BACKEND_SPRING','MCQ','Kafka 컨슈머 그룹의 역할은?','["분산소비","중복소비"]','{"correct":0}','UNDERSTAND',0.5,'["kafka"]'),
+('BACKEND_SPRING','MCQ','REST에서 201의 의미는?','["생성됨","수정됨"]','{"correct":0}','REMEMBER',0.2,'["http"]'),
+('BACKEND_SPRING','CODE_READING','이 코드의 동시성 버그는?','["경쟁상태","없음"]','{"correct":0}','EVALUATE',0.8,'["concurrency"]'),
+('BACKEND_SPRING','MCQ','커넥션 풀 고갈 원인으로 옳은 것은?','["미반환","과반환"]','{"correct":0}','ANALYZE',0.6,'["db-pool"]'),
+('BACKEND_SPRING','MCQ','캐시 무효화 전략이 아닌 것은?','["TTL","무한보관"]','{"correct":1}','UNDERSTAND',0.4,'["cache"]'),
+('BACKEND_SPRING','MCQ','idempotency-key의 목적은?','["중복방지","속도"]','{"correct":0}','APPLY',0.6,'["api-design"]'),
+('BACKEND_SPRING','MCQ','트랜잭션 격리수준 중 팬텀리드를 막는 것은?','["SERIALIZABLE","READ_COMMITTED"]','{"correct":0}','ANALYZE',0.7,'["spring-tx"]'),
+('BACKEND_SPRING','MCQ','스프링 프로파일의 용도는?','["환경분리","로깅"]','{"correct":0}','REMEMBER',0.2,'["spring-core"]'),
+('BACKEND_SPRING','MCQ','OAuth2 authorization code 흐름의 첫 단계는?','["인가요청","토큰교환"]','{"correct":0}','UNDERSTAND',0.5,'["oauth2"]'),
+('BACKEND_SPRING','CODE_READING','이 SQL의 풀스캔 원인은?','["함수인덱스미사용","조인"]','{"correct":0}','EVALUATE',0.9,'["db-index"]'),
+('BACKEND_SPRING','MCQ','멱등 컨슈머 구현 방법은?','["처리이력저장","재시도"]','{"correct":0}','APPLY',0.6,'["kafka"]');
