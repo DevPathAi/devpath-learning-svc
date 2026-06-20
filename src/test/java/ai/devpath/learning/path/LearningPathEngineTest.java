@@ -142,6 +142,143 @@ class LearningPathEngineTest {
     assertThat(sse).contains("NO_COMPLETED_ASSESSMENT");
   }
 
+  @Test
+  void regenerateArchivesPreviousActiveAndReturnsNewPathId() throws Exception {
+    long userId = uniqueId();
+    seedUser(userId);
+    seedAssessment(userId, "COMPLETED", Instant.parse("2026-06-19T00:00:00Z"),
+        "JUNIOR", "[\"Java syntax\"]", "[\"Spring MVC\"]");
+    seedContent("regen-a-" + userId, "BACKEND_SPRING", "PUBLISHED", 0.10);
+    seedContent("regen-b-" + userId, "BACKEND_SPRING", "PUBLISHED", 0.11);
+    seedContent("regen-c-" + userId, "BACKEND_SPRING", "PUBLISHED", 0.12);
+    when(aiClient.generate(any())).thenReturn(aiResult());
+    when(aiClient.embed(any())).thenReturn(List.of(vector(0.10)));
+
+    mvc.perform(post("/learning-paths/me/regenerate").with(jwt().jwt(j -> j.subject(String.valueOf(userId))))
+            .contentType(MediaType.APPLICATION_JSON).content("{\"goal\":\"v1\"}"))
+        .andExpect(status().isOk());
+    mvc.perform(post("/learning-paths/me/regenerate").with(jwt().jwt(j -> j.subject(String.valueOf(userId))))
+            .contentType(MediaType.APPLICATION_JSON).content("{\"goal\":\"v2\"}"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.pathId").isNumber());
+
+    Integer active = jdbc.queryForObject(
+        "select count(*) from learning_paths where user_id = ? and status = 'ACTIVE'", Integer.class, userId);
+    Integer archived = jdbc.queryForObject(
+        "select count(*) from learning_paths where user_id = ? and status = 'ARCHIVED'", Integer.class, userId);
+    assertThat(active).isEqualTo(1);
+    assertThat(archived).isEqualTo(1);
+  }
+
+  @Test
+  void matchingMissKeepsTaskContentIdNull() throws Exception {
+    long userId = uniqueId();
+    seedUser(userId);
+    // track=DEVOPS 진단 — DEVOPS content를 seed하지 않으므로 매칭 결과 0 (다른 테스트 BACKEND_SPRING content와 격리)
+    Long assessmentId = jdbc.queryForObject("""
+        insert into assessments(user_id, track, status, current_difficulty, started_at, completed_at)
+        values (?, 'DEVOPS', 'COMPLETED', 0.3, now(), now()) returning id
+        """, Long.class, userId);
+    jdbc.update("""
+        insert into assessment_results(assessment_id, diagnosed_level, concept_scores,
+          strength_concepts, weakness_concepts, confidence_weight)
+        values (?, 'JUNIOR', cast('{}' as jsonb), cast('[]' as jsonb), cast('[]' as jsonb), 0.9)
+        """, assessmentId);
+    when(aiClient.generate(any())).thenReturn(aiResult());
+    when(aiClient.embed(any())).thenReturn(List.of(vector(0.10)));
+
+    var result = mvc.perform(post("/learning-paths/me/generate")
+            .with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
+        .andExpect(request().asyncStarted()).andReturn();
+    mvc.perform(asyncDispatch(result)).andExpect(status().isOk());
+
+    LearningPath saved = paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE").orElseThrow();
+    Integer total = jdbc.queryForObject("""
+        select count(*) from path_weekly_tasks t join path_milestones m on t.milestone_id = m.id
+        where m.path_id = ?
+        """, Integer.class, saved.getId());
+    Integer withContent = jdbc.queryForObject("""
+        select count(*) from path_weekly_tasks t join path_milestones m on t.milestone_id = m.id
+        where m.path_id = ? and t.content_id is not null
+        """, Integer.class, saved.getId());
+    assertThat(total).isEqualTo(3);
+    assertThat(withContent).isEqualTo(0);
+  }
+
+  @Test
+  void rationaleForNonOwnerReturnsForbidden() throws Exception {
+    long owner = uniqueId();
+    seedUser(owner);
+    seedAssessment(owner, "COMPLETED", Instant.parse("2026-06-19T00:00:00Z"),
+        "JUNIOR", "[\"Java syntax\"]", "[\"Spring MVC\"]");
+    seedContent("rat-" + owner, "BACKEND_SPRING", "PUBLISHED", 0.10);
+    when(aiClient.generate(any())).thenReturn(aiResult());
+    when(aiClient.embed(any())).thenReturn(List.of(vector(0.10)));
+    var result = mvc.perform(post("/learning-paths/me/generate")
+            .with(jwt().jwt(j -> j.subject(String.valueOf(owner)))))
+        .andExpect(request().asyncStarted()).andReturn();
+    mvc.perform(asyncDispatch(result)).andExpect(status().isOk());
+    long pathId = paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(owner, "ACTIVE").orElseThrow().getId();
+
+    long stranger = uniqueId() + 7;
+    seedUser(stranger);
+    mvc.perform(get("/learning-paths/{id}/rationale", pathId)
+            .with(jwt().jwt(j -> j.subject(String.valueOf(stranger)))))
+        .andExpect(status().isForbidden());
+    mvc.perform(get("/learning-paths/{id}/rationale", pathId)
+            .with(jwt().jwt(j -> j.subject(String.valueOf(owner)))))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.pathId").value(pathId));
+  }
+
+  @Test
+  void generateWithUnavailableAiEmitsErrorStageAndPersistsNothing() throws Exception {
+    long userId = uniqueId();
+    seedUser(userId);
+    seedAssessment(userId, "COMPLETED", Instant.parse("2026-06-19T00:00:00Z"),
+        "JUNIOR", "[\"Java syntax\"]", "[\"Spring MVC\"]");
+    when(aiClient.generate(any())).thenThrow(new AiServiceUnavailableException("ai-svc down", null));
+
+    var result = mvc.perform(post("/learning-paths/me/generate")
+            .with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
+        .andExpect(request().asyncStarted()).andReturn();
+    String sse = mvc.perform(asyncDispatch(result)).andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    assertThat(sse).contains("\"stage\":\"generating\"");
+    assertThat(sse).contains("\"stage\":\"error\"");
+    assertThat(paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")).isEmpty();
+  }
+
+  @Test
+  void generateWithTooFewTasksEmitsErrorStage() throws Exception {
+    long userId = uniqueId();
+    seedUser(userId);
+    seedAssessment(userId, "COMPLETED", Instant.parse("2026-06-19T00:00:00Z"),
+        "JUNIOR", "[\"Java syntax\"]", "[\"Spring MVC\"]");
+    when(aiClient.generate(any())).thenReturn(aiResultWithTasks(List.of(
+        new PathGenerateResult.Task(1, "READ", "t1", true),
+        new PathGenerateResult.Task(2, "PRACTICE", "t2", true))));
+
+    var result = mvc.perform(post("/learning-paths/me/generate")
+            .with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
+        .andExpect(request().asyncStarted()).andReturn();
+    String sse = mvc.perform(asyncDispatch(result)).andExpect(status().isOk())
+        .andReturn().getResponse().getContentAsString();
+
+    assertThat(sse).contains("\"stage\":\"error\"");
+    assertThat(paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")).isEmpty();
+  }
+
+  private PathGenerateResult aiResultWithTasks(List<PathGenerateResult.Task> tasks) {
+    return new PathGenerateResult("Spring MVC 전에 Java 기초를 굳힙니다.", List.of(
+        new PathGenerateResult.Milestone(
+            1, "Spring MVC 입문", "HTTP 요청 흐름을 이해하고 controller를 만든다.",
+            List.of("Java syntax", "Spring MVC"), 6,
+            "Java 문법을 바탕으로 MVC를 학습합니다.",
+            "간단한 Spring controller를 설명하고 만들 수 있다.", tasks)));
+  }
+
   private PathGenerateResult aiResult() {
     return new PathGenerateResult("Spring MVC 전에 Java 기초를 굳힙니다.", List.of(
         new PathGenerateResult.Milestone(
