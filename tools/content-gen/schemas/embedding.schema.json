@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DevPath MD2 Content Embedding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "chunkIndex", "chunkText", "embedding", "chunkHash", "status"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "chunkIndex": { "type": "integer", "minimum": 0 },
+    "chunkText": { "type": "string", "minLength": 1 },
+    "embedding": {
+      "type": "array",
+      "minItems": 768,
+      "maxItems": 768,
+      "items": { "type": "number" }
+    },
+    "chunkHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "status": { "type": "string", "const": "ACTIVE" }
+  }
+}
