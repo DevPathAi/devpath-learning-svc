@@ -115,3 +115,47 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
 	)
 }
+
+tasks.register<JavaExec>("validateContents") {
+	group = "content generation"
+	description = "Validate approved MD2 learning content JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.ValidateContentsCommand")
+	args("tools/content-gen/generated/approved/contents.jsonl")
+}
+
+tasks.register<JavaExec>("makeContentSeedSql") {
+	group = "content generation"
+	description = "Create deterministic contents and content_embeddings seed SQL from approved JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.MakeContentSeedSqlCommand")
+	args(
+		"tools/content-gen/generated/approved/contents.jsonl",
+		"tools/content-gen/generated/approved/content_embeddings.jsonl",
+		"tools/content-gen/generated/seeds/content_seed.sql",
+		"src/main/resources/db/seed/content_md2_seed.sql",
+		"src/test/resources/seed/content_md2_seed.sql"
+	)
+}
+
+tasks.register<JavaExec>("generateContentsLocal") {
+	group = "content generation"
+	description = "Generate draft learning contents from local Ollama. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.GenerateContentsCommand")
+	args(
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+	)
+}
+
+tasks.register<JavaExec>("embedContentsLocal") {
+	group = "content generation"
+	description = "Generate local nomic-embed-text embeddings for approved contents. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.EmbedContentsCommand")
+	args(
+		"tools/content-gen/generated/approved/contents.jsonl",
+		"tools/content-gen/generated/approved/content_embeddings.jsonl",
+		providers.gradleProperty("ollama.embedModel").orElse("nomic-embed-text").get()
+	)
+}
