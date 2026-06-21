@@ -1,5 +1,8 @@
 package ai.devpath.learning.config;
 
+import ai.devpath.learning.content.ContentNotFoundException;
+import ai.devpath.learning.content.InvalidContentIdException;
+import ai.devpath.learning.content.InvalidProgressException;
 import ai.devpath.learning.path.AiServiceUnavailableException;
 import ai.devpath.learning.path.NoCompletedAssessmentException;
 import ai.devpath.learning.path.PathContractException;
@@ -38,6 +41,24 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AiServiceUnavailableException.class)
   public ResponseEntity<Map<String, String>> serviceUnavailable(AiServiceUnavailableException e) {
     return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(Map.of("error", e.getMessage()));
+  }
+
+  @ExceptionHandler(ContentNotFoundException.class)
+  public ResponseEntity<Map<String, String>> contentNotFound(ContentNotFoundException e) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(Map.of("errorCode", "CONTENT_NOT_FOUND", "error", e.getMessage()));
+  }
+
+  @ExceptionHandler(InvalidProgressException.class)
+  public ResponseEntity<Map<String, String>> invalidProgress(InvalidProgressException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(Map.of("errorCode", "INVALID_PROGRESS", "error", e.getMessage()));
+  }
+
+  @ExceptionHandler(InvalidContentIdException.class)
+  public ResponseEntity<Map<String, String>> invalidContentId(InvalidContentIdException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(Map.of("errorCode", "INVALID_CONTENT_ID", "error", e.getMessage()));
   }
 
   @ExceptionHandler(AccessDeniedException.class)
