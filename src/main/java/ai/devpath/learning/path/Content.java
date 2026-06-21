@@ -12,6 +12,7 @@ public class Content {
   @Column(nullable = false) private String slug;
   @Column(nullable = false) private String title;
   @Column(nullable = false) private String track;
+  @Column(name = "content_md", nullable = false) private String contentMd;
   @Column(name = "estimated_minutes") private Integer estimatedMinutes;
   private Double difficulty;
   @Column(name = "bloom_level") private String bloomLevel;
@@ -25,6 +26,8 @@ public class Content {
   public void setTitle(String title) { this.title = title; }
   public String getTrack() { return track; }
   public void setTrack(String track) { this.track = track; }
+  public String getContentMd() { return contentMd; }
+  public void setContentMd(String contentMd) { this.contentMd = contentMd; }
   public Integer getEstimatedMinutes() { return estimatedMinutes; }
   public void setEstimatedMinutes(Integer estimatedMinutes) { this.estimatedMinutes = estimatedMinutes; }
   public Double getDifficulty() { return difficulty; }

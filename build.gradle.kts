@@ -25,6 +25,26 @@ repositories {
 	}
 }
 
+val contentGenSourceSet = sourceSets.create("contentGen") {
+	java.srcDir("src/contentGen/java")
+	resources.srcDir("tools/content-gen")
+	compileClasspath += sourceSets["main"].runtimeClasspath
+	runtimeClasspath += output + compileClasspath
+}
+
+configurations.named("contentGenImplementation") {
+	extendsFrom(configurations["implementation"])
+}
+
+configurations.named("contentGenRuntimeOnly") {
+	extendsFrom(configurations["runtimeOnly"])
+}
+
+sourceSets.named("test") {
+	compileClasspath += contentGenSourceSet.output
+	runtimeClasspath += contentGenSourceSet.output
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -60,3 +80,82 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.named("compileTestJava") {
+	dependsOn(tasks.named("compileContentGenJava"))
+}
+
+tasks.register<JavaExec>("validateQuestions") {
+	group = "content generation"
+	description = "Validate approved MD2 diagnostic question JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.ValidateQuestionsCommand")
+	args("tools/content-gen/generated/approved/questions.jsonl")
+}
+
+tasks.register<JavaExec>("makeQuestionSeedSql") {
+	group = "content generation"
+	description = "Create deterministic question_bank seed SQL from approved JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.MakeQuestionSeedSqlCommand")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		"tools/content-gen/generated/seeds/question_bank_seed.sql",
+		"src/main/resources/db/seed/question_bank_md2_seed.sql",
+		"src/test/resources/seed/question_bank_md2_seed.sql",
+		"src/test/resources/seed/question_bank_seed.sql"
+	)
+}
+
+tasks.register<JavaExec>("generateQuestionsLocal") {
+	group = "content generation"
+	description = "Generate draft questions from local Ollama. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.GenerateQuestionsCommand")
+	args(
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+	)
+}
+
+tasks.register<JavaExec>("validateContents") {
+	group = "content generation"
+	description = "Validate approved MD2 learning content JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.ValidateContentsCommand")
+	args("tools/content-gen/generated/approved/contents.jsonl")
+}
+
+tasks.register<JavaExec>("makeContentSeedSql") {
+	group = "content generation"
+	description = "Create deterministic contents and content_embeddings seed SQL from approved JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.MakeContentSeedSqlCommand")
+	args(
+		"tools/content-gen/generated/approved/contents.jsonl",
+		"tools/content-gen/generated/approved/content_embeddings.jsonl",
+		"tools/content-gen/generated/seeds/content_seed.sql",
+		"src/main/resources/db/seed/content_md2_seed.sql",
+		"src/test/resources/seed/content_md2_seed.sql"
+	)
+}
+
+tasks.register<JavaExec>("generateContentsLocal") {
+	group = "content generation"
+	description = "Generate draft learning contents from local Ollama. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.GenerateContentsCommand")
+	args(
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+	)
+}
+
+tasks.register<JavaExec>("embedContentsLocal") {
+	group = "content generation"
+	description = "Generate local nomic-embed-text embeddings for approved contents. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.content.EmbedContentsCommand")
+	args(
+		"tools/content-gen/generated/approved/contents.jsonl",
+		"tools/content-gen/generated/approved/content_embeddings.jsonl",
+		providers.gradleProperty("ollama.embedModel").orElse("nomic-embed-text").get()
+	)
+}
