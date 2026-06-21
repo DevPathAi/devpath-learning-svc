@@ -4,6 +4,10 @@ devpath:
   ai-svc:
     base-url: ${AI_SVC_BASE_URL:http://localhost:8081}
     timeout: ${AI_SVC_TIMEOUT:PT8S}
+  content:
+    completion:
+      scroll-threshold: ${CONTENT_COMPLETION_SCROLL_THRESHOLD:0.8}
+      min-dwell-sec: ${CONTENT_COMPLETION_MIN_DWELL_SEC:45}
 
 spring:
   application:
