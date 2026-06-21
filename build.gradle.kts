@@ -25,6 +25,26 @@ repositories {
 	}
 }
 
+val contentGenSourceSet = sourceSets.create("contentGen") {
+	java.srcDir("src/contentGen/java")
+	resources.srcDir("tools/content-gen")
+	compileClasspath += sourceSets["main"].runtimeClasspath
+	runtimeClasspath += output + compileClasspath
+}
+
+configurations.named("contentGenImplementation") {
+	extendsFrom(configurations["implementation"])
+}
+
+configurations.named("contentGenRuntimeOnly") {
+	extendsFrom(configurations["runtimeOnly"])
+}
+
+sourceSets.named("test") {
+	compileClasspath += contentGenSourceSet.output
+	runtimeClasspath += contentGenSourceSet.output
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -60,3 +80,38 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.named("compileTestJava") {
+	dependsOn(tasks.named("compileContentGenJava"))
+}
+
+tasks.register<JavaExec>("validateQuestions") {
+	group = "content generation"
+	description = "Validate approved MD2 diagnostic question JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.ValidateQuestionsCommand")
+	args("tools/content-gen/generated/approved/questions.jsonl")
+}
+
+tasks.register<JavaExec>("makeQuestionSeedSql") {
+	group = "content generation"
+	description = "Create deterministic question_bank seed SQL from approved JSONL."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.MakeQuestionSeedSqlCommand")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		"tools/content-gen/generated/seeds/question_bank_seed.sql",
+		"src/main/resources/db/seed/question_bank_md2_seed.sql",
+		"src/test/resources/seed/question_bank_md2_seed.sql",
+		"src/test/resources/seed/question_bank_seed.sql"
+	)
+}
+
+tasks.register<JavaExec>("generateQuestionsLocal") {
+	group = "content generation"
+	description = "Generate draft questions from local Ollama. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.GenerateQuestionsCommand")
+	args(
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+	)
+}

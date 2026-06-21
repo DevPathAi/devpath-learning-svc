@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MD2 Approved Diagnostic Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "track",
+    "questionType",
+    "content",
+    "options",
+    "answerKey",
+    "bloomLevel",
+    "difficulty",
+    "conceptTags",
+    "explanation"
+  ],
+  "properties": {
+    "track": {
+      "enum": ["BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK"]
+    },
+    "questionType": {
+      "enum": ["MCQ", "CODE_READING"]
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1
+    },
+    "options": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "answerKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["correct"],
+      "properties": {
+        "correct": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "bloomLevel": {
+      "enum": ["REMEMBER", "UNDERSTAND", "APPLY", "ANALYZE", "EVALUATE"]
+    },
+    "difficulty": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "conceptTags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
