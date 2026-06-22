@@ -3,6 +3,7 @@ package ai.devpath.learning.config;
 import ai.devpath.learning.content.ContentNotFoundException;
 import ai.devpath.learning.content.InvalidContentIdException;
 import ai.devpath.learning.content.InvalidProgressException;
+import ai.devpath.learning.path.ActivePathConflictException;
 import ai.devpath.learning.path.AiServiceUnavailableException;
 import ai.devpath.learning.path.NoCompletedAssessmentException;
 import ai.devpath.learning.path.PathContractException;
@@ -31,6 +32,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Map<String, String>> noCompletedAssessment(NoCompletedAssessmentException e) {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(Map.of("errorCode", "NO_COMPLETED_ASSESSMENT", "error", e.getMessage()));
+  }
+
+  @ExceptionHandler(ActivePathConflictException.class)
+  public ResponseEntity<Map<String, String>> activePathConflict(ActivePathConflictException e) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(Map.of("errorCode", "PATH_GENERATION_CONFLICT", "error", e.getMessage()));
   }
 
   @ExceptionHandler(PathContractException.class)
