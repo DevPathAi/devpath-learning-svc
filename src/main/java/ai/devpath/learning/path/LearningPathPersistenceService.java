@@ -3,6 +3,7 @@ package ai.devpath.learning.path;
 import ai.devpath.learning.outbox.OutboxEntry;
 import ai.devpath.learning.outbox.OutboxRepository;
 import ai.devpath.shared.event.LearningPathGeneratedEvent;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -67,11 +68,24 @@ public class LearningPathPersistenceService {
     try {
       saved = paths.saveAndFlush(path);
     } catch (DataIntegrityViolationException e) {
-      throw new ActivePathConflictException(
-          "PATH_GENERATION_CONFLICT: an active learning path already exists for user " + userId, e);
+      if (isUniqueViolation(e)) {
+        throw new ActivePathConflictException(
+            "PATH_GENERATION_CONFLICT: an active learning path already exists for user " + userId, e);
+      }
+      throw e;
     }
     publishGenerated(saved);
     return saved;
+  }
+
+  /** PostgreSQL unique_violation(SQL state 23505)만 충돌로 본다. FK·NOT NULL 등은 원래대로 전파. */
+  private static boolean isUniqueViolation(DataIntegrityViolationException e) {
+    for (Throwable cause = e; cause != null; cause = cause.getCause()) {
+      if (cause instanceof SQLException sql && "23505".equals(sql.getSQLState())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private void publishGenerated(LearningPath path) {
