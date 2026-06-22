@@ -5,6 +5,7 @@ import ai.devpath.learning.outbox.OutboxRepository;
 import ai.devpath.shared.event.LearningPathGeneratedEvent;
 import java.time.Instant;
 import java.util.UUID;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;
@@ -62,7 +63,13 @@ public class LearningPathPersistenceService {
       path.addMilestone(milestone);
     }
 
-    LearningPath saved = paths.save(path);
+    LearningPath saved;
+    try {
+      saved = paths.saveAndFlush(path);
+    } catch (DataIntegrityViolationException e) {
+      throw new ActivePathConflictException(
+          "PATH_GENERATION_CONFLICT: an active learning path already exists for user " + userId, e);
+    }
     publishGenerated(saved);
     return saved;
   }
