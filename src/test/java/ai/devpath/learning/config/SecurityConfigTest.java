@@ -26,4 +26,10 @@ class SecurityConfigTest {
   void protectedAssessmentRequiresAuth() throws Exception {
     mvc.perform(get("/onboarding/assessments/1/next")).andExpect(status().isUnauthorized());
   }
+
+  @Test
+  void internalPathIsPublic() throws Exception {
+    // /internal/**는 permitAll — 미존재 콘텐츠는 401이 아니라 404로 수렴한다.
+    mvc.perform(get("/internal/contents/999999999")).andExpect(status().isNotFound());
+  }
 }

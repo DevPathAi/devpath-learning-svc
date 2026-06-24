@@ -31,6 +31,25 @@ public class ContentEmbeddingMatcher {
         rs.getDouble("distance")), vector, track, vector, limit);
   }
 
+  /** track 무관 유사검색(멘토 참고자료, 슬라이스 #7). match에서 c.track 술어만 제거. */
+  public List<MatchedContent> matchAny(List<Double> queryEmbedding, int limit) {
+    String vector = toVectorLiteral(queryEmbedding);
+    String sql = """
+        select c.id, c.slug, c.title, ce.embedding <=> cast(? as vector) as distance
+        from content_embeddings ce
+        join contents c on c.id = ce.content_id
+        where ce.status = 'ACTIVE'
+          and c.status = 'PUBLISHED'
+        order by ce.embedding <=> cast(? as vector), c.id desc
+        limit ?
+        """;
+    return jdbc.query(sql, (rs, rowNum) -> new MatchedContent(
+        rs.getLong("id"),
+        rs.getString("slug"),
+        rs.getString("title"),
+        rs.getDouble("distance")), vector, vector, limit);
+  }
+
   private String toVectorLiteral(List<Double> embedding) {
     if (embedding == null || embedding.size() != 768) {
       throw new PathContractException("embedding must be 768 dimensions");
