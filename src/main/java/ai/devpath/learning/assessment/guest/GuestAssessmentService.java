@@ -50,7 +50,7 @@ public class GuestAssessmentService {
 
   public void answer(String guestId, AnswerRequest req) {
     GuestSession s = require(guestId);
-    if (s.pendingQuestionId() == null || s.pendingQuestionId() != req.questionId()) {
+    if (s.pendingQuestionId() == null || !s.pendingQuestionId().equals(req.questionId())) {
       throw new IllegalArgumentException("현재 출제된 문항이 아님(먼저 next 호출)");
     }
     QuestionBank q = questions.findById(req.questionId()).orElseThrow();

@@ -46,7 +46,7 @@
 | onboarding | 적응형 진단 테스트 |
 | learning | 학습 경로 엔진 + 진척도 (SLO: 생성 p95 < 8초) |
 | content | 콘텐츠 CRUD + 임베딩(pgvector) |
-| mentor | AI 멘토 채팅 |
+| mentor | **ai-svc 소관**(`/ai-mentor/**`, 슬라이스 #7) — 1st Aha 초기 계획 잔재로 learning-svc 미구현 (M-9) |
 ## 공통 규칙
 
 - Git: Conventional Commits — [documents/09_Git_규칙_정의서](https://github.com/DevPathAi/documents/blob/main/09_Git_규칙_정의서.md)
