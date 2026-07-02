@@ -18,11 +18,22 @@ public class LearningPathController {
   private final LearningPathQueryService queries;
   private final long sseTimeoutMs;
 
+  private final PathWeeklyTaskRepository weeklyTasks;
+
   public LearningPathController(LearningPathGenerationService generation, LearningPathQueryService queries,
+      PathWeeklyTaskRepository weeklyTasks,
       @Value("${devpath.path.sse-timeout-ms:180000}") long sseTimeoutMs) {
     this.generation = generation;
     this.queries = queries;
+    this.weeklyTasks = weeklyTasks;
     this.sseTimeoutMs = sseTimeoutMs;
+  }
+
+  /** content_id가 없어 콘텐츠 진척 완료로 자동 처리되지 않는 주간 과제의 명시적 완료 처리. */
+  @PostMapping("/tasks/{taskId}/complete")
+  public ResponseEntity<Void> completeTask(@AuthenticationPrincipal Jwt jwt, @PathVariable long taskId) {
+    int updated = weeklyTasks.completeTaskIfOwned(uid(jwt), taskId);
+    return updated == 1 ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
   }
 
   @PostMapping(path = "/me/generate", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
