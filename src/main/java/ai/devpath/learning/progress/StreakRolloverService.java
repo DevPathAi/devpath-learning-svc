@@ -16,18 +16,23 @@ import tools.jackson.databind.json.JsonMapper;
 public class StreakRolloverService {
   private static final Set<Integer> MILESTONES = Set.of(7, 14, 30, 60, 100);
 
+  private static final int STAGNATION_DAYS = 3;
+
   private final UserStreakRepository streaks;
   private final PathWeeklyTaskRepository weeklyTasks;
   private final SandboxActivityLogRepository sandboxActivity;
   private final OutboxRepository outbox;
+  private final ActivePathSummaryReader pathSummary;
   private final JsonMapper jsonMapper = new JsonMapper();
 
   public StreakRolloverService(UserStreakRepository streaks, PathWeeklyTaskRepository weeklyTasks,
-      SandboxActivityLogRepository sandboxActivity, OutboxRepository outbox) {
+      SandboxActivityLogRepository sandboxActivity, OutboxRepository outbox,
+      ActivePathSummaryReader pathSummary) {
     this.streaks = streaks;
     this.weeklyTasks = weeklyTasks;
     this.sandboxActivity = sandboxActivity;
     this.outbox = outbox;
+    this.pathSummary = pathSummary;
   }
 
   /** localDate는 유저의 로컬 자정이 막 지난 "오늘" — 판정 대상은 그 전날(localDate.minusDays(1))의 활동. */
@@ -48,6 +53,7 @@ public class StreakRolloverService {
       streak.setCurrentDays(newCurrent);
       streak.setLongestDays(Math.max(streak.getLongestDays(), newCurrent));
       streak.setLastActiveDate(yesterday);
+      streak.setStagnationNotifiedAt(null); // 재활성 → 다음 정체 에피소드 재통지 허용
       streak.setUpdatedAt(Instant.now());
       streaks.save(streak);
       if (MILESTONES.contains(newCurrent)) {
@@ -55,6 +61,7 @@ public class StreakRolloverService {
       }
     } else {
       streak.setCurrentDays(0);
+      maybePublishStagnation(streak, yesterday);
       streak.setUpdatedAt(Instant.now());
       streaks.save(streak);
     }
@@ -69,5 +76,28 @@ public class StreakRolloverService {
     entry.setPayload(jsonMapper.writeValueAsString(event));
     entry.setCreatedAt(Instant.now());
     outbox.save(entry);
+  }
+
+  /** last_active_date 기준 미활동 정확히 3일째이고 아직 통지 전이면 UserStagnatedEvent 발행 + 마커 세팅. */
+  private void maybePublishStagnation(UserStreak streak, java.time.LocalDate yesterday) {
+    java.time.LocalDate lastActive = streak.getLastActiveDate();
+    if (lastActive == null) return; // 한 번도 활동 없던 유저는 정체 대상 아님(재참여가 아니라 최초 참여)
+    if (streak.getStagnationNotifiedAt() != null) return; // 이미 이 에피소드에 통지함
+    long daysInactive = java.time.temporal.ChronoUnit.DAYS.between(lastActive, yesterday);
+    if (daysInactive != STAGNATION_DAYS) return;
+
+    long userId = streak.getUserId();
+    java.time.Instant lastActiveAt = lastActive.atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
+    String summary = pathSummary.summarize(userId).orElse(null);
+    var event = new ai.devpath.shared.event.UserStagnatedEvent(
+        UUID.randomUUID(), Instant.now(), userId, lastActiveAt, (int) daysInactive, summary);
+    OutboxEntry entry = new OutboxEntry();
+    entry.setAggregateType("user_streak");
+    entry.setAggregateId(String.valueOf(userId));
+    entry.setEventType(ai.devpath.shared.event.UserStagnatedEvent.EVENT_TYPE);
+    entry.setPayload(jsonMapper.writeValueAsString(event));
+    entry.setCreatedAt(Instant.now());
+    outbox.save(entry);
+    streak.setStagnationNotifiedAt(Instant.now());
   }
 }

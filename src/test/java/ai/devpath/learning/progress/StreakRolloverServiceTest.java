@@ -25,7 +25,8 @@ class StreakRolloverServiceTest {
   private StreakRolloverService serviceWithTaskActivity(boolean hadActivity) {
     PathWeeklyTaskRepository tasks = mock(PathWeeklyTaskRepository.class);
     when(tasks.hasCompletedTaskOnDate(any(Long.class), any(LocalDate.class))).thenReturn(hadActivity);
-    return new StreakRolloverService(streaks, tasks, sandboxActivity, outbox);
+    ActivePathSummaryReader pathSummary = mock(ActivePathSummaryReader.class);
+    return new StreakRolloverService(streaks, tasks, sandboxActivity, outbox, pathSummary);
   }
 
   @Test
