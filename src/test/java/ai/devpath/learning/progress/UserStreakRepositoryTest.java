@@ -2,6 +2,7 @@ package ai.devpath.learning.progress;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ class UserStreakRepositoryTest {
     s.setUserId(777001L);
     s.setCurrentDays(3);
     s.setLongestDays(5);
+    s.setUpdatedAt(Instant.now());
     streaks.save(s);
 
     UserStreak found = streaks.findById(777001L).orElseThrow();

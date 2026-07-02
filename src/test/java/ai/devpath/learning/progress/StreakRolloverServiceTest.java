@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import ai.devpath.learning.outbox.OutboxRepository;
 import ai.devpath.learning.path.PathWeeklyTaskRepository;
+import java.time.Instant;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ class StreakRolloverServiceTest {
     existing.setCurrentDays(2);
     existing.setLongestDays(2);
     existing.setLastActiveDate(LocalDate.now().minusDays(1));
+    existing.setUpdatedAt(Instant.now());
     streaks.save(existing);
 
     serviceWithTaskActivity(true).rollover(userId, LocalDate.now());
@@ -51,6 +53,7 @@ class StreakRolloverServiceTest {
     existing.setUserId(userId);
     existing.setCurrentDays(5);
     existing.setLongestDays(5);
+    existing.setUpdatedAt(Instant.now());
     streaks.save(existing);
 
     serviceWithTaskActivity(false).rollover(userId, LocalDate.now());
@@ -67,6 +70,7 @@ class StreakRolloverServiceTest {
     existing.setUserId(userId);
     existing.setCurrentDays(6);
     existing.setLongestDays(6);
+    existing.setUpdatedAt(Instant.now());
     streaks.save(existing);
 
     long before = outbox.count();

@@ -36,8 +36,8 @@ public class PathWeeklyTaskRepository {
           JOIN path_milestones m ON t.milestone_id = m.id
           JOIN learning_paths p ON p.id = m.path_id
           WHERE p.user_id = :userId
-            AND t.completed_at >= :dayStart
-            AND t.completed_at < :dayEnd
+            AND t.completed_at >= :dayStart::timestamptz
+            AND t.completed_at < :dayEnd::timestamptz
         )
         """;
     return Boolean.TRUE.equals(jdbc.queryForObject(sql, Map.of(

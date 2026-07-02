@@ -22,7 +22,7 @@ public class SandboxActivityLogRepository {
     var sql = """
         SELECT EXISTS (
           SELECT 1 FROM sandbox_activity_log
-          WHERE user_id = :userId AND occurred_at >= :dayStart AND occurred_at < :dayEnd
+          WHERE user_id = :userId AND occurred_at >= :dayStart::timestamptz AND occurred_at < :dayEnd::timestamptz
         )
         """;
     return Boolean.TRUE.equals(jdbc.queryForObject(sql, Map.of(
