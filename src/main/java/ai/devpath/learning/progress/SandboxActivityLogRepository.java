@@ -15,7 +15,7 @@ public class SandboxActivityLogRepository {
 
   public void record(long userId, java.time.Instant occurredAt) {
     jdbc.update("INSERT INTO sandbox_activity_log(user_id, occurred_at) VALUES (:userId, :occurredAt)",
-        Map.of("userId", userId, "occurredAt", occurredAt));
+        Map.of("userId", userId, "occurredAt", java.sql.Timestamp.from(occurredAt)));
   }
 
   public boolean hasActivityOnDate(long userId, LocalDate date) {
@@ -27,8 +27,8 @@ public class SandboxActivityLogRepository {
         """;
     return Boolean.TRUE.equals(jdbc.queryForObject(sql, Map.of(
         "userId", userId,
-        "dayStart", date.atStartOfDay(java.time.ZoneOffset.UTC).toInstant(),
-        "dayEnd", date.plusDays(1).atStartOfDay(java.time.ZoneOffset.UTC).toInstant())
+        "dayStart", java.sql.Timestamp.from(date.atStartOfDay(java.time.ZoneOffset.UTC).toInstant()),
+        "dayEnd", java.sql.Timestamp.from(date.plusDays(1).atStartOfDay(java.time.ZoneOffset.UTC).toInstant()))
         , Boolean.class));
   }
 }

@@ -42,8 +42,8 @@ public class PathWeeklyTaskRepository {
         """;
     return Boolean.TRUE.equals(jdbc.queryForObject(sql, Map.of(
         "userId", userId,
-        "dayStart", date.atStartOfDay(java.time.ZoneOffset.UTC).toInstant(),
-        "dayEnd", date.plusDays(1).atStartOfDay(java.time.ZoneOffset.UTC).toInstant())
+        "dayStart", java.sql.Timestamp.from(date.atStartOfDay(java.time.ZoneOffset.UTC).toInstant()),
+        "dayEnd", java.sql.Timestamp.from(date.plusDays(1).atStartOfDay(java.time.ZoneOffset.UTC).toInstant()))
         , Boolean.class));
   }
 }
