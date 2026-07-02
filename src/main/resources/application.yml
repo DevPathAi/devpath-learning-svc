@@ -4,6 +4,9 @@ devpath:
   ai-svc:
     base-url: ${AI_SVC_BASE_URL:http://localhost:8081}
     timeout: ${AI_SVC_TIMEOUT:PT8S}
+  notification-svc:
+    base-url: ${NOTIFICATION_SVC_BASE_URL:http://localhost:8088}
+    timeout: ${NOTIFICATION_SVC_TIMEOUT:PT5S}
   content:
     completion:
       scroll-threshold: ${CONTENT_COMPLETION_SCROLL_THRESHOLD:0.8}
@@ -29,6 +32,8 @@ spring:
     consumer:
       group-id: devpath-learning
       auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
