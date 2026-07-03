@@ -84,7 +84,7 @@ public class StreakRolloverService {
     if (lastActive == null) return; // 한 번도 활동 없던 유저는 정체 대상 아님(재참여가 아니라 최초 참여)
     if (streak.getStagnationNotifiedAt() != null) return; // 이미 이 에피소드에 통지함
     long daysInactive = java.time.temporal.ChronoUnit.DAYS.between(lastActive, yesterday);
-    if (daysInactive != STAGNATION_DAYS) return;
+    if (daysInactive < STAGNATION_DAYS) return; // 3일 이상 첫 스캔에 1회 — 마커가 중복 방지하므로 틱 놓쳐도 누락 없음
 
     long userId = streak.getUserId();
     java.time.Instant lastActiveAt = lastActive.atStartOfDay(java.time.ZoneOffset.UTC).toInstant();

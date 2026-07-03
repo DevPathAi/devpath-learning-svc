@@ -59,14 +59,24 @@ class StreakRolloverStagnationTest {
   }
 
   @Test
-  void doesNotPublishOnSecondOrFourthDay() {
+  void doesNotPublishBeforeThirdInactiveDay() {
     long userId = 770002L;
     seed(userId, LocalDate.of(2026, 6, 30), null);
     long before = outbox.count();
-    serviceNoActivity().rollover(userId, LocalDate.of(2026, 7, 3)); // daysInactive=2
+    serviceNoActivity().rollover(userId, LocalDate.of(2026, 7, 3)); // daysInactive=2 → 임계 미도달
     assertThat(outbox.count()).isEqualTo(before);
-    serviceNoActivity().rollover(userId, LocalDate.of(2026, 7, 5)); // daysInactive=4
-    assertThat(outbox.count()).isEqualTo(before);
+  }
+
+  @Test
+  void publishesOnFirstScanAtOrAfterThirdDay() {
+    // 3일째 롤오버 틱을 놓쳐 4일째(daysInactive=4)에 처음 스캔 — 마커 null이므로 이때 정확히 1회 발행(누락 없음).
+    long userId = 770004L;
+    seed(userId, LocalDate.of(2026, 6, 30), null);
+    long before = outbox.count();
+    serviceNoActivity().rollover(userId, LocalDate.of(2026, 7, 5)); // daysInactive=4, 마커 null → 발행
+    assertThat(outbox.count()).isEqualTo(before + 1);
+    UserStreak after = streaks.findById(userId).orElseThrow();
+    assertThat(after.getStagnationNotifiedAt()).isNotNull();
   }
 
   @Test
