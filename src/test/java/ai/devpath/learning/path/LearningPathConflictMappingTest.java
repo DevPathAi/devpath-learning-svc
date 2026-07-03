@@ -32,7 +32,7 @@ class LearningPathConflictMappingTest {
             .with(jwt().jwt(j -> j.subject("42")))
             .contentType(MediaType.APPLICATION_JSON).content("{\"goal\":\"g\"}"))
         .andExpect(status().isConflict())
-        .andExpect(jsonPath("$.errorCode").value("PATH_GENERATION_CONFLICT"));
+        .andExpect(jsonPath("$.error.code").value("CONFLICT"));
   }
 
   @Test
