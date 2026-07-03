@@ -28,6 +28,9 @@ public class UserStreak {
 	@Column(name = "updated_at")
 	private Instant updatedAt;
 
+	@Column(name = "stagnation_notified_at")
+	private Instant stagnationNotifiedAt;
+
 	public Long getUserId() { return userId; }
 	public void setUserId(Long v) { this.userId = v; }
 	public Integer getCurrentDays() { return currentDays; }
@@ -38,4 +41,6 @@ public class UserStreak {
 	public void setLastActiveDate(LocalDate v) { this.lastActiveDate = v; }
 	public Instant getUpdatedAt() { return updatedAt; }
 	public void setUpdatedAt(Instant v) { this.updatedAt = v; }
+	public Instant getStagnationNotifiedAt() { return stagnationNotifiedAt; }
+	public void setStagnationNotifiedAt(Instant v) { this.stagnationNotifiedAt = v; }
 }
