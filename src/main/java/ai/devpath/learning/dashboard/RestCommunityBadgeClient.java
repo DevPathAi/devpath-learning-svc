@@ -35,4 +35,17 @@ public class RestCommunityBadgeClient implements CommunityBadgeClient {
       return List.of();
     }
   }
+
+  @Override
+  public List<BadgeAwardView> badgesOf(long userId) {
+    try {
+      List<BadgeAwardView> badges = restClient.get()
+          .uri("/community/users/{userId}/badges", userId)
+          .retrieve()
+          .body(new org.springframework.core.ParameterizedTypeReference<List<BadgeAwardView>>() {});
+      return badges == null ? java.util.List.of() : badges;
+    } catch (org.springframework.web.client.RestClientException e) {
+      return java.util.List.of(); // 배지 조회 실패로 리포트 전체가 죽으면 안 됨 — 그레이스풀 디그레이드
+    }
+  }
 }
