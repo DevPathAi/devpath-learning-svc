@@ -1,5 +1,7 @@
 package ai.devpath.learning.path;
 
+import ai.devpath.shared.error.ErrorCode;
+import ai.devpath.shared.error.SseSupport;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -47,12 +49,8 @@ public class LearningPathController {
         generation.generate(userId, goal, event -> send(emitter, event));
         emitter.complete();
       } catch (Exception e) {
-        try {
-          send(emitter, PathProgressEvent.error(e.getMessage()));
-          emitter.complete();
-        } catch (Exception ignored) {
-          emitter.completeWithError(e);
-        }
+        SseSupport.sendError(emitter, ErrorCode.INTERNAL_ERROR, e.getMessage());
+        emitter.complete();
       }
     });
     return emitter;
