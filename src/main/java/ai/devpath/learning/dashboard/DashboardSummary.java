@@ -6,6 +6,7 @@ public record DashboardSummary(
     int streakDays,
     int progressPercent,
     String nextTaskTitle,
-    List<String> badges
+    List<String> badges,
+    int completedContentCount
 ) {
 }
