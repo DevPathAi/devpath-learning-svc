@@ -7,6 +7,7 @@ import ai.devpath.shared.event.SandboxRunSubmittedEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,6 @@ class SandboxRunConsumerIT {
     kafka.send(SandboxRunSubmittedEvent.EVENT_TYPE, String.valueOf(userId), jsonMapper.writeValueAsString(event));
 
     await().atMost(Duration.ofSeconds(20)).untilAsserted(() ->
-        assertThat(sandboxActivity.hasActivityOnDate(userId, LocalDate.now())).isTrue());
+        assertThat(sandboxActivity.hasActivityOnDate(userId, LocalDate.now(ZoneOffset.UTC))).isTrue());
   }
 }
