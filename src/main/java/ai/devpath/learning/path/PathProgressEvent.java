@@ -16,8 +16,4 @@ public record PathProgressEvent(String stage, double progress, String message, L
   public static PathProgressEvent done(long pathId) {
     return new PathProgressEvent("done", 1.0, "학습경로가 준비됐어요.", pathId);
   }
-
-  public static PathProgressEvent error(String message) {
-    return new PathProgressEvent("error", 1.0, message, null);
-  }
 }
