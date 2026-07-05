@@ -71,6 +71,15 @@ public class ContentProgressRepository {
     return rows.stream().findFirst();
   }
 
+  public int countCompleted(long userId) {
+    Integer n =
+        jdbc.queryForObject(
+            "SELECT count(*) FROM user_content_progress WHERE user_id = :userId AND completed_at IS NOT NULL",
+            Map.of("userId", userId),
+            Integer.class);
+    return n == null ? 0 : n;
+  }
+
   public List<ContentProgressItem> list(long userId, Boolean completed, String track, int limit) {
     var params = new HashMap<String, Object>();
     params.put("userId", userId);
