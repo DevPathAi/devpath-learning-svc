@@ -23,12 +23,23 @@ public class LearningPathQueryService {
     this.jsonMapper = jsonMapper;
   }
 
+  /**
+   * 활성 학습 경로를 조회한다. 없으면 예외 대신 {@link Optional#empty()}를 반환한다.
+   *
+   * <p>대시보드처럼 "없음"이 정상 흐름인 호출자는 이 메서드를 써야 한다. {@link #current(long)}이
+   * 던지는 {@link NoSuchElementException}을 상위 {@code @Transactional}에서 catch하면, 내부 트랜잭션이
+   * 이미 공유 트랜잭션을 rollback-only로 마킹해 커밋 시 {@code UnexpectedRollbackException}이 난다.
+   */
+  @Transactional(readOnly = true)
+  public Optional<LearningPathView> currentOptional(long userId) {
+    return paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")
+        .map(path -> toView(path, diagnoses.findLatestCompleted(userId).orElse(null)));
+  }
+
   @Transactional(readOnly = true)
   public LearningPathView current(long userId) {
-    LearningPath path = paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")
+    return currentOptional(userId)
         .orElseThrow(() -> new NoSuchElementException("active learning path 없음"));
-    LatestDiagnosis diagnosis = diagnoses.findLatestCompleted(userId).orElse(null);
-    return toView(path, diagnosis);
   }
 
   @Transactional(readOnly = true)
