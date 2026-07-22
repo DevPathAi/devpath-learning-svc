@@ -6,7 +6,6 @@ import ai.devpath.learning.path.LearningPathView;
 import ai.devpath.learning.path.WeeklyTaskView;
 import ai.devpath.learning.progress.UserStreakRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +30,8 @@ public class DashboardService {
     List<String> badges = badgeClient.badgeNamesOf(userId);
     int completedContentCount = contentProgress.countCompleted(userId);
 
-    LearningPathView path;
-    try {
-      path = paths.current(userId);
-    } catch (NoSuchElementException e) {
+    LearningPathView path = paths.currentOptional(userId).orElse(null);
+    if (path == null) {
       return new DashboardSummary(streakDays, 0, null, badges, completedContentCount);
     }
 

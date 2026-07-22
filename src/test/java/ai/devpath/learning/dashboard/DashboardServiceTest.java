@@ -10,7 +10,6 @@ import ai.devpath.learning.path.LearningPathQueryService;
 import ai.devpath.learning.progress.UserStreak;
 import ai.devpath.learning.progress.UserStreakRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +18,7 @@ class DashboardServiceTest {
   @Test
   void returnsZeroStreakWhenNoStreakRow() {
     LearningPathQueryService paths = mock(LearningPathQueryService.class);
-    when(paths.current(42L)).thenThrow(new NoSuchElementException());
+    when(paths.currentOptional(42L)).thenReturn(Optional.empty());
     UserStreakRepository streaks = mock(UserStreakRepository.class);
     when(streaks.findById(42L)).thenReturn(Optional.empty());
     CommunityBadgeClient badges = mock(CommunityBadgeClient.class);
@@ -38,7 +37,7 @@ class DashboardServiceTest {
   @Test
   void returnsActualStreakDaysWhenRowExists() {
     LearningPathQueryService paths = mock(LearningPathQueryService.class);
-    when(paths.current(43L)).thenThrow(new NoSuchElementException());
+    when(paths.currentOptional(43L)).thenReturn(Optional.empty());
     UserStreakRepository streaks = mock(UserStreakRepository.class);
     UserStreak streak = new UserStreak();
     streak.setUserId(43L);
