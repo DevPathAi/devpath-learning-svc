@@ -4,6 +4,11 @@ spring:
     username: ${DB_USER:devpath}
     password: ${DB_PASSWORD:localdev}
     driver-class-name: org.postgresql.Driver
+    # 다수 @SpringBootTest 컨텍스트가 각자 Hikari 풀을 열어 CI postgres max_connections를
+    # 초과(→ FlywaySqlUnableToConnectToDbException flake)하는 것을 막는다. 컨텍스트당 상한을 낮춰
+    # 여러 캐시 컨텍스트가 공존해도 총 커넥션이 안전 범위에 머문다.
+    hikari:
+      maximum-pool-size: 4
   flyway:
     enabled: true
     locations: classpath:db/migration
