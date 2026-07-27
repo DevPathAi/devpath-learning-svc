@@ -66,10 +66,10 @@ class ContentControllerTest {
         .andExpect(jsonPath("$.slug").value("published-content"));
     mvc.perform(get("/contents/draft-content").with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.errorCode").value("CONTENT_NOT_FOUND"));
+        .andExpect(jsonPath("$.error.code").value("RESOURCE_NOT_FOUND"));
     mvc.perform(get("/contents/missing-content").with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.errorCode").value("CONTENT_NOT_FOUND"));
+        .andExpect(jsonPath("$.error.code").value("RESOURCE_NOT_FOUND"));
   }
 
   @Test
@@ -79,7 +79,7 @@ class ContentControllerTest {
     mvc.perform(get("/contents/999999999999999999999999999999999")
             .with(jwt().jwt(j -> j.subject(String.valueOf(userId)))))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.errorCode").value("INVALID_CONTENT_ID"));
+        .andExpect(jsonPath("$.error.code").value("VALIDATION_FAILED"));
   }
 
   @Test
@@ -106,13 +106,13 @@ class ContentControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"scrollPct\":1.5,\"dwellSec\":2}"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.errorCode").value("INVALID_PROGRESS"));
+        .andExpect(jsonPath("$.error.code").value("VALIDATION_FAILED"));
     mvc.perform(post("/contents/progress-monotonic/progress")
             .with(jwt().jwt(j -> j.subject(String.valueOf(userId))))
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"scrollPct\":0.5,\"dwellSec\":-1}"))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.errorCode").value("INVALID_PROGRESS"));
+        .andExpect(jsonPath("$.error.code").value("VALIDATION_FAILED"));
   }
 
   @Test

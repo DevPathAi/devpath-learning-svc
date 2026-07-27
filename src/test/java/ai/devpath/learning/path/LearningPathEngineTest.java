@@ -138,7 +138,8 @@ class LearningPathEngineTest {
         .andExpect(status().isOk())
         .andReturn().getResponse().getContentAsString();
     assertThat(sse).contains("\"stage\":\"collecting\"");
-    assertThat(sse).contains("\"stage\":\"error\"");
+    assertThat(sse).contains("event:error");
+    assertThat(sse).contains("\"code\":\"INTERNAL_ERROR\"");
     assertThat(sse).contains("NO_COMPLETED_ASSESSMENT");
   }
 
@@ -246,7 +247,8 @@ class LearningPathEngineTest {
         .andReturn().getResponse().getContentAsString();
 
     assertThat(sse).contains("\"stage\":\"generating\"");
-    assertThat(sse).contains("\"stage\":\"error\"");
+    assertThat(sse).contains("event:error");
+    assertThat(sse).contains("\"code\":\"INTERNAL_ERROR\"");
     assertThat(paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")).isEmpty();
   }
 
@@ -266,7 +268,8 @@ class LearningPathEngineTest {
     String sse = mvc.perform(asyncDispatch(result)).andExpect(status().isOk())
         .andReturn().getResponse().getContentAsString();
 
-    assertThat(sse).contains("\"stage\":\"error\"");
+    assertThat(sse).contains("event:error");
+    assertThat(sse).contains("\"code\":\"INTERNAL_ERROR\"");
     assertThat(paths.findFirstByUserIdAndStatusOrderByGeneratedAtDesc(userId, "ACTIVE")).isEmpty();
   }
 

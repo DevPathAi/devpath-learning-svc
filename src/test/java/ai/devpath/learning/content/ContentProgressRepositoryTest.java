@@ -101,6 +101,19 @@ class ContentProgressRepositoryTest {
     assertThat(completedAt(otherTask)).isNull();
   }
 
+  @Test
+  void countCompletedCountsOnlyCompletedRows() {
+    long userId = uniqueId();
+    seedUser(userId);
+    long done = seedContent("repo-done", "BACKEND_SPRING", "PUBLISHED");
+    long partial = seedContent("repo-partial", "BACKEND_SPRING", "PUBLISHED");
+
+    progress.upsert(userId, done, 0.9, 60, SCROLL_THRESHOLD, MIN_DWELL_SEC);
+    progress.upsert(userId, partial, 0.3, 10, SCROLL_THRESHOLD, MIN_DWELL_SEC);
+
+    assertThat(progress.countCompleted(userId)).isEqualTo(1);
+  }
+
   private Instant completedAt(long taskId) {
     return jdbc.queryForObject(
         "select completed_at from path_weekly_tasks where id = ?",

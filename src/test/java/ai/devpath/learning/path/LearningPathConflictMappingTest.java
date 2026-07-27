@@ -32,11 +32,11 @@ class LearningPathConflictMappingTest {
             .with(jwt().jwt(j -> j.subject("42")))
             .contentType(MediaType.APPLICATION_JSON).content("{\"goal\":\"g\"}"))
         .andExpect(status().isConflict())
-        .andExpect(jsonPath("$.errorCode").value("PATH_GENERATION_CONFLICT"));
+        .andExpect(jsonPath("$.error.code").value("CONFLICT"));
   }
 
   @Test
-  void generateSseEmitsErrorStageWithConflictCode() throws Exception {
+  void generateSseEmitsErrorEventWithConflictCode() throws Exception {
     when(generation.generate(anyLong(), any(), any()))
         .thenThrow(new ActivePathConflictException("PATH_GENERATION_CONFLICT: dup", null));
 
@@ -46,7 +46,9 @@ class LearningPathConflictMappingTest {
     String sse = mvc.perform(asyncDispatch(result)).andExpect(status().isOk())
         .andReturn().getResponse().getContentAsString();
 
-    org.assertj.core.api.Assertions.assertThat(sse).contains("\"stage\":\"error\"");
+    org.assertj.core.api.Assertions.assertThat(sse).contains("event:error");
+    org.assertj.core.api.Assertions.assertThat(sse).contains("\"code\":\"INTERNAL_ERROR\"");
     org.assertj.core.api.Assertions.assertThat(sse).contains("PATH_GENERATION_CONFLICT");
+    org.assertj.core.api.Assertions.assertThat(sse).doesNotContain("\"stage\":\"error\"");
   }
 }
