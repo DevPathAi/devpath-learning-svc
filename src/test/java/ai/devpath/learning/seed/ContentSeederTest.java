@@ -59,6 +59,7 @@ class ContentSeederTest {
     assertThat(contentRepository.count()).isEqualTo(150L);
     Integer embeddings = jdbc.queryForObject(
         "select count(*) from content_embeddings", Integer.class);
-    assertThat(embeddings).isEqualTo(150);
+    // ContentChunker가 콘텐츠를 다중 청크로 분할할 수 있어 임베딩 수는 콘텐츠 수 이상이다.
+    assertThat(embeddings).isGreaterThanOrEqualTo(150);
   }
 }
