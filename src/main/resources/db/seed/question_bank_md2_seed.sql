@@ -1053,8 +1053,8 @@ class MyWidget extends StatelessWidget {
 
 import ''dart:io'' show Platform;
 class NativeActionHandler {
-nit() {} 
-nvokeNativeFunction(String actionName) async {
+init() {} 
+invokeNativeFunction(String actionName) async {
 if (Platform.isAndroid) {
 // Android 플랫폼에서 액션 호출
 } else if (Platform.isIOS) {
@@ -1204,7 +1204,7 @@ final ThemeData theme;
 ThemeProvider({Key key, @required this.theme, Widget child}) : super(key: key, child: child);
 static ThemeProvider of(BuildContext context) =>
 castToInheritedElement(context.inheritFromElement());
-nit(): super();
+init(): super();
 }
 class MyApp extends StatelessWidget {
 @override
@@ -1355,7 +1355,7 @@ class MyHomePage extends StatefulWidget {
 _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
-nit(): super();
+init(): super();
 dispose() {
 super.dispose();
 // 리소스 해제 코드
@@ -1448,7 +1448,7 @@ Counter({Key key, this.initialCount}) : super(key: key);
 _CounterState createState() => _CounterState();
 }
 class _CounterState extends State<Counter> {
-nit(): count = widget.initialCount;
+init(): count = widget.initialCount;
 void increment() { setState(() { count++; }); }
 Widget build(BuildContext context) {
 return Text(count.toString());
