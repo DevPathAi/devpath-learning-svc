@@ -28,10 +28,10 @@ class ContentEmbeddingMatcherSeedTest {
 
     assertThat(result).hasSize(5);
     assertThat(result).allSatisfy(match -> {
-      assertThat(match.slug()).startsWith("devops-");
-      String status = jdbc.queryForObject(
-          "select status from contents where id = ?", String.class, match.contentId());
-      assertThat(status).isEqualTo("PUBLISHED");
+      var row = jdbc.queryForMap(
+          "select track, status from contents where id = ?", match.contentId());
+      assertThat(row.get("track")).isEqualTo("DEVOPS");
+      assertThat(row.get("status")).isEqualTo("PUBLISHED");
     });
   }
 }
