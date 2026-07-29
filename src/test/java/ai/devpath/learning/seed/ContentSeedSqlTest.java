@@ -46,7 +46,9 @@ class ContentSeedSqlTest {
         """, Integer.class);
 
     assertThat(contentCount).isEqualTo(150);
-    assertThat(embeddingCount).isEqualTo(150);
+    // 콘텐츠는 ContentChunker가 H2 섹션·길이 기준으로 다중 청크로 분할하므로
+    // 임베딩 수는 콘텐츠 수 이상이다(콘텐츠당 최소 1개는 아래 contentsWithoutEmbedding=0으로 보장).
+    assertThat(embeddingCount).isGreaterThanOrEqualTo(150);
     assertThat(nonPublished).isZero();
     assertThat(nonActive).isZero();
     assertThat(duplicateSlugs).isZero();
