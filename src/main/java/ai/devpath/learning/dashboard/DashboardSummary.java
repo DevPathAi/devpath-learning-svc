@@ -7,6 +7,8 @@ public record DashboardSummary(
     int progressPercent,
     String nextTaskTitle,
     List<String> badges,
-    int completedContentCount
+    int completedContentCount,
+    List<DailyActivity> weeklyActivity,
+    List<ProgressPoint> progressHistory
 ) {
 }

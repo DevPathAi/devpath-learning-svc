@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,46 @@ public class ContentProgressRepository {
             Integer.class);
     return n == null ? 0 : n;
   }
+
+  /** 최근 완료 콘텐츠를 KST 일별로 집계(since 이후). 없는 날은 결과에 미포함. */
+  public Map<LocalDate, Integer> dailyCompletedCounts(long userId, Instant since) {
+    var sql = """
+        SELECT (completed_at AT TIME ZONE 'Asia/Seoul')::date AS d, count(*) AS n
+        FROM user_content_progress
+        WHERE user_id = :userId AND completed_at IS NOT NULL AND completed_at >= :since
+        GROUP BY d
+        """;
+    Map<LocalDate, Integer> out = new HashMap<>();
+    jdbc.query(sql,
+        Map.of("userId", userId, "since", Timestamp.from(since)),
+        rs -> {
+          out.put(rs.getObject("d", LocalDate.class), rs.getInt("n"));
+        });
+    return out;
+  }
+
+  /** 활성 경로 전체 과제 수 + 완료 과제의 KST 완료일 목록. */
+  public ActivePathCompletions activePathCompletions(long userId) {
+    var totalSql = """
+        SELECT count(*) FROM path_weekly_tasks t
+        JOIN path_milestones m ON m.id = t.milestone_id
+        JOIN learning_paths p ON p.id = m.path_id
+        WHERE p.user_id = :userId AND p.status = 'ACTIVE'
+        """;
+    Integer total = jdbc.queryForObject(totalSql, Map.of("userId", userId), Integer.class);
+    var datesSql = """
+        SELECT (t.completed_at AT TIME ZONE 'Asia/Seoul')::date AS d
+        FROM path_weekly_tasks t
+        JOIN path_milestones m ON m.id = t.milestone_id
+        JOIN learning_paths p ON p.id = m.path_id
+        WHERE p.user_id = :userId AND p.status = 'ACTIVE' AND t.completed_at IS NOT NULL
+        """;
+    List<LocalDate> dates = jdbc.query(datesSql, Map.of("userId", userId),
+        (rs, rowNum) -> rs.getObject("d", LocalDate.class));
+    return new ActivePathCompletions(total == null ? 0 : total, dates);
+  }
+
+  public record ActivePathCompletions(int totalTasks, List<LocalDate> completedDates) {}
 
   public List<ContentProgressItem> list(long userId, Boolean completed, String track, int limit) {
     var params = new HashMap<String, Object>();
