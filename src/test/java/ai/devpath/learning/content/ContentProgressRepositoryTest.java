@@ -114,6 +114,40 @@ class ContentProgressRepositoryTest {
     assertThat(progress.countCompleted(userId)).isEqualTo(1);
   }
 
+  @Test
+  void dailyCompletedCountsBucketsTodayByKst() {
+    long userId = uniqueId();
+    seedUser(userId);
+    long a = seedContent("ts-a", "BACKEND_SPRING", "PUBLISHED");
+    long b = seedContent("ts-b", "BACKEND_SPRING", "PUBLISHED");
+    progress.upsert(userId, a, 0.9, 60, SCROLL_THRESHOLD, MIN_DWELL_SEC);
+    progress.upsert(userId, b, 0.9, 60, SCROLL_THRESHOLD, MIN_DWELL_SEC);
+
+    Instant since = Instant.now().minus(java.time.Duration.ofDays(7));
+    var counts = progress.dailyCompletedCounts(userId, since);
+
+    java.time.LocalDate todayKst = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"));
+    assertThat(counts.get(todayKst)).isEqualTo(2);
+  }
+
+  @Test
+  void activePathCompletionsReturnsTotalAndCompletedDates() {
+    long userId = uniqueId();
+    seedUser(userId);
+    long content = seedContent("ts-path", "BACKEND_SPRING", "PUBLISHED");
+    long path = seedPath(userId, "ACTIVE");
+    seedTask(path, content, 1);
+    seedTask(path, content, 2);
+    progress.completeActivePathTasks(userId, content); // content_id 일치 과제 전부 완료
+
+    var result = progress.activePathCompletions(userId);
+
+    assertThat(result.totalTasks()).isEqualTo(2);
+    assertThat(result.completedDates()).hasSize(2);
+    assertThat(result.completedDates())
+        .containsOnly(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")));
+  }
+
   private Instant completedAt(long taskId) {
     return jdbc.queryForObject(
         "select completed_at from path_weekly_tasks where id = ?",
