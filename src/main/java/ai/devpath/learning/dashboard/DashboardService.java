@@ -32,7 +32,8 @@ public class DashboardService {
 
     LearningPathView path = paths.currentOptional(userId).orElse(null);
     if (path == null) {
-      return new DashboardSummary(streakDays, 0, null, badges, completedContentCount);
+      return new DashboardSummary(streakDays, 0, null, badges, completedContentCount,
+          List.of(), List.of());
     }
 
     List<WeeklyTaskView> tasks = path.milestones().stream()
@@ -46,6 +47,7 @@ public class DashboardService {
         .map(WeeklyTaskView::title)
         .orElse(null);
 
-    return new DashboardSummary(streakDays, progress, nextTask, badges, completedContentCount);
+    return new DashboardSummary(streakDays, progress, nextTask, badges, completedContentCount,
+        List.of(), List.of());
   }
 }
