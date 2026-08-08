@@ -96,4 +96,31 @@ class KnowledgeDocScannerTest {
 
     assertThat(docs.get(0).docKey()).isEqualTo("Sample Codes/Nested/deep/x.md");
   }
+
+  @Test
+  void normalizesCrlfLineEndings(@TempDir Path root) throws Exception {
+    // dsd 레포는 CRLF로 체크아웃돼 있다. 정규화 없이 담으면 markdown에 '\r'이 섞여
+    // 청킹 경계(MAX_CHARS)를 왜곡하고 해시가 체크아웃 설정에 의존하게 된다.
+    write(root.resolve("AWS/crlf.md"), "# 제목\r\n\r\n## 섹션\r\n본문\r\n");
+
+    List<KnowledgeDoc> docs = scanner.scan(root);
+
+    assertThat(docs).singleElement()
+        .satisfies(d -> assertThat(d.markdown()).doesNotContain("\r"));
+  }
+
+  @Test
+  void docHashIsIndependentOfLineEndingStyle(@TempDir Path root) throws Exception {
+    write(root.resolve("AWS/crlf.md"), "# X\r\n본문\r\n");
+    write(root.resolve("MSA/lf.md"), "# X\n본문\n");
+
+    List<KnowledgeDoc> docs = scanner.scan(root);
+
+    String crlfHash = docs.stream()
+        .filter(d -> d.docKey().equals("AWS/crlf.md")).findFirst().orElseThrow().docHash();
+    String lfHash = docs.stream()
+        .filter(d -> d.docKey().equals("MSA/lf.md")).findFirst().orElseThrow().docHash();
+
+    assertThat(crlfHash).isEqualTo(lfHash);
+  }
 }

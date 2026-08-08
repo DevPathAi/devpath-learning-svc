@@ -39,7 +39,7 @@ public class KnowledgeDocScanner {
       Path base = root.resolve(dir);
       if (!Files.isDirectory(base)) continue;
       for (Path file : markdownFilesUnder(base)) {
-        String markdown = Files.readString(file, StandardCharsets.UTF_8);
+        String markdown = normalizeLineEndings(Files.readString(file, StandardCharsets.UTF_8));
         docs.add(new KnowledgeDoc(
             toDocKey(root, file),
             titleOf(markdown, file),
@@ -70,6 +70,15 @@ public class KnowledgeDocScanner {
     var sorted = new ArrayList<>(unique);
     sorted.sort(Path::compareTo);
     return sorted;
+  }
+
+  /**
+   * 개행을 LF로 통일한다. dsd 레포는 CRLF로 체크아웃돼 있어(git core.autocrlf), 정규화 없이
+   * markdown·docHash를 산출하면 Task 5 청킹(MAX_CHARS)이 '\r'만큼 왜곡되고, 해시가 체크아웃
+   * 설정(CRLF/LF)에 의존해 플랫폼이 바뀌면 전량 재해시된다. 단독 '\r'(구 Mac)도 처리한다.
+   */
+  private String normalizeLineEndings(String value) {
+    return value.replace("\r\n", "\n").replace("\r", "\n");
   }
 
   private String toDocKey(Path root, Path file) {
