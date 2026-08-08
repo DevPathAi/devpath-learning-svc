@@ -40,9 +40,30 @@ configurations.named("contentGenRuntimeOnly") {
 	extendsFrom(configurations["runtimeOnly"])
 }
 
+val knowledgeGenSourceSet = sourceSets.create("knowledgeGen") {
+	java.srcDir("src/knowledgeGen/java")
+	// contentGen의 ContentChunker/ContentChunk를 재사용한다
+	compileClasspath += sourceSets["main"].runtimeClasspath + contentGenSourceSet.output
+	runtimeClasspath += output + compileClasspath
+}
+
+configurations.named("knowledgeGenImplementation") {
+	extendsFrom(configurations["implementation"])
+}
+
+configurations.named("knowledgeGenRuntimeOnly") {
+	extendsFrom(configurations["runtimeOnly"])
+}
+
+tasks.named("compileKnowledgeGenJava") {
+	dependsOn(tasks.named("compileContentGenJava"))
+}
+
 sourceSets.named("test") {
 	compileClasspath += contentGenSourceSet.output
 	runtimeClasspath += contentGenSourceSet.output
+	compileClasspath += knowledgeGenSourceSet.output
+	runtimeClasspath += knowledgeGenSourceSet.output
 }
 
 dependencies {
@@ -83,6 +104,7 @@ tasks.withType<Test> {
 
 tasks.named("compileTestJava") {
 	dependsOn(tasks.named("compileContentGenJava"))
+	dependsOn(tasks.named("compileKnowledgeGenJava"))
 }
 
 tasks.register<JavaExec>("validateQuestions") {
