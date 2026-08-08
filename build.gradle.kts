@@ -182,3 +182,11 @@ tasks.register<JavaExec>("embedContentsLocal") {
 		providers.gradleProperty("ollama.embedModel").orElse("nomic-embed-text").get()
 	)
 }
+
+tasks.register<JavaExec>("scanKnowledgeDocs") {
+	group = "knowledge base"
+	description = "Scan study documents into documents.jsonl. Do not run in CI."
+	classpath = knowledgeGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.knowledgegen.ScanKnowledgeDocsCommand")
+	args("D:/workspace/dsd", "tools/knowledge-gen/generated/documents.jsonl")
+}
