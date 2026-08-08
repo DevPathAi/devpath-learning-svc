@@ -28,7 +28,8 @@ class DashboardServiceTest {
     when(contentProgress.dailyCompletedCounts(eq(42L), org.mockito.ArgumentMatchers.any()))
         .thenReturn(java.util.Map.of());
     when(contentProgress.activePathCompletions(42L))
-        .thenReturn(new ContentProgressRepository.ActivePathCompletions(0, List.of()));
+        .thenReturn(new ContentProgressRepository.ActivePathCompletions(
+            0, List.of(), java.util.Map.of(), java.util.Map.of()));
 
     DashboardService service = new DashboardService(paths, streaks, badges, contentProgress);
     DashboardSummary summary = service.summary(42L);
@@ -54,7 +55,8 @@ class DashboardServiceTest {
     when(contentProgress.dailyCompletedCounts(eq(43L), org.mockito.ArgumentMatchers.any()))
         .thenReturn(java.util.Map.of());
     when(contentProgress.activePathCompletions(43L))
-        .thenReturn(new ContentProgressRepository.ActivePathCompletions(0, List.of()));
+        .thenReturn(new ContentProgressRepository.ActivePathCompletions(
+            0, List.of(), java.util.Map.of(), java.util.Map.of()));
 
     DashboardService service = new DashboardService(paths, streaks, badges, contentProgress);
     DashboardSummary summary = service.summary(43L);
@@ -77,7 +79,8 @@ class DashboardServiceTest {
     when(contentProgress.dailyCompletedCounts(eq(44L), org.mockito.ArgumentMatchers.any()))
         .thenReturn(java.util.Map.of());
     when(contentProgress.activePathCompletions(44L))
-        .thenReturn(new ContentProgressRepository.ActivePathCompletions(0, List.of()));
+        .thenReturn(new ContentProgressRepository.ActivePathCompletions(
+            0, List.of(), java.util.Map.of(), java.util.Map.of()));
 
     DashboardService service = new DashboardService(paths, streaks, badges, contentProgress);
     DashboardSummary summary = service.summary(44L);
