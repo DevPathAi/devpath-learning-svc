@@ -1,7 +1,9 @@
 package ai.devpath.learning.dashboard;
 
+import ai.devpath.learning.content.ContentProgressRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,18 +24,30 @@ final class DashboardTimeseries {
     return out;
   }
 
-  /** 최근 HISTORY_DAYS일 누적 완료율(%). totalTasks<=0이면 빈 배열. date는 ISO 문자열. */
+  /** 최근 HISTORY_DAYS일 누적 완료율(%). 전체 과제가 없으면 빈 배열. date는 ISO 문자열. */
   static List<ProgressPoint> progressHistory(
-      LocalDate today, int totalTasks, List<LocalDate> completedDates) {
-    if (totalTasks <= 0) {
+      LocalDate today, ContentProgressRepository.ActivePathCompletions pc) {
+    if (pc.totalTasks() <= 0) {
       return List.of();
     }
     List<ProgressPoint> out = new ArrayList<>(HISTORY_DAYS);
     for (int i = HISTORY_DAYS - 1; i >= 0; i--) {
       LocalDate d = today.minusDays(i);
-      long done = completedDates.stream().filter(cd -> !cd.isAfter(d)).count();
-      int percent = (int) Math.round(done * 100.0 / totalTasks);
-      out.add(new ProgressPoint(d.toString(), percent));
+      long done = pc.completedDates().stream().filter(cd -> !cd.isAfter(d)).count();
+      int percent = (int) Math.round(done * 100.0 / pc.totalTasks());
+
+      Map<String, Integer> byType = new LinkedHashMap<>();
+      for (Map.Entry<String, Integer> e : pc.totalByType().entrySet()) {
+        int typeTotal = e.getValue();
+        if (typeTotal <= 0) {
+          continue;
+        }
+        long typeDone = pc.completedByType().getOrDefault(e.getKey(), List.of()).stream()
+            .filter(cd -> !cd.isAfter(d))
+            .count();
+        byType.put(e.getKey(), (int) Math.round(typeDone * 100.0 / typeTotal));
+      }
+      out.add(new ProgressPoint(d.toString(), percent, byType));
     }
     return out;
   }

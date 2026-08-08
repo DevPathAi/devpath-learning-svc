@@ -41,8 +41,7 @@ public class DashboardService {
         today, contentProgress.dailyCompletedCounts(userId, since));
     ContentProgressRepository.ActivePathCompletions pc =
         contentProgress.activePathCompletions(userId);
-    List<ProgressPoint> progressHistory = DashboardTimeseries.progressHistory(
-        today, pc.totalTasks(), pc.completedDates());
+    List<ProgressPoint> progressHistory = DashboardTimeseries.progressHistory(today, pc);
 
     LearningPathView path = paths.currentOptional(userId).orElse(null);
     if (path == null) {
