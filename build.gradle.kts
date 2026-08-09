@@ -203,3 +203,11 @@ tasks.register<JavaExec>("embedKnowledge") {
 		"nomic-embed-text"
 	)
 }
+
+tasks.register<JavaExec>("loadKnowledge") {
+	group = "knowledge base"
+	description = "Load embeddings.jsonl into the knowledge base. Do not run in CI."
+	classpath = knowledgeGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.knowledgegen.LoadKnowledgeCommand")
+	args("tools/knowledge-gen/generated/embeddings.jsonl", "develop-study-documents")
+}
