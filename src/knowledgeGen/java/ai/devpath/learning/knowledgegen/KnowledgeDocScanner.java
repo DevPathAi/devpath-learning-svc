@@ -93,12 +93,28 @@ public class KnowledgeDocScanner {
     if (m.find()) {
       String title = m.group(1).trim();
       if (!title.isBlank()) {
-        return title.length() > 500 ? title.substring(0, 500) : title;
+        return title.length() > 500 ? safeSurrogateTruncate(title, 500) : title;
       }
     }
     String name = file.getFileName().toString();
     int dot = name.lastIndexOf('.');
     return dot > 0 ? name.substring(0, dot) : name;
+  }
+
+  /**
+   * ContentChunker와 동일한 결함 계열: UTF-16 코드 유닛 인덱스로 자르면 서로게이트 쌍(astral
+   * 문자) 중간에 경계가 떨어질 수 있고, 그 결과 짝 없는 서로게이트를 UTF-8로 쓰는 순간
+   * MalformedInputException이 던져진다. maxLength 위치가 low surrogate이고 그 직전이 high
+   * surrogate라면 경계를 1 코드 유닛 앞으로 당겨 쌍째로 제외한다.
+   */
+  private String safeSurrogateTruncate(String value, int maxLength) {
+    int end = maxLength;
+    if (end > 0 && end < value.length()
+        && Character.isLowSurrogate(value.charAt(end))
+        && Character.isHighSurrogate(value.charAt(end - 1))) {
+      end -= 1;
+    }
+    return value.substring(0, end);
   }
 
   private String sha256Hex(String value) {
