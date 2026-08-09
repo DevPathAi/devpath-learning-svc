@@ -190,3 +190,16 @@ tasks.register<JavaExec>("scanKnowledgeDocs") {
 	mainClass.set("ai.devpath.learning.knowledgegen.ScanKnowledgeDocsCommand")
 	args("D:/workspace/dsd", "tools/knowledge-gen/generated/documents.jsonl")
 }
+
+tasks.register<JavaExec>("embedKnowledge") {
+	group = "knowledge base"
+	description = "Chunk + batch-embed study documents. Requires local Ollama. Do not run in CI."
+	classpath = knowledgeGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.knowledgegen.EmbedKnowledgeCommand")
+	args(
+		"tools/knowledge-gen/generated/documents.jsonl",
+		"tools/knowledge-gen/generated/embeddings.jsonl",
+		project.findProperty("sourceCommit")?.toString() ?: "unknown",
+		"nomic-embed-text"
+	)
+}
