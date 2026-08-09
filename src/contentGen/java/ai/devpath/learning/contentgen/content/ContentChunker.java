@@ -84,14 +84,34 @@ public class ContentChunker {
       int end = Math.min(section.length(), start + chunkLength);
       if (i == chunkCount - 1) {
         end = section.length();
+      } else {
+        end = safeSurrogateBoundary(section, end);
       }
       chunks.add(section.substring(start, end).trim());
       if (end == section.length()) {
         break;
       }
-      start = Math.max(0, end - OVERLAP_CHARS);
+      start = safeSurrogateBoundary(section, Math.max(0, end - OVERLAP_CHARS));
     }
     return chunks;
+  }
+
+  /**
+   * UTF-16 코드 유닛 인덱스 산술로 계산된 경계가 서로게이트 쌍(astral 문자, 예: 이모지) 중간에
+   * 떨어지면, 그 지점에서 substring한 결과 String이 짝 없는 서로게이트를 갖게 되고 이를 UTF-8로
+   * 쓰는 순간(BufferedWriter) MalformedInputException이 던져진다. index가 low surrogate이고
+   * 그 직전이 high surrogate라면 쌍을 쪼개지 않도록 경계를 1 코드 유닛 앞으로 당긴다(쌍은 그 다음
+   * 청크에 온전히 포함된다). index==0이거나 문자열 끝(section.length())은 쌍 중간일 수 없어
+   * 그대로 반환한다.
+   */
+  private int safeSurrogateBoundary(String text, int index) {
+    if (index <= 0 || index >= text.length()) {
+      return index;
+    }
+    if (Character.isLowSurrogate(text.charAt(index)) && Character.isHighSurrogate(text.charAt(index - 1))) {
+      return index - 1;
+    }
+    return index;
   }
 
   private String normalize(String value) {
