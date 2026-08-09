@@ -152,10 +152,19 @@ public class EmbedKnowledgeCommand {
     if (!Files.exists(path)) return Set.of();
 
     var seenChunkIndexesByKey = new HashMap<String, Set<Integer>>();
+    int lineNo = 0;
     try (var lines = Files.lines(path, StandardCharsets.UTF_8)) {
       for (String line : (Iterable<String>) lines::iterator) {
+        lineNo++;
         if (line.isBlank()) continue;
-        KnowledgeEmbeddingRecord record = MAPPER.readValue(line, KnowledgeEmbeddingRecord.class);
+        KnowledgeEmbeddingRecord record;
+        try {
+          record = MAPPER.readValue(line, KnowledgeEmbeddingRecord.class);
+        } catch (com.fasterxml.jackson.core.JacksonException e) {
+          System.err.printf("경고: %s %d번째 줄이 손상돼 건너뜁니다: %s%n",
+              path, lineNo, e.getOriginalMessage());
+          continue;
+        }
         String key = checkpointKey(record.docKey(), record.docHash());
         seenChunkIndexesByKey.computeIfAbsent(key, k -> new HashSet<>()).add(record.chunkIndex());
       }

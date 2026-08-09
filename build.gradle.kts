@@ -199,7 +199,8 @@ tasks.register<JavaExec>("embedKnowledge") {
 	args(
 		"tools/knowledge-gen/generated/documents.jsonl",
 		"tools/knowledge-gen/generated/embeddings.jsonl",
-		project.findProperty("sourceCommit")?.toString() ?: "unknown",
+		project.findProperty("sourceCommit")?.toString()
+			?: throw GradleException("-PsourceCommit=<dsd master SHA> 를 지정하라 (설계 §7.4)"),
 		"nomic-embed-text"
 	)
 }

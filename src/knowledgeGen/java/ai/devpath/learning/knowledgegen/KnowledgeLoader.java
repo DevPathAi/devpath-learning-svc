@@ -39,9 +39,16 @@ public class KnowledgeLoader {
     Map<String, Map<Integer, KnowledgeEmbeddingRecord>> chunksByDoc = new LinkedHashMap<>();
 
     for (KnowledgeEmbeddingRecord r : records) {
-      lastByDoc.put(r.docKey(), r);
-      chunksByDoc.computeIfAbsent(r.docKey(), k -> new LinkedHashMap<>())
-          .put(r.chunkIndex(), r);
+      KnowledgeEmbeddingRecord prev = lastByDoc.put(r.docKey(), r);
+      var byIndex = chunksByDoc.computeIfAbsent(r.docKey(), k -> new LinkedHashMap<>());
+      // 같은 문서의 docHash가 이전 레코드와 달라졌다면 문서 버전이 바뀐 것이다. 증분 재실행에서
+      // embeddings.jsonl에 옛 버전 전체 뒤에 새 버전 전체가 통째로 append되므로(한 버전의 레코드는
+      // 파일에서 연속이다), 새 버전이 시작되는 순간 그때까지 누적한 옛 버전 청크를 통째로 버려야
+      // 개정으로 청크 수가 줄었을 때 옛 청크가 살아남지 않는다.
+      if (prev != null && !prev.docHash().equals(r.docHash())) {
+        byIndex.clear();
+      }
+      byIndex.put(r.chunkIndex(), r);
     }
 
     var txTemplate = new TransactionTemplate(
