@@ -196,13 +196,20 @@ tasks.register<JavaExec>("embedKnowledge") {
 	description = "Chunk + batch-embed study documents. Requires local Ollama. Do not run in CI."
 	classpath = knowledgeGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.knowledgegen.EmbedKnowledgeCommand")
-	args(
-		"tools/knowledge-gen/generated/documents.jsonl",
-		"tools/knowledge-gen/generated/embeddings.jsonl",
-		project.findProperty("sourceCommit")?.toString()
-			?: throw GradleException("-PsourceCommit=<dsd master SHA> 를 지정하라 (설계 §7.4)"),
-		"nomic-embed-text"
-	)
+	// sourceCommit 검증은 태스크 realize 시점이 아니라 실행(doFirst) 시점에 일어나야 한다 —
+	// register{} 람다 안에서 바로 던지면 이 태스크가 realize되기만 해도(예: `gradle tasks`,
+	// IDE gradle sync) 무관한 명령까지 깨진다. args()는 여기 doFirst 안에서만 설정한다 —
+	// 밖에서도 설정하면 args()가 누적(append)돼 인자가 중복된다.
+	doFirst {
+		val sourceCommit = project.findProperty("sourceCommit")?.toString()
+			?: throw GradleException("-PsourceCommit=<dsd master SHA> 를 지정하라 (설계 §7.4)")
+		args(
+			"tools/knowledge-gen/generated/documents.jsonl",
+			"tools/knowledge-gen/generated/embeddings.jsonl",
+			sourceCommit,
+			"nomic-embed-text"
+		)
+	}
 }
 
 tasks.register<JavaExec>("loadKnowledge") {
