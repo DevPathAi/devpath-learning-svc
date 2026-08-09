@@ -15,17 +15,18 @@ public class ContentChunker {
   private static final Pattern H2 = Pattern.compile("(?m)^##\\s+.+$");
 
   public List<ContentChunk> chunksFor(ApprovedContent content) {
-    var sections = splitH2Sections(content.contentMd());
+    return chunksFor(content.slug(), content.contentMd());
+  }
+
+  /** 청킹 일반형. key는 청크의 소속 식별자(콘텐츠 slug 또는 문서 doc_key). */
+  public List<ContentChunk> chunksFor(String key, String markdown) {
+    var sections = splitH2Sections(markdown);
     var chunks = new ArrayList<ContentChunk>();
     int index = 0;
     for (String section : sections) {
       for (String chunkText : splitLongSection(section)) {
         if (!chunkText.isBlank()) {
-          chunks.add(new ContentChunk(
-              content.slug(),
-              index++,
-              chunkText,
-              normalizedSha256Hex(chunkText)));
+          chunks.add(new ContentChunk(key, index++, chunkText, normalizedSha256Hex(chunkText)));
         }
       }
     }
