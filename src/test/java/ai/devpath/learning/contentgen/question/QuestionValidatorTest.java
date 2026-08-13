@@ -127,13 +127,17 @@ class QuestionValidatorTest {
     return new ApprovedQuestion(
         track,
         type,
-        track + " diagnostic question " + index,
-        List.of("A", "B", "C", "D"),
+        track + " 진단 문항 " + index + " — 무엇이 맞는가?",
+        List.of(
+            "보기 가 " + track + "-" + index,
+            "보기 나 " + track + "-" + index,
+            "보기 다 " + track + "-" + index,
+            "보기 라 " + track + "-" + index),
         new ApprovedQuestion.AnswerKey(index % 4),
         bloom,
         difficulty,
         List.of(tag),
-        "Explanation " + index);
+        "해설 " + index);
   }
 
   private static String bloom(int index) {
