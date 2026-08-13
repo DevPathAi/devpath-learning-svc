@@ -109,6 +109,40 @@ class QuestionValidatorTest {
     assertThat(report.warnings()).isNotEmpty();
   }
 
+  @Test
+  void rejectsDuplicateOptionSetInsideTrack() {
+    var questions = validQuestions();
+    questions.set(1, withOptions(questions.get(1), questions.get(0).options()));
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("duplicate option set").contains("BACKEND_SPRING"));
+  }
+
+  @Test
+  void rejectsDuplicateContent() {
+    var questions = validQuestions();
+    questions.set(1, withContent(questions.get(1), questions.get(0).content()));
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("duplicate content"));
+  }
+
+  @Test
+  void rejectsDuplicateOptionInsideQuestion() {
+    var questions = validQuestions();
+    var first = questions.get(0);
+    questions.set(0, withOptions(first, List.of("같은 보기", "같은 보기", "다른 보기", "또 다른 보기")));
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("duplicate option inside question"));
+  }
+
   static List<ApprovedQuestion> validQuestions() {
     var questions = new ArrayList<ApprovedQuestion>();
     for (String track : QuestionQuota.TRACKS) {
@@ -180,5 +214,15 @@ class QuestionValidatorTest {
   private static ApprovedQuestion withTags(ApprovedQuestion q, List<String> tags) {
     return new ApprovedQuestion(q.track(), q.questionType(), q.content(), q.options(), q.answerKey(),
         q.bloomLevel(), q.difficulty(), tags, q.explanation());
+  }
+
+  private static ApprovedQuestion withOptions(ApprovedQuestion q, List<String> options) {
+    return new ApprovedQuestion(q.track(), q.questionType(), q.content(), options, q.answerKey(),
+        q.bloomLevel(), q.difficulty(), q.conceptTags(), q.explanation());
+  }
+
+  private static ApprovedQuestion withContent(ApprovedQuestion q, String content) {
+    return new ApprovedQuestion(q.track(), q.questionType(), content, q.options(), q.answerKey(),
+        q.bloomLevel(), q.difficulty(), q.conceptTags(), q.explanation());
   }
 }

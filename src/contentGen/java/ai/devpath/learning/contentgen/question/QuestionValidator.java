@@ -2,6 +2,8 @@ package ai.devpath.learning.contentgen.question;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -24,6 +26,8 @@ public class QuestionValidator {
       validateQuestion(i + 1, questions.get(i), errors);
     }
     validateTrackQuotas(questions, errors);
+    validateDuplicateOptionSets(questions, errors);
+    validateDuplicateContents(questions, errors);
     validateDistributionWarnings(questions, warnings);
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
@@ -56,6 +60,12 @@ public class QuestionValidator {
     }
     if (q.options() == null || q.options().size() < 2) {
       errors.add("line " + line + ": options must contain at least two choices");
+    }
+    if (q.options() != null) {
+      var normalized = normalizeAll(q.options());
+      if (new HashSet<>(normalized).size() != normalized.size()) {
+        errors.add("line " + line + ": duplicate option inside question");
+      }
     }
     if (q.answerKey() == null || q.answerKey().correct() == null) {
       errors.add("line " + line + ": answerKey.correct is required");
@@ -154,5 +164,44 @@ public class QuestionValidator {
 
   private boolean blank(String value) {
     return value == null || value.isBlank();
+  }
+
+  /** 앞뒤 공백 제거 + 연속 공백 1칸. 대소문자는 건드리지 않는다(코드 문항이 있다). */
+  private static String normalize(String value) {
+    return value == null ? "" : value.trim().replaceAll("\\s+", " ");
+  }
+
+  private static List<String> normalizeAll(List<String> values) {
+    return values == null ? List.of() : values.stream().map(QuestionValidator::normalize).toList();
+  }
+
+  private void validateDuplicateOptionSets(List<ApprovedQuestion> questions, List<String> errors) {
+    var byTrack = new HashMap<String, Map<List<String>, Integer>>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null || q.options() == null) continue;
+      byTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(normalizeAll(q.options()), 1, Integer::sum);
+    }
+    for (var track : byTrack.entrySet()) {
+      for (var set : track.getValue().entrySet()) {
+        if (set.getValue() > 1) {
+          errors.add(track.getKey() + ": duplicate option set shared by "
+              + set.getValue() + " questions");
+        }
+      }
+    }
+  }
+
+  private void validateDuplicateContents(List<ApprovedQuestion> questions, List<String> errors) {
+    var counts = new HashMap<String, Integer>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.content() == null) continue;
+      counts.merge(normalize(q.content()), 1, Integer::sum);
+    }
+    for (var entry : counts.entrySet()) {
+      if (entry.getValue() > 1) {
+        errors.add("duplicate content shared by " + entry.getValue() + " questions");
+      }
+    }
   }
 }
