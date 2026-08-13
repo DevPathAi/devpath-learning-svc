@@ -37,6 +37,9 @@ public class AssessmentService {
 
   @Transactional
   public long start(long userId, String track) {
+    // 시작 버튼을 다시 눌러도 옛 세션이 IN_PROGRESS 로 쌓이지 않게 한다.
+    assessments.abandonInProgressByUserId(userId);
+
     Assessment a = new Assessment();
     a.setUserId(userId);
     a.setTrack(track);
