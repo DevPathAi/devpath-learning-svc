@@ -3,7 +3,6 @@ package ai.devpath.learning.contentgen.question;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -12,8 +11,10 @@ import java.util.stream.Collectors;
 public class QuestionValidator {
 
   private static final Pattern KEBAB_TAG = Pattern.compile("[a-z0-9]+(?:-[a-z0-9]+)*");
+  private static final Pattern HANGUL = Pattern.compile("[\\uAC00-\\uD7A3]");
   private static final List<String> ALLOWED_BLOOM = List.of(
       "REMEMBER", "UNDERSTAND", "APPLY", "ANALYZE", "EVALUATE");
+  private static final double MAX_ANSWER_KEY_SHARE = 0.5;
 
   public QuestionValidationReport validate(List<ApprovedQuestion> questions) {
     var errors = new ArrayList<String>();
@@ -28,6 +29,7 @@ public class QuestionValidator {
     validateTrackQuotas(questions, errors);
     validateDuplicateOptionSets(questions, errors);
     validateDuplicateContents(questions, errors);
+    validateAnswerKeyBias(questions, errors);
     validateDistributionWarnings(questions, warnings);
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
@@ -54,6 +56,9 @@ public class QuestionValidator {
     }
     if (blank(q.content())) {
       errors.add("line " + line + ": content is required");
+    }
+    if (!blank(q.content()) && !HANGUL.matcher(q.content()).find()) {
+      errors.add("line " + line + ": content must contain Korean");
     }
     if (q.difficulty() == null || q.difficulty() < 0.0 || q.difficulty() > 1.0) {
       errors.add("line " + line + ": difficulty must be between 0.0 and 1.0");
@@ -201,6 +206,27 @@ public class QuestionValidator {
     for (var entry : counts.entrySet()) {
       if (entry.getValue() > 1) {
         errors.add("duplicate content shared by " + entry.getValue() + " questions");
+      }
+    }
+  }
+
+  private void validateAnswerKeyBias(List<ApprovedQuestion> questions, List<String> errors) {
+    var byTrack = new HashMap<String, Map<Integer, Integer>>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null || q.answerKey() == null
+          || q.answerKey().correct() == null) continue;
+      byTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(q.answerKey().correct(), 1, Integer::sum);
+    }
+    for (var track : byTrack.entrySet()) {
+      int total = track.getValue().values().stream().mapToInt(Integer::intValue).sum();
+      if (total == 0) continue;
+      for (var position : track.getValue().entrySet()) {
+        double share = (double) position.getValue() / total;
+        if (share > MAX_ANSWER_KEY_SHARE) {
+          errors.add(track.getKey() + ": answer key bias — position " + position.getKey()
+              + " holds " + position.getValue() + "/" + total);
+        }
       }
     }
   }

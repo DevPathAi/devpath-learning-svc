@@ -143,6 +143,32 @@ class QuestionValidatorTest {
         assertThat(error).contains("duplicate option inside question"));
   }
 
+  @Test
+  void rejectsAnswerKeyBias() {
+    var questions = validQuestions();
+    for (int i = 0; i < questions.size(); i++) {
+      if ("BACKEND_SPRING".equals(questions.get(i).track())) {
+        questions.set(i, withCorrect(questions.get(i), 0));
+      }
+    }
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("answer key bias").contains("BACKEND_SPRING"));
+  }
+
+  @Test
+  void rejectsContentWithoutKorean() {
+    var questions = validQuestions();
+    questions.set(0, withContent(questions.get(0), "What is the default bean scope?"));
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("content must contain Korean"));
+  }
+
   static List<ApprovedQuestion> validQuestions() {
     var questions = new ArrayList<ApprovedQuestion>();
     for (String track : QuestionQuota.TRACKS) {
