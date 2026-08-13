@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,71 @@ public class ContentProgressRepository {
             Integer.class);
     return n == null ? 0 : n;
   }
+
+  /** 최근 완료 콘텐츠를 KST 일별로 집계(since 이후). 없는 날은 결과에 미포함. */
+  public Map<LocalDate, Integer> dailyCompletedCounts(long userId, Instant since) {
+    var sql = """
+        SELECT (completed_at AT TIME ZONE 'Asia/Seoul')::date AS d, count(*) AS n
+        FROM user_content_progress
+        WHERE user_id = :userId AND completed_at IS NOT NULL AND completed_at >= :since
+        GROUP BY d
+        """;
+    Map<LocalDate, Integer> out = new HashMap<>();
+    jdbc.query(sql,
+        Map.of("userId", userId, "since", Timestamp.from(since)),
+        rs -> {
+          out.put(rs.getObject("d", LocalDate.class), rs.getInt("n"));
+        });
+    return out;
+  }
+
+  /** 활성 경로의 전체/유형별 과제 수 + 완료 과제의 KST 완료일 목록. */
+  public ActivePathCompletions activePathCompletions(long userId) {
+    var totalSql = """
+        SELECT t.task_type AS tt, count(*) AS n
+        FROM path_weekly_tasks t
+        JOIN path_milestones m ON m.id = t.milestone_id
+        JOIN learning_paths p ON p.id = m.path_id
+        WHERE p.user_id = :userId AND p.status = 'ACTIVE'
+        GROUP BY t.task_type
+        """;
+    Map<String, Integer> totalByType = new HashMap<>();
+    // 블록 람다로 둔다 — 표현식 람다로 줄이면 Map.put의 반환값 때문에
+    // query(.., RowCallbackHandler)와 query(.., RowMapper) 오버로드가 모호해진다.
+    jdbc.query(totalSql, Map.of("userId", userId), rs -> {
+      totalByType.put(rs.getString("tt"), rs.getInt("n"));
+    });
+
+    var datesSql = """
+        SELECT t.task_type AS tt, (t.completed_at AT TIME ZONE 'Asia/Seoul')::date AS d
+        FROM path_weekly_tasks t
+        JOIN path_milestones m ON m.id = t.milestone_id
+        JOIN learning_paths p ON p.id = m.path_id
+        WHERE p.user_id = :userId AND p.status = 'ACTIVE' AND t.completed_at IS NOT NULL
+        """;
+    Map<String, List<LocalDate>> completedByType = new HashMap<>();
+    List<LocalDate> allDates = new ArrayList<>();
+    jdbc.query(datesSql, Map.of("userId", userId), rs -> {
+      LocalDate d = rs.getObject("d", LocalDate.class);
+      completedByType.computeIfAbsent(rs.getString("tt"), k -> new ArrayList<>()).add(d);
+      allDates.add(d);
+    });
+
+    // 전체 과제 수는 유형별 합계다 — task_type이 NOT NULL이라 GROUP BY가 모든 행을 덮는다.
+    int total = totalByType.values().stream().mapToInt(Integer::intValue).sum();
+    return new ActivePathCompletions(total, allDates, totalByType, completedByType);
+  }
+
+  /**
+   * 활성 경로의 전체/유형별 과제 수와 완료일. taskType 키는 DB 원문(READ·PRACTICE·QUIZ).
+   *
+   * <p>완료가 0건인 유형은 completedByType에 **키 자체가 없다** — 「0건」과 「없음」은 다르다.
+   */
+  public record ActivePathCompletions(
+      int totalTasks,
+      List<LocalDate> completedDates,
+      Map<String, Integer> totalByType,
+      Map<String, List<LocalDate>> completedByType) {}
 
   public List<ContentProgressItem> list(long userId, Boolean completed, String track, int limit) {
     var params = new HashMap<String, Object>();
