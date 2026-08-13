@@ -11,12 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 트랙을 바꿔 재진단할 때 옛 학습 경로가 아카이브되는지 본다.
+ * 트랙을 바꿔 재진단할 때 쓰이는 아카이브 <b>쿼리</b>를 고정한다.
  *
- * <p>이 동작은 이미 LearningPathPersistenceService.persist() 안에 있다
- * (새 경로를 만들기 전에 archiveActiveByUserId 호출). 지키는 테스트가 없어
- * 그 한 줄이 지워지면 uq_learning_paths_active_user 위반으로 재진단이 깨진다.
- * 트랙 선택이 열리면서 이 경로가 처음으로 실제로 쓰인다.
+ * <p>범위는 {@code LearningPathRepository.archiveActiveByUserId} 하나다 — 내 ACTIVE 만
+ * ARCHIVED 로 내리는지, 그 뒤 새 ACTIVE 가 들어가는지(uq_learning_paths_active_user).
+ * 이 테스트는 {@code LearningPathPersistenceService.persist()} 를 호출하지 않으므로
+ * <b>persist() 가 이 쿼리를 부른다는 사실은 지키지 않는다.</b> 그 호출은
+ * {@code LearningPathPersistenceServiceTest.persistArchivesActivePathBeforeInsertingNewOne} 이
+ * 고정한다. 둘이 함께 있어야 재진단이 지켜진다.
  */
 @SpringBootTest
 @ActiveProfiles("test")
