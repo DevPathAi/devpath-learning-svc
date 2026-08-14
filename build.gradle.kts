@@ -25,6 +25,12 @@ repositories {
 	}
 }
 
+// devpath-shared는 SNAPSHOT이고 자주 발행된다. Gradle이 changing 모듈을 24시간 캐시하면
+// 최신 아티팩트를 받지 못해 스키마 불일치로 테스트가 깨질 수 있다(2026-08-14 실측: CHECK 8값 확장 발행 후 CI 8건 실패).
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+}
+
 val contentGenSourceSet = sourceSets.create("contentGen") {
 	java.srcDir("src/contentGen/java")
 	resources.srcDir("tools/content-gen")
