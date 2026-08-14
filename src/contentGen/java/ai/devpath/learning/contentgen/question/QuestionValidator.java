@@ -16,10 +16,15 @@ public class QuestionValidator {
       "REMEMBER", "UNDERSTAND", "APPLY", "ANALYZE", "EVALUATE");
   private static final double MAX_ANSWER_KEY_SHARE = 0.5;
   /**
-   * 정답이 "유일한 최장 보기"인 문항 비율의 상한. 기존 5트랙 실측 최대는 49%(MOBILE_FLUTTER)로
-   * 전부 이 값 아래이며, PYTHON_BACKEND 는 73%로 이 임계를 초과해 걸린다.
+   * 정답 길이 순위(오름차순, 1=최단…N=최장) 중 어느 한 순위가 차지하는 비율의 상한.
+   * 「유일 최장 60% 초과 금지」(구 게이트)는 오답 하나만 정답보다 살짝 길게 만들면 우회할 수
+   * 있었다 — 실제로 그렇게 교정된 트랙에서 정답이 rank 3 of 4("두 번째로 긴 보기")에 87%가
+   * 몰렸다(원래 결함 73%보다 강한 단서). 기존 5트랙 실측 최대 순위 비율은 52%
+   * (MOBILE_FLUTTER rank4)로 전부 이 값 아래다.
    */
-  private static final double MAX_LONGEST_ANSWER_SHARE = 0.6;
+  private static final double MAX_ANSWER_LENGTH_RANK_SHARE = 0.6;
+  /** 표본(동률 아니어서 셀 수 있는 문항)이 이 값 미만인 트랙은 순위 비율을 판정하지 않는다. */
+  private static final int MIN_ANSWER_LENGTH_RANK_SAMPLE = 20;
 
   public QuestionValidationReport validate(List<ApprovedQuestion> questions) {
     var errors = new ArrayList<String>();
@@ -35,7 +40,7 @@ public class QuestionValidator {
     validateDuplicateOptionSets(questions, errors);
     validateDuplicateContents(questions, errors);
     validateAnswerKeyBias(questions, errors);
-    validateLongestAnswerBias(questions, errors);
+    validateAnswerLengthRankBias(questions, errors);
     validateDistributionWarnings(questions, warnings);
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
@@ -237,9 +242,15 @@ public class QuestionValidator {
     }
   }
 
-  private void validateLongestAnswerBias(List<ApprovedQuestion> questions, List<String> errors) {
-    var totalByTrack = new HashMap<String, Integer>();
-    var longestCorrectByTrack = new HashMap<String, Integer>();
+  /**
+   * 정답의 길이 순위(오름차순, 1=최단…N=최장)가 트랙 안에서 한쪽으로 쏠리지 않았는지 본다.
+   * 정답이 다른 어느 보기와도 길이가 동률이 아닌 문항만 센다 — 동률이면 길이가 순위를 가르는
+   * 단서가 되지 못하므로 분자·분모 모두에서 뺀다. 이렇게 세는 문항이 트랙당
+   * {@link #MIN_ANSWER_LENGTH_RANK_SAMPLE} 미만이면 판정하지 않는다.
+   */
+  private void validateAnswerLengthRankBias(List<ApprovedQuestion> questions, List<String> errors) {
+    var rankCountsByTrack = new HashMap<String, Map<Integer, Integer>>();
+    var optionCountByTrack = new HashMap<String, Integer>();
     for (ApprovedQuestion q : questions) {
       if (q == null || q.track() == null) continue;
       if (q.options() == null || q.options().isEmpty()) continue;
@@ -247,23 +258,37 @@ public class QuestionValidator {
       int correct = q.answerKey().correct();
       if (correct < 0 || correct >= q.options().size()) continue;
 
-      totalByTrack.merge(q.track(), 1, Integer::sum);
-
       var lengths = normalizeAll(q.options()).stream().map(String::length).toList();
-      int maxLength = lengths.stream().mapToInt(Integer::intValue).max().orElse(-1);
-      long longestCount = lengths.stream().filter(len -> len == maxLength).count();
-      if (longestCount == 1 && lengths.get(correct) == maxLength) {
-        longestCorrectByTrack.merge(q.track(), 1, Integer::sum);
+      int correctLength = lengths.get(correct);
+      boolean tiesWithCorrect = false;
+      int rank = 1;
+      for (int i = 0; i < lengths.size(); i++) {
+        if (i == correct) continue;
+        int len = lengths.get(i);
+        if (len == correctLength) {
+          tiesWithCorrect = true;
+          break;
+        }
+        if (len < correctLength) rank++;
       }
+      if (tiesWithCorrect) continue;
+
+      optionCountByTrack.put(q.track(), q.options().size());
+      rankCountsByTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(rank, 1, Integer::sum);
     }
-    for (var track : totalByTrack.entrySet()) {
-      int total = track.getValue();
-      if (total == 0) continue;
-      int longestCorrect = longestCorrectByTrack.getOrDefault(track.getKey(), 0);
-      double share = (double) longestCorrect / total;
-      if (share > MAX_LONGEST_ANSWER_SHARE) {
-        errors.add(track.getKey() + ": longest answer bias — correct is the only longest option in "
-            + longestCorrect + "/" + total);
+
+    for (var track : rankCountsByTrack.entrySet()) {
+      int total = track.getValue().values().stream().mapToInt(Integer::intValue).sum();
+      if (total < MIN_ANSWER_LENGTH_RANK_SAMPLE) continue;
+      int optionCount = optionCountByTrack.getOrDefault(track.getKey(), 0);
+      for (var rankEntry : track.getValue().entrySet()) {
+        double share = (double) rankEntry.getValue() / total;
+        if (share > MAX_ANSWER_LENGTH_RANK_SHARE) {
+          errors.add(track.getKey() + ": answer length rank bias — correct is rank "
+              + rankEntry.getKey() + " of " + optionCount + " by length in "
+              + rankEntry.getValue() + "/" + total);
+        }
       }
     }
   }
