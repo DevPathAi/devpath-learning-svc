@@ -135,7 +135,8 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.question.GenerateQuestionsCommand")
 	args(
-		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+		(project.findProperty("ollama.model") as String? ?: "qwen2.5:7b"),
+		(project.findProperty("track") as String? ?: "")
 	)
 }
 
