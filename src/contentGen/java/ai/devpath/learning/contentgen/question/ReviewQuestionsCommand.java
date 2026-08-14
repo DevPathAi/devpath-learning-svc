@@ -7,6 +7,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewQuestionsCommand {
@@ -45,7 +46,7 @@ public class ReviewQuestionsCommand {
     }
 
     var client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(30)).build();
-    var merged = new StringBuilder("[\n");
+    var rawBodies = new ArrayList<String>();
     for (int i = 0; i < batches.size(); i++) {
       var prompt = QuestionReviewPrompt.build(track, batches.get(i));
       var body = "{\"model\":\"" + MODEL + "\",\"max_tokens\":8000,\"messages\":[{\"role\":\"user\","
@@ -62,13 +63,11 @@ public class ReviewQuestionsCommand {
         throw new IllegalStateException("Claude " + response.statusCode() + ": " + response.body());
       }
       Files.writeString(outDir.resolve(track + "-raw-" + i + ".json"), response.body());
-      merged.append("  {\"batch\": ").append(i).append(", \"raw\": ")
-          .append(jsonString(response.body())).append("},\n");
+      rawBodies.add(response.body());
       System.out.println("batch " + i + " reviewed");
     }
-    merged.append("]\n");
     var report = outDir.resolve(track + "-review.json");
-    Files.writeString(report, merged.toString());
+    Files.writeString(report, QuestionReviewPrompt.mergeReports(rawBodies));
     System.out.println("Wrote " + report);
   }
 
