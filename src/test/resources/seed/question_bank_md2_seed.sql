@@ -203,7 +203,7 @@ pubic void updateMethod(){
         System.out.println("caught exception");
     }
 }
-','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
+','["예외가 catch 블록에서 처리되어 트랜잭션이 정상 커밋되고 엔티티가 저장된다.","checked exception이므로 Spring이 자동으로 트랜잭션을 롤백하여 엔티티가 저장되지 않는다.","catch 블록에서 예외를 처리했더라도 Spring은 트랜잭션을 강제로 롤백한다.","예외가 발생하는 즉시 트랜잭션이 종료되어 메서드 실행이 중단된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 @Cacheable 어노테이션을 사용하여 데이터베이스 쿼리를 캐시합니다.
 
 @Cacheable("userCache")
@@ -392,7 +392,7 @@ public void readOnlyMethod() {
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 비제어 컴포넌트를 사용할 때, state를 관리하는 올바른 방법은?','["function MyComponent() { const [value, setValue] = useState(''''); return <input value={value} onChange={(e) => setValue(e.target.value)} />; }","function MyComponent() { let value = ''''; return <input value={value} onChange={(e) => value = e.target.value} />; }","function MyComponent() { const value = ''''; return <input value={value} onChange={(e) => value = e.target.value} />; }","function MyComponent() { let [value, setValue] = useState(''''); return <input value={value} onChange={(e) => value = e.target.value} />; }"]','{"correct":0}','REMEMBER',0.6,'["controlled-components"]'),
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 렌더링 성능을 개선하기 위해 `React.memo`를 사용할 때, 재렌더링 방지를 위한 올바른 조건은?','["const MemoComponent = React.memo(Component);","const MemoComponent = React.memo((props) => <Component {...props} />);\nreturn <MemoComponent key={key} {...otherProps} />;","<Component key={key} {...otherProps} />","const MemoComponent = React.memo(Component, (prevProps, nextProps) => prevProps.count === nextProps.count);"]','{"correct":3}','APPLY',0.6,'["hooks-render-memoization"]'),
 ('FRONTEND_REACT','MCQ','useEffect 훅을 사용하여 특정 이벤트에 대한 리렌더링을 제어할 때, 의존성 배열에서 주의해야 하는 점은 무엇인가요?','["이벤트 핸들러를 의존성으로 추가하지 않아야 함","리액트 인스턴스 상태를 의존성으로 추가해야 함","변수 값이 변경되었는지 확인해야 함","모든 상태 변화에 반응하도록 무한 루프 생성"]','{"correct":0}','APPLY',0.6,'["hooks-useeffect"]'),
-('FRONTEND_REACT','MCQ','useEffect 내부에서 의존성 배열에 포함되지 않은 상태 값이 변경되었을 때, 어떤 문제가 발생할 수 있습니까?','["배치 업데이트가 일어나지 않음","무한 루프로 인해 성능 저하","렌더링 순서가 변경됨","상태 업데이트가 즉시 이루어짐"]','{"correct":1}','EVALUATE',0.6,'["useeffect-dependency-array","stale-closure"]'),
+('FRONTEND_REACT','MCQ','useEffect 내부에서 의존성 배열에 포함되지 않은 상태 값이 변경되었을 때, 어떤 문제가 발생할 수 있습니까?','["이전 렌더링 시점의 오래된(stale) 상태 값을 참조하여 예상과 다르게 동작한다.","컴포넌트가 언마운트된 후에도 useEffect가 계속 실행된다.","상태 값이 변경될 때마다 컴포넌트 트리 전체가 강제로 리렌더링된다.","의존성 배열이 비어있어 useEffect 자체가 한 번도 실행되지 않는다."]','{"correct":0}','EVALUATE',0.6,'["useeffect-dependency-array","stale-closure"]'),
 ('FRONTEND_REACT','MCQ','React Testing Library에서 act 경고를 피하기 위해 무엇을 해야 합니까?','["비동기 콜백을 사용하지 않음","렌더링 후 즉시 업데이트 상태","이벤트 핸들러를 직접 호출","비동기 동작을 처리하는 방법 변경"]','{"correct":1}','EVALUATE',0.6,'["react-testing-library","act-warnings"]'),
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 props를 전달받아 사용할 때, 다음 중 올바르게 작성된 코드는?','["function MyComponent({ name }) { return <div>Hello, {name}</div>; }","function MyComponent(props) { return <div>Hello, {props.name}</div>; }","function MyComponent() { return <div>Hello, props.name</div>; }","function MyComponent({ name: ''John'' }) { return <div>Hello, {name}</div>; }"]','{"correct":1}','REMEMBER',0.6,'["jsx-props"]'),
 ('FRONTEND_REACT','MCQ','리스트 컴포넌트에서 item의 key 속성을 정확히 설정해야 하는 이유는 무엇인가요?','["렌더링 성능을 최적화하기 위함","뷰를 중복해서 사용하는 것을 방지하기 위함","비동기 데이터 로드 시 동작을 제어하기 위함","리액트 엘리먼트 트리를 식별하기 위함"]','{"correct":3}','APPLY',0.6,'["jsx-key-concepts"]'),
@@ -647,7 +647,7 @@ function App() {
   }, []);
 
   return <MemoComponent count={count} />;
-}','["React.memo는 props 변경에 따라 항상 컴포넌트를 렌더링한다.","React.memo는 이벤트 핸들러의 변경사항을 감지하지 못한다.","props 값이 바뀌면 React.memo가 무시되고 컴포넌트가 계속 렌더링된다.","setInterval로 props 값이 자주 변경되므로 React.memo가 동작하지 않는다."]','{"correct":3}','UNDERSTAND',0.6,'["react-memo"]'),
+}','["MemoComponent는 클래스형 컴포넌트라서 React.memo 최적화 대상이 아니다.","console.log 호출 때문에 리렌더링 여부와 무관하게 항상 화면이 다시 그려진다.","빈 의존성 배열 때문에 setInterval이 렌더링마다 중복으로 등록되어 성능이 저하된다.","setInterval로 count prop 값이 계속 바뀌기 때문에 React.memo가 변경을 감지하고 다시 렌더링한다."]','{"correct":3}','UNDERSTAND',0.6,'["react-memo"]'),
 ('FRONTEND_REACT','CODE_READING','다음 코드에서 useCallback 훅이 사용된 이유는 무엇인가?
 
 import React, { useState, useCallback } from ''react'';
@@ -2064,7 +2064,7 @@ data:
 ('FULLSTACK','MCQ','인증 및 인가 처리 시 세션 기반 접근과 토큰(JWT) 기반 접근의 주요 차이는 무엇인가요?','["세션이 보안 위험을 더 낮추는 것","토큰이 사용자 경험을 개선하는 것","세션이 상태를 유지해야 하는 서버 부담을 증가시키는 것","토큰이 클라이언트 측 코드 복잡성을 늘리는 것"]','{"correct":2}','EVALUATE',0.8,'["authentication-session-vs-token-jwt"]'),
 ('FULLSTACK','MCQ','프론트엔드에서 백엔드 API를 호출할 때 서버의 응답을 최적화하기 위한 가장 효과적인 방법은 무엇인가요?','["API 요청마다 모든 데이터를 반환합니다.","페이지네이션과 캐싱을 사용하여 효율성을 개선합니다.","HTTP 상태 코드를 무시하고 항상 성공으로 처리합니다.","클라이언트에서 직접 응답을 수정하여 최적화합니다."]','{"correct":1}','ANALYZE',0.8,'["front-end-api-optimization"]'),
 ('FULLSTACK','MCQ','API 테스트에서 계약 테스트가 주로 어떤 상황에서 사용되는가요?','["서비스 간의 호환성을 확인하는 경우","클라이언트 코드의 성능을 개선하기 위해","서버 측 로직 구현을 검증할 때","사용자 인터페이스의 테스트를 진행할 때"]','{"correct":0}','APPLY',0.8,'["contract-testing"]'),
-('FULLSTACK','MCQ','프론트엔드에서 백엔드 API 호출 시 어떤 HTTP 메서드를 사용하여 리소스를 읽어올까요?','["POST","PUT","GET","DELETE"]','{"correct":2}','UNDERSTAND',0.8,'["http-methods"]'),
+('FULLSTACK','MCQ','프론트엔드에서 백엔드 API 호출 시 어떤 HTTP 메서드를 사용하여 리소스를 읽어올까요?','["GET","PATCH","OPTIONS","HEAD"]','{"correct":0}','UNDERSTAND',0.8,'["http-methods"]'),
 ('FULLSTACK','MCQ','JWT 토큰 인증을 구현할 때, 클라이언트가 서버에 액세스하기 위해 보내야 하는 HTTP 요청 헤더는 무엇인가요?','["Authorization: Basic auth-token","Authorization: Bearer jwt-token","X-Auth-Token: jwt-token","Cookie: token=jwt-token"]','{"correct":1}','APPLY',0.8,'["jwt-authentication"]'),
 ('FULLSTACK','MCQ','다음 SQL 쿼리의 목적은 무엇인가? SELECT * FROM users WHERE email = ''user@example.com'' AND verified_at IS NOT NULL;','["비활성화된 사용자 정보 가져오기","활성화된 사용자의 이메일 확인","사용자의 비밀번호 변경","사용자가 로그인한 횟수 카운트"]','{"correct":1}','UNDERSTAND',0.8,'["sql-query-verification"]'),
 ('FULLSTACK','MCQ','JWT 토큰이 만료되었을 때 프론트엔드에서 처리할 수 있는 방법은?','["새로 로그인하라는 메시지를 띄운다","프론트에서 JWT 리프레시 토큰을 사용하여 새 액세스 토큰을 발급한다","백엔드에 요청해 세션 정보를 재생성한다","현재 페이지는 유지하고 다른 모든 페이지에는 로그인 화면으로 이동한다"]','{"correct":1}','UNDERSTAND',0.8,'["jwt-refresh-token"]'),
