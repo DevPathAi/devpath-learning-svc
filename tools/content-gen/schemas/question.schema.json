@@ -16,7 +16,7 @@
   ],
   "properties": {
     "track": {
-      "enum": ["BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK"]
+      "enum": ["BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK", "PYTHON_BACKEND"]
     },
     "questionType": {
       "enum": ["MCQ", "CODE_READING"]

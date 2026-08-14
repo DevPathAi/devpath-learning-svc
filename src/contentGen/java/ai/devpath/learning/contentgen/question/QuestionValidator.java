@@ -2,6 +2,7 @@ package ai.devpath.learning.contentgen.question;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -10,8 +11,34 @@ import java.util.stream.Collectors;
 public class QuestionValidator {
 
   private static final Pattern KEBAB_TAG = Pattern.compile("[a-z0-9]+(?:-[a-z0-9]+)*");
+  private static final Pattern HANGUL = Pattern.compile("[\\uAC00-\\uD7A3]");
   private static final List<String> ALLOWED_BLOOM = List.of(
       "REMEMBER", "UNDERSTAND", "APPLY", "ANALYZE", "EVALUATE");
+  private static final double MAX_ANSWER_KEY_SHARE = 0.5;
+  /**
+   * 정답 길이 순위(오름차순, 1=최단…N=최장) 중 어느 한 순위가 차지하는 비율의 상한.
+   * 「유일 최장 60% 초과 금지」(구 게이트)는 오답 하나만 정답보다 살짝 길게 만들면 우회할 수
+   * 있었다 — 실제로 그렇게 교정된 트랙에서 정답이 rank 3 of 4("두 번째로 긴 보기")에 몰렸다
+   * (원래 결함 73%보다 강한 단서).
+   *
+   * 임계 근거(승인 JSONL 600줄을 이 게이트와 **동일한 알고리즘** — 정답과 길이가 동률인
+   * 보기가 하나라도 있으면 그 문항을 분모에서 제외 — 로 재측정한 값): FULLSTACK 30.7%
+   * (분모 75) · BACKEND_SPRING 45.9%(85) · DEVOPS 54.1%(85) · FRONTEND_REACT 53.9%(89) ·
+   * MOBILE_FLUTTER 59.0%(83, rank4) · PYTHON_BACKEND(우회 교정 후) 44.8%(87, rank3).
+   * 기존 5트랙 최댓값은 MOBILE_FLUTTER **59.0%** — 0.6 문턱까지 여유가 **1%p뿐**이다.
+   * (분모를 단순히 100으로 놓고 잰 52%는 이 게이트의 동률 제외 규칙을 적용하지 않은 채
+   * 같은 지표를 다른 방식으로 잰 값이었다 — 8%p 여유가 있다는 착시였다.)
+   * 여유가 얇다고 임계를 올리지 말 것 — MOBILE_FLUTTER가 이미 쏠려 있다는 기존 자산의
+   * 사실이지 게이트의 결함이 아니다. 이 트랙이 걸리면 임계가 아니라 데이터를 고친다.
+   */
+  private static final double MAX_ANSWER_LENGTH_RANK_SHARE = 0.6;
+  /**
+   * 표본(동률 아니어서 셀 수 있는 문항)이 이 값 미만인 트랙은 순위 비율을 판정하지 않는다.
+   * 실제 트랙의 표본은 75~89(위 실측 근거 참고) — 20은 그보다 한참 아래라 정상적으로
+   * 완성된 트랙에서는 절대 발동하지 않고, 트랙이 절반도 채 안 채워진 중간 상태에서만
+   * 판정을 유예하는 취지다.
+   */
+  private static final int MIN_ANSWER_LENGTH_RANK_SAMPLE = 20;
 
   public QuestionValidationReport validate(List<ApprovedQuestion> questions) {
     var errors = new ArrayList<String>();
@@ -24,6 +51,10 @@ public class QuestionValidator {
       validateQuestion(i + 1, questions.get(i), errors);
     }
     validateTrackQuotas(questions, errors);
+    validateDuplicateOptionSets(questions, errors);
+    validateDuplicateContents(questions, errors);
+    validateAnswerKeyBias(questions, errors);
+    validateAnswerLengthRankBias(questions, errors);
     validateDistributionWarnings(questions, warnings);
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
@@ -51,11 +82,20 @@ public class QuestionValidator {
     if (blank(q.content())) {
       errors.add("line " + line + ": content is required");
     }
+    if (!blank(q.content()) && !HANGUL.matcher(q.content()).find()) {
+      errors.add("line " + line + ": content must contain Korean");
+    }
     if (q.difficulty() == null || q.difficulty() < 0.0 || q.difficulty() > 1.0) {
       errors.add("line " + line + ": difficulty must be between 0.0 and 1.0");
     }
     if (q.options() == null || q.options().size() < 2) {
       errors.add("line " + line + ": options must contain at least two choices");
+    }
+    if (q.options() != null) {
+      var normalized = normalizeAll(q.options());
+      if (new HashSet<>(normalized).size() != normalized.size()) {
+        errors.add("line " + line + ": duplicate option inside question");
+      }
     }
     if (q.answerKey() == null || q.answerKey().correct() == null) {
       errors.add("line " + line + ": answerKey.correct is required");
@@ -154,5 +194,116 @@ public class QuestionValidator {
 
   private boolean blank(String value) {
     return value == null || value.isBlank();
+  }
+
+  /** 앞뒤 공백 제거 + 연속 공백 1칸. 대소문자는 건드리지 않는다(코드 문항이 있다). */
+  private static String normalize(String value) {
+    return value == null ? "" : value.trim().replaceAll("\\s+", " ");
+  }
+
+  private static List<String> normalizeAll(List<String> values) {
+    return values == null ? List.of() : values.stream().map(QuestionValidator::normalize).toList();
+  }
+
+  private void validateDuplicateOptionSets(List<ApprovedQuestion> questions, List<String> errors) {
+    var byTrack = new HashMap<String, Map<List<String>, Integer>>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null || q.options() == null) continue;
+      byTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(normalizeAll(q.options()), 1, Integer::sum);
+    }
+    for (var track : byTrack.entrySet()) {
+      for (var set : track.getValue().entrySet()) {
+        if (set.getValue() > 1) {
+          errors.add(track.getKey() + ": duplicate option set shared by "
+              + set.getValue() + " questions");
+        }
+      }
+    }
+  }
+
+  private void validateDuplicateContents(List<ApprovedQuestion> questions, List<String> errors) {
+    var counts = new HashMap<String, Integer>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.content() == null) continue;
+      counts.merge(normalize(q.content()), 1, Integer::sum);
+    }
+    for (var entry : counts.entrySet()) {
+      if (entry.getValue() > 1) {
+        errors.add("duplicate content shared by " + entry.getValue() + " questions");
+      }
+    }
+  }
+
+  private void validateAnswerKeyBias(List<ApprovedQuestion> questions, List<String> errors) {
+    var byTrack = new HashMap<String, Map<Integer, Integer>>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null || q.answerKey() == null
+          || q.answerKey().correct() == null) continue;
+      byTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(q.answerKey().correct(), 1, Integer::sum);
+    }
+    for (var track : byTrack.entrySet()) {
+      int total = track.getValue().values().stream().mapToInt(Integer::intValue).sum();
+      if (total == 0) continue;
+      for (var position : track.getValue().entrySet()) {
+        double share = (double) position.getValue() / total;
+        if (share > MAX_ANSWER_KEY_SHARE) {
+          errors.add(track.getKey() + ": answer key bias — position " + position.getKey()
+              + " holds " + position.getValue() + "/" + total);
+        }
+      }
+    }
+  }
+
+  /**
+   * 정답의 길이 순위(오름차순, 1=최단…N=최장)가 트랙 안에서 한쪽으로 쏠리지 않았는지 본다.
+   * 정답이 다른 어느 보기와도 길이가 동률이 아닌 문항만 센다 — 동률이면 길이가 순위를 가르는
+   * 단서가 되지 못하므로 분자·분모 모두에서 뺀다. 이렇게 세는 문항이 트랙당
+   * {@link #MIN_ANSWER_LENGTH_RANK_SAMPLE} 미만이면 판정하지 않는다.
+   */
+  private void validateAnswerLengthRankBias(List<ApprovedQuestion> questions, List<String> errors) {
+    var rankCountsByTrack = new HashMap<String, Map<Integer, Integer>>();
+    var optionCountByTrack = new HashMap<String, Integer>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null) continue;
+      if (q.options() == null || q.options().isEmpty()) continue;
+      if (q.answerKey() == null || q.answerKey().correct() == null) continue;
+      int correct = q.answerKey().correct();
+      if (correct < 0 || correct >= q.options().size()) continue;
+
+      var lengths = normalizeAll(q.options()).stream().map(String::length).toList();
+      int correctLength = lengths.get(correct);
+      boolean tiesWithCorrect = false;
+      int rank = 1;
+      for (int i = 0; i < lengths.size(); i++) {
+        if (i == correct) continue;
+        int len = lengths.get(i);
+        if (len == correctLength) {
+          tiesWithCorrect = true;
+          break;
+        }
+        if (len < correctLength) rank++;
+      }
+      if (tiesWithCorrect) continue;
+
+      optionCountByTrack.put(q.track(), q.options().size());
+      rankCountsByTrack.computeIfAbsent(q.track(), t -> new HashMap<>())
+          .merge(rank, 1, Integer::sum);
+    }
+
+    for (var track : rankCountsByTrack.entrySet()) {
+      int total = track.getValue().values().stream().mapToInt(Integer::intValue).sum();
+      if (total < MIN_ANSWER_LENGTH_RANK_SAMPLE) continue;
+      int optionCount = optionCountByTrack.getOrDefault(track.getKey(), 0);
+      for (var rankEntry : track.getValue().entrySet()) {
+        double share = (double) rankEntry.getValue() / total;
+        if (share > MAX_ANSWER_LENGTH_RANK_SHARE) {
+          errors.add(track.getKey() + ": answer length rank bias — correct is rank "
+              + rankEntry.getKey() + " of " + optionCount + " by length in "
+              + rankEntry.getValue() + "/" + total);
+        }
+      }
+    }
   }
 }

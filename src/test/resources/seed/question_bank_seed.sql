@@ -135,6 +135,18 @@ public class MyKafkaConsumer implements Consumer<KafkaMessage> {
     }
 }
 ','["메시지를 처리하지 않고 무시합니다.","Kafka 토픽에서 메시지가 도착하면 해당 메시지를 처리하고 출력합니다.","토픽에 대한 메시지는 Kafka 컨슈머 그룹이 아닌 다른 소비자에게 넘겨줍니다.","받은 메시지의 내용을 로그로 기록하지 않습니다."]','{"correct":1}','UNDERSTAND',0.6,'["kafka-consumer"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Cacheable(value = "cacheName", key = "{#id}")
+public User getUser(Long id){
+    return repository.findById(id).orElse(null);
+}
+
+@CacheEvict(value = "cacheName", key = "{#id}", beforeInvocation = true)
+public void deleteUser(Long id){
+    repository.deleteById(id);
+}
+','["삭제 이전에 캐시에서 해당 엔티티를 삭제한다.","DB에서 엔티티를 먼저 삭제한 후 캐시에서 해당 ID로 값을 찾는다.","엔티티가 DB에서 제거되었지만 캐시에서는 여전히 존재한다.","캐시에서 값이 삭제되지 않고 DB만 업데이트된다."]','{"correct":0}','REMEMBER',0.6,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Boot 애플리케이션에서 프로파일 기반 설정을 사용하는 예입니다.
 
 @Configuration
@@ -146,18 +158,6 @@ public class ProductionConfig {
     }
 }
 ','["production 환경에서만 데이터 소스를 설정합니다.","개발 환경에서 자동으로 데이터 소스가 생성됩니다.","prod 프로필이 활성화되지 않은 경우 데이터 소스가 설정됩니다.","application.yml에서 설정 값을 무시하고 프로파일을 사용합니다."]','{"correct":0}','ANALYZE',0.6,'["spring-boot-profiles"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Cacheable(value = "cacheName", key = "{#id}")
-pubic User getUser(Long id){
-    return repository.findById(id).orElse(null);
-}
-
-@CacheEvict(value = "cacheName", key = "{#id}", beforeInvocation = true)
-pubic void deleteUser(Long id){
-    repository.deleteById(id);
-}
-','["삭제 이전에 캐시에서 해당 엔티티를 삭제한다.","DB에서 엔티티를 먼저 삭제한 후 캐시에서 해당 ID로 값을 찾는다.","엔티티가 DB에서 제거되었지만 캐시에서는 여전히 존재한다.","캐시에서 값이 삭제되지 않고 DB만 업데이트된다."]','{"correct":0}','REMEMBER',0.6,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드 스니펫에서 @ControllerAdvice와 함께 사용되는 @ExceptionHandler 어노테이션의 동작을 설명해주세요.
 
 @ControllerAdvice
@@ -192,18 +192,6 @@ public void save(User user) {
     repository.save(user);
 }
 ','["트랜잭션의 격리 수준을 REPEATABLE_READ로 설정합니다.","트랜잭션의 격리를 새로운 독립 트랜잭션으로 시작합니다.","트랜잭션의 격리 수준을 READ_COMMITTED로 설정합니다.","트랜잭션의 격리를 현재 트랜잭션과 동일하게 유지합니다."]','{"correct":1}','UNDERSTAND',0.6,'["spring-transaction-propagation"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Transactional(readOnly = false)
-pubic void updateMethod(){
-    try{
-        repository.save(entity);
-        throw new Exception("Exception occurred");
-    } catch(Exception e){
-        System.out.println("caught exception");
-    }
-}
-','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 @Cacheable 어노테이션을 사용하여 데이터베이스 쿼리를 캐시합니다.
 
 @Cacheable("userCache")
@@ -230,13 +218,6 @@ private void credit(Account account, int amount) throws SQLException {
     updateBalance(account, amount);
 }
 ','["동작은 정상적으로 이루어지며 두 계좌의 잔액이 변경됩니다.","fromAccount에서 금액을 빼고 toAccount에 추가하려고 시도했지만 비정상적인 트랜잭션으로 실패합니다.","transferMoney 메소드가 실행될 때 발생하는 예외는 롤백하지 않습니다.","위 코드에서는 @Transactional 어노테이션이 적용되지 않았습니다."]','{"correct":0}','ANALYZE',0.6,'["spring-transaction"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드는 @Transactional(readOnly = true)로 설정된 메서드에서 save()를 호출할 때 어떤 일이 발생하나?
-
-@Transactional(readOnly = true)
-pubic void readOnlyMethod(){
-    repository.save(entity);
-}
-','["실행 중 예외가 발생한다.","정상적으로 데이터베이스에 엔티티가 저장된다.","데이터베이스 연결이 열리지만 아무 작업도 수행되지 않는다.","엔티티는 영속성 컨텍스트에만 들어간다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정이 주어진 상황에서, self-invocation 문제는 어떻게 해결할 수 있는가?
 
 @Transactional(readOnly = true)
@@ -244,6 +225,25 @@ public void readOnlyMethod() {
     readOnlyMethod();
 }
 ','["메서드를 동기화 처리한다.","스프링 빈 프록시를 직접 호출하여 트랜잭션을 생성한다.","인터페이스 메서드를 통해 메서드를 호출한다.","@Transactional 어노테이션을 사용하지 않고 별도로 트랜잭션을 시작한다."]','{"correct":2}','EVALUATE',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Transactional(readOnly = false)
+public void updateMethod(){
+    try{
+        repository.save(entity);
+        throw new Exception("Exception occurred");
+    } catch(Exception e){
+        System.out.println("caught exception");
+    }
+}
+','["예외가 catch 블록에서 처리되어 트랜잭션이 정상 커밋되고 엔티티가 저장된다.","checked exception이므로 Spring이 자동으로 트랜잭션을 롤백하여 엔티티가 저장되지 않는다.","catch 블록에서 예외를 처리했더라도 Spring은 트랜잭션을 강제로 롤백한다.","예외가 발생하는 즉시 트랜잭션이 종료되어 메서드 실행이 중단된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드는 @Transactional(readOnly = true)로 설정된 메서드에서 save()를 호출할 때 어떤 일이 발생하나?
+
+@Transactional(readOnly = true)
+public void readOnlyMethod(){
+    repository.save(entity);
+}
+','["실행 중 예외가 발생한다.","정상적으로 데이터베이스에 엔티티가 저장된다.","데이터베이스 연결이 열리지만 아무 작업도 수행되지 않는다.","엔티티는 영속성 컨텍스트에만 들어간다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(propagation = Propagation.REQUIRES_NEW) 설정이 주어진 상황에서, 기존 트랜잭션의 영향은 무엇인가?
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -251,6 +251,14 @@ public void processPayment() {
     paymentService.createTransaction();
 }
 ','["기존 트랜잭션이 롤백된다.","기존 트랜잭션이 커밋된다.","기존 트랜잭션은 유지되지만 새 트랜잭션을 추가한다.","기존 트랜잭션과 새 트랜잭션이 병렬로 실행된다."]','{"correct":2}','EVALUATE',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Transactional(readOnly = false)
+public void updateMethod(){
+    repository.save(entity);
+    throw new RuntimeException("Exception occurred");
+}
+','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":2}','REMEMBER',0.8,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Security에서 인증을 처리하는 예입니다.
 
 @Override
@@ -260,13 +268,6 @@ protected void configure(HttpSecurity http) throws Exception {
         .anyRequest().authenticated();
 }
 ','["인증된 사용자만 비공개 경로에 대한 요청을 처리합니다.","비밀번호 해싱이 적용됩니다.","로그인 시 CSRF 보호를 무시합니다.","모든 요청은 인가 단계에서 허용됩니다."]','{"correct":0}','ANALYZE',0.8,'["spring-security-authentication"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 @Cacheable 동작을 선택하시오.
-
-@Cacheable(value = "cacheName", key = "{#id}")
-pubic User getUser(Long id){
-    return repository.findById(id).orElse(null);
-}
-','["메서드 호출 시마다 캐시에 저장된다.","캐시에서 값을 찾지 못하면 DB에서 가져와 캐시에 저장한다.","DB에서 값을 가져오지 않고 항상 캐시만 참조한다.","캐시를 무시하고 매번 DB에서 새로 조회한다."]','{"correct":1}','REMEMBER',0.8,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정은 어떤 역할을 하는가?
 
 @Transactional(readOnly = true)
@@ -274,6 +275,13 @@ public void readData() {
     List<User> users = userRepository.findAll();
 }
 ','["트랜잭션을 시작하지 않고 데이터를 읽는다.","데이터를 읽지만 변경사항을 커밋할 수 없다.","데이터베이스에 대한 모든 쓰기 작업을 금지한다.","데이터베이스에서 읽은 내용만 메모리에 저장한다."]','{"correct":2}','EVALUATE',0.8,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 @Cacheable 동작을 선택하시오.
+
+@Cacheable(value = "cacheName", key = "{#id}")
+public User getUser(Long id){
+    return repository.findById(id).orElse(null);
+}
+','["메서드 호출 시마다 캐시에 저장된다.","캐시에서 값을 찾지 못하면 DB에서 가져와 캐시에 저장한다.","DB에서 값을 가져오지 않고 항상 캐시만 참조한다.","캐시를 무시하고 매번 DB에서 새로 조회한다."]','{"correct":1}','REMEMBER',0.8,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정이 주어진 상황에서, readOnlyMethod() 메서드의 호출은 어떻게 작동하는가?
 
 @Transactional(readOnly = true)
@@ -311,14 +319,6 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
     }
 }
 ','["CSRF 보호를 비활성화하고, /admin 경로에 대한 요청은 ADMIN 역할이 있어야 합니다.","모든 경로에 대해 CSRF 보호가 적용됩니다.","/admin 경로에 대한 요청은 ADMIN 역할이 없어도 접근할 수 있습니다.","Spring Security 필터 체인을 사용하지 않습니다."]','{"correct":0}','UNDERSTAND',0.8,'["spring-security-csrf"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Transactional(readOnly = false)
-pubic void updateMethod(){
-    repository.save(entity);
-    throw new RuntimeException("Exception occurred");
-}
-','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":2}','REMEMBER',0.8,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Boot에서 @ConditionalOnProperty를 사용해 설정된 프로파일에 따라 빈을 등록하는 예입니다.
 
 @Configuration
@@ -392,7 +392,7 @@ public void readOnlyMethod() {
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 비제어 컴포넌트를 사용할 때, state를 관리하는 올바른 방법은?','["function MyComponent() { const [value, setValue] = useState(''''); return <input value={value} onChange={(e) => setValue(e.target.value)} />; }","function MyComponent() { let value = ''''; return <input value={value} onChange={(e) => value = e.target.value} />; }","function MyComponent() { const value = ''''; return <input value={value} onChange={(e) => value = e.target.value} />; }","function MyComponent() { let [value, setValue] = useState(''''); return <input value={value} onChange={(e) => value = e.target.value} />; }"]','{"correct":0}','REMEMBER',0.6,'["controlled-components"]'),
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 렌더링 성능을 개선하기 위해 `React.memo`를 사용할 때, 재렌더링 방지를 위한 올바른 조건은?','["const MemoComponent = React.memo(Component);","const MemoComponent = React.memo((props) => <Component {...props} />);\nreturn <MemoComponent key={key} {...otherProps} />;","<Component key={key} {...otherProps} />","const MemoComponent = React.memo(Component, (prevProps, nextProps) => prevProps.count === nextProps.count);"]','{"correct":3}','APPLY',0.6,'["hooks-render-memoization"]'),
 ('FRONTEND_REACT','MCQ','useEffect 훅을 사용하여 특정 이벤트에 대한 리렌더링을 제어할 때, 의존성 배열에서 주의해야 하는 점은 무엇인가요?','["이벤트 핸들러를 의존성으로 추가하지 않아야 함","리액트 인스턴스 상태를 의존성으로 추가해야 함","변수 값이 변경되었는지 확인해야 함","모든 상태 변화에 반응하도록 무한 루프 생성"]','{"correct":0}','APPLY',0.6,'["hooks-useeffect"]'),
-('FRONTEND_REACT','MCQ','useEffect 내부에서 의존성 배열에 포함되지 않은 상태 값이 변경되었을 때, 어떤 문제가 발생할 수 있습니까?','["배치 업데이트가 일어나지 않음","무한 루프로 인해 성능 저하","렌더링 순서가 변경됨","상태 업데이트가 즉시 이루어짐"]','{"correct":1}','EVALUATE',0.6,'["useeffect-dependency-array","stale-closure"]'),
+('FRONTEND_REACT','MCQ','useEffect 내부에서 의존성 배열에 포함되지 않은 상태 값이 변경되었을 때, 어떤 문제가 발생할 수 있습니까?','["이전 렌더링 시점의 오래된(stale) 상태 값을 참조하여 예상과 다르게 동작한다.","컴포넌트가 언마운트된 후에도 useEffect가 계속 실행된다.","상태 값이 변경될 때마다 컴포넌트 트리 전체가 강제로 리렌더링된다.","의존성 배열이 비어있어 useEffect 자체가 한 번도 실행되지 않는다."]','{"correct":0}','EVALUATE',0.6,'["useeffect-dependency-array","stale-closure"]'),
 ('FRONTEND_REACT','MCQ','React Testing Library에서 act 경고를 피하기 위해 무엇을 해야 합니까?','["비동기 콜백을 사용하지 않음","렌더링 후 즉시 업데이트 상태","이벤트 핸들러를 직접 호출","비동기 동작을 처리하는 방법 변경"]','{"correct":1}','EVALUATE',0.6,'["react-testing-library","act-warnings"]'),
 ('FRONTEND_REACT','MCQ','React 컴포넌트에서 props를 전달받아 사용할 때, 다음 중 올바르게 작성된 코드는?','["function MyComponent({ name }) { return <div>Hello, {name}</div>; }","function MyComponent(props) { return <div>Hello, {props.name}</div>; }","function MyComponent() { return <div>Hello, props.name</div>; }","function MyComponent({ name: ''John'' }) { return <div>Hello, {name}</div>; }"]','{"correct":1}','REMEMBER',0.6,'["jsx-props"]'),
 ('FRONTEND_REACT','MCQ','리스트 컴포넌트에서 item의 key 속성을 정확히 설정해야 하는 이유는 무엇인가요?','["렌더링 성능을 최적화하기 위함","뷰를 중복해서 사용하는 것을 방지하기 위함","비동기 데이터 로드 시 동작을 제어하기 위함","리액트 엘리먼트 트리를 식별하기 위함"]','{"correct":3}','APPLY',0.6,'["jsx-key-concepts"]'),
@@ -647,7 +647,7 @@ function App() {
   }, []);
 
   return <MemoComponent count={count} />;
-}','["React.memo는 props 변경에 따라 항상 컴포넌트를 렌더링한다.","React.memo는 이벤트 핸들러의 변경사항을 감지하지 못한다.","props 값이 바뀌면 React.memo가 무시되고 컴포넌트가 계속 렌더링된다.","setInterval로 props 값이 자주 변경되므로 React.memo가 동작하지 않는다."]','{"correct":3}','UNDERSTAND',0.6,'["react-memo"]'),
+}','["MemoComponent는 클래스형 컴포넌트라서 React.memo 최적화 대상이 아니다.","console.log 호출 때문에 리렌더링 여부와 무관하게 항상 화면이 다시 그려진다.","빈 의존성 배열 때문에 setInterval이 렌더링마다 중복으로 등록되어 성능이 저하된다.","setInterval로 count prop 값이 계속 바뀌기 때문에 React.memo가 변경을 감지하고 다시 렌더링한다."]','{"correct":3}','UNDERSTAND',0.6,'["react-memo"]'),
 ('FRONTEND_REACT','CODE_READING','다음 코드에서 useCallback 훅이 사용된 이유는 무엇인가?
 
 import React, { useState, useCallback } from ''react'';
@@ -1049,20 +1049,6 @@ class MyWidget extends StatelessWidget {
 }
 ```','["final 변수 value가 변경될 때","Text 위젯이 변경될 때","MyWidget 클래스의 인스턴스가 새로 생성될 때","BuildContext 객체가 변경될 때"]','{"correct":2}','ANALYZE',0.9,'["flutter-widget-lifecycle","stateless-widget"]'),
 ('MOBILE_FLUTTER','MCQ','Flutter에서 InheritedWidget을 사용할 때, 어떤 상황에서 이를 적용해야 하는가?','["상태 관리에 필요한 클래스는 항상 StatefulWidget을 사용해야 한다.","하위 위젯 간 공유 상태를 효율적으로 관리하기 위해 InheritedWidget을 사용한다.","모든 위젯은 StatelessWidget만 사용하면 된다.","InheritedWidget은 앱의 모든 상태를 관리할 수 있다."]','{"correct":1}','ANALYZE',0.9,'["inheritedwidget"]'),
-('MOBILE_FLUTTER','CODE_READING','다음 코드에서 Flutter의 플랫폼 채널을 사용하여 네이티브 액션을 트리거하는 동작에 대한 설명을 제공하세요.
-
-import ''dart:io'' show Platform;
-class NativeActionHandler {
-nit() {} 
-nvokeNativeFunction(String actionName) async {
-if (Platform.isAndroid) {
-// Android 플랫폼에서 액션 호출
-} else if (Platform.isIOS) {
-// iOS 플랫폼에서 액션 호출
-}
-}
-}
-','["invokeNativeFunction 메서드는 Platform.isAndroid 또는 Platform.isIOS를 사용하여 특정 플랫폼에 맞는 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 모든 플랫폼에서 동일한 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 Flutter 앱 내부에서만 동작하며, 네이티브 코드와 상호 작용하지 않습니다.","invokeNativeFunction 메서드는 항상 Android 플랫폼에서만 동작합니다."]','{"correct":0}','EVALUATE',0.2,'["platform-channel"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드에서 `Navigator`가 어떤 동작을 하는가?
 
 void _navigateToProfile() {
@@ -1072,6 +1058,20 @@ void _navigateToProfile() {
   );
 }
 ','["현재 페이지를 보여주는 역할","새로운 페이지로 이동시키는 역할","페이지의 상태 관리를 위한 역할","위젯 트리 구조를 구성하는 역할"]','{"correct":1}','UNDERSTAND',0.2,'["navigation-concepts"]'),
+('MOBILE_FLUTTER','CODE_READING','다음 코드에서 Flutter의 플랫폼 채널을 사용하여 네이티브 액션을 트리거하는 동작에 대한 설명을 제공하세요.
+
+import ''dart:io'' show Platform;
+class NativeActionHandler {
+init() {} 
+invokeNativeFunction(String actionName) async {
+if (Platform.isAndroid) {
+// Android 플랫폼에서 액션 호출
+} else if (Platform.isIOS) {
+// iOS 플랫폼에서 액션 호출
+}
+}
+}
+','["invokeNativeFunction 메서드는 Platform.isAndroid 또는 Platform.isIOS를 사용하여 특정 플랫폼에 맞는 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 모든 플랫폼에서 동일한 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 Flutter 앱 내부에서만 동작하며, 네이티브 코드와 상호 작용하지 않습니다.","invokeNativeFunction 메서드는 항상 Android 플랫폼에서만 동작합니다."]','{"correct":0}','EVALUATE',0.2,'["platform-channel"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드는 Flutter 앱에서 플랫폼 채널을 사용하여 네이티브 기능에 액세스합니다.
 
 Future<void> _getBatteryLevel() async {
@@ -1197,25 +1197,6 @@ class DataConsumer extends StatelessWidget {
   }
 }
 ','["InheritedWidget은 위젯 트리에 한 번만 생성되며, 모든 자식 위젯들이 접근할 수 있습니다.","InheritedWidget은 앱 내에서 특정 위젯들만 접근 가능하며, 다른 위젯들은 접근할 수 없습니다.","DataConsumer 위젯이 생성될 때마다 새로운 AppData 인스턴스가 생성됩니다.","위젯 트리에 InheritedWidget이 여러 번 생성되며, 각각의 인스턴스는 독립적으로 작동합니다."]','{"correct":0}','ANALYZE',0.4,'["inherited-widget"]'),
-('MOBILE_FLUTTER','CODE_READING','다음 코드에서 InheritedWidget을 사용한 상태 공유와 rebuild 최소화에 대한 설명을 제공하세요.
-
-class ThemeProvider extends InheritedWidget {
-final ThemeData theme;
-ThemeProvider({Key key, @required this.theme, Widget child}) : super(key: key, child: child);
-static ThemeProvider of(BuildContext context) =>
-castToInheritedElement(context.inheritFromElement());
-nit(): super();
-}
-class MyApp extends StatelessWidget {
-@override
-Widget build(BuildContext context) {
-return ThemeProvider(
-theme: ThemeData.light(),
-child: MaterialApp(title: ''Flutter Demo'', theme: ThemeData()),
-);
-}
-}
-','["ThemeProvider는 InheritedWidget을 사용하여 위젯 트리 전체에 주제 설정을 공유합니다.","ThemeProvider는 StatelessWidget을 사용하며, rebuild를 최소화하지 않습니다.","ThemeProvider는 InheritedWidget을 사용하지 않고 각각의 위젯에 개별적으로 주제를 전달합니다.","ThemeProvider는 MaterialApp에서 직접 ThemeData를 사용하여 상태를 관리합니다."]','{"correct":0}','EVALUATE',0.4,'["inheritedwidget-state-management"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드는 ListView.builder를 사용하여 많은 항목을 효율적으로 표시하려 합니다.
 
 ListView.builder(
@@ -1245,6 +1226,25 @@ void _incrementCounter() {
   });
 }
 ','["build 메서드에서 setState 호출","_incrementCounter 메서드에서 setState 호출","initState 메서드에서 setState 호출","dispose 메서드에서 setState 호출"]','{"correct":1}','UNDERSTAND',0.4,'["state-management"]'),
+('MOBILE_FLUTTER','CODE_READING','다음 코드에서 InheritedWidget을 사용한 상태 공유와 rebuild 최소화에 대한 설명을 제공하세요.
+
+class ThemeProvider extends InheritedWidget {
+final ThemeData theme;
+ThemeProvider({Key key, @required this.theme, Widget child}) : super(key: key, child: child);
+static ThemeProvider of(BuildContext context) =>
+castToInheritedElement(context.inheritFromElement());
+init(): super();
+}
+class MyApp extends StatelessWidget {
+@override
+Widget build(BuildContext context) {
+return ThemeProvider(
+theme: ThemeData.light(),
+child: MaterialApp(title: ''Flutter Demo'', theme: ThemeData()),
+);
+}
+}
+','["ThemeProvider는 InheritedWidget을 사용하여 위젯 트리 전체에 주제 설정을 공유합니다.","ThemeProvider는 StatelessWidget을 사용하며, rebuild를 최소화하지 않습니다.","ThemeProvider는 InheritedWidget을 사용하지 않고 각각의 위젯에 개별적으로 주제를 전달합니다.","ThemeProvider는 MaterialApp에서 직접 ThemeData를 사용하여 상태를 관리합니다."]','{"correct":0}','EVALUATE',0.4,'["inheritedwidget-state-management"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드에서 `Stack` 위젯이 어떤 동작을 하는가?
 
 @override
@@ -1355,7 +1355,7 @@ class MyHomePage extends StatefulWidget {
 _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
-nit(): super();
+init(): super();
 dispose() {
 super.dispose();
 // 리소스 해제 코드
@@ -1448,7 +1448,7 @@ Counter({Key key, this.initialCount}) : super(key: key);
 _CounterState createState() => _CounterState();
 }
 class _CounterState extends State<Counter> {
-nit(): count = widget.initialCount;
+init(): count = widget.initialCount;
 void increment() { setState(() { count++; }); }
 Widget build(BuildContext context) {
 return Text(count.toString());
@@ -2064,7 +2064,7 @@ data:
 ('FULLSTACK','MCQ','인증 및 인가 처리 시 세션 기반 접근과 토큰(JWT) 기반 접근의 주요 차이는 무엇인가요?','["세션이 보안 위험을 더 낮추는 것","토큰이 사용자 경험을 개선하는 것","세션이 상태를 유지해야 하는 서버 부담을 증가시키는 것","토큰이 클라이언트 측 코드 복잡성을 늘리는 것"]','{"correct":2}','EVALUATE',0.8,'["authentication-session-vs-token-jwt"]'),
 ('FULLSTACK','MCQ','프론트엔드에서 백엔드 API를 호출할 때 서버의 응답을 최적화하기 위한 가장 효과적인 방법은 무엇인가요?','["API 요청마다 모든 데이터를 반환합니다.","페이지네이션과 캐싱을 사용하여 효율성을 개선합니다.","HTTP 상태 코드를 무시하고 항상 성공으로 처리합니다.","클라이언트에서 직접 응답을 수정하여 최적화합니다."]','{"correct":1}','ANALYZE',0.8,'["front-end-api-optimization"]'),
 ('FULLSTACK','MCQ','API 테스트에서 계약 테스트가 주로 어떤 상황에서 사용되는가요?','["서비스 간의 호환성을 확인하는 경우","클라이언트 코드의 성능을 개선하기 위해","서버 측 로직 구현을 검증할 때","사용자 인터페이스의 테스트를 진행할 때"]','{"correct":0}','APPLY',0.8,'["contract-testing"]'),
-('FULLSTACK','MCQ','프론트엔드에서 백엔드 API 호출 시 어떤 HTTP 메서드를 사용하여 리소스를 읽어올까요?','["POST","PUT","GET","DELETE"]','{"correct":2}','UNDERSTAND',0.8,'["http-methods"]'),
+('FULLSTACK','MCQ','프론트엔드에서 백엔드 API 호출 시 어떤 HTTP 메서드를 사용하여 리소스를 읽어올까요?','["GET","PATCH","OPTIONS","HEAD"]','{"correct":0}','UNDERSTAND',0.8,'["http-methods"]'),
 ('FULLSTACK','MCQ','JWT 토큰 인증을 구현할 때, 클라이언트가 서버에 액세스하기 위해 보내야 하는 HTTP 요청 헤더는 무엇인가요?','["Authorization: Basic auth-token","Authorization: Bearer jwt-token","X-Auth-Token: jwt-token","Cookie: token=jwt-token"]','{"correct":1}','APPLY',0.8,'["jwt-authentication"]'),
 ('FULLSTACK','MCQ','다음 SQL 쿼리의 목적은 무엇인가? SELECT * FROM users WHERE email = ''user@example.com'' AND verified_at IS NOT NULL;','["비활성화된 사용자 정보 가져오기","활성화된 사용자의 이메일 확인","사용자의 비밀번호 변경","사용자가 로그인한 횟수 카운트"]','{"correct":1}','UNDERSTAND',0.8,'["sql-query-verification"]'),
 ('FULLSTACK','MCQ','JWT 토큰이 만료되었을 때 프론트엔드에서 처리할 수 있는 방법은?','["새로 로그인하라는 메시지를 띄운다","프론트에서 JWT 리프레시 토큰을 사용하여 새 액세스 토큰을 발급한다","백엔드에 요청해 세션 정보를 재생성한다","현재 페이지는 유지하고 다른 모든 페이지에는 로그인 화면으로 이동한다"]','{"correct":1}','UNDERSTAND',0.8,'["jwt-refresh-token"]'),
@@ -2158,7 +2158,7 @@ public ResponseEntity<Map<String, String>> login(@RequestBody UserCredentials us
 ('FULLSTACK','CODE_READING','다음 코드가 Spring Boot에서 사용되는 @Transactional 어노테이션을 사용하여 트랜잭션 관리를 구현하고 있습니다.
 
 @Transactional(rollbackFor = Exception.class)
-pubic void saveUser(User user) {
+public void saveUser(User user) {
     userRepository.save(user);
 }
 
@@ -2203,6 +2203,13 @@ public Health health() {
             .withDetail("database", "connected")
             .build();
 }','["1. 배포 환경에서 데이터베이스 연결 상태를 확인하지 않습니다.","2. 항상 ''DOWN'' 상태를 반환합니다.","3. 헬스 체크 결과가 JSON 형식으로 반환됩니다.","4. ''database''와 같은 세부 정보는 없을 수 있습니다."]','{"correct":0}','ANALYZE',0.6,'["health-check-deployment"]'),
+('FULLSTACK','CODE_READING','다음 Java 코드는 Spring Boot에서 사용되는 @RequestMapping 어노테이션을 사용하여 REST API를 정의하고 있습니다.
+
+@RequestMapping(value = "/api", method = RequestMethod.GET)
+public String getApi() { return "Hello, World!"; }
+
+이 코드의 문제점은 무엇인가요?
+','["@RequestMapping 어노테이션에서 GET 메서드를 지원하지 않는다.","punic String 대신 public ResponseEntity<String>을 사용해야 한다.","\"Hello, World!\" 대신 JSON 형태로 반환해야 한다.","API 경로가 잘못되어 요청을 받지 못한다."]','{"correct":1}','EVALUATE',0.6,'["rest-api-contract"]'),
 ('FULLSTACK','CODE_READING','다음 코드는 사용자의 이메일 주소 변경을 처리하는 API 입니다.
 
 @PutMapping("/profile/email")
@@ -2233,13 +2240,6 @@ public UserDTO getUserProfile(@RequestParam String userId) {
 }
 
 userRepository.findByUserId() 메서드가 존재하지 않는 경우에 대한 처리를 추가해야 합니다.','["@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) {\n    User user = userRepository.findByUserId(userId);\n    if (user == null) {\n        throw new ResourceNotFoundException();\n    }\n    return modelMapper.map(user, UserDTO.class);\n}","@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    try {\n        User user = userRepository.findByUserId(userId);\n        if (user == null) {\n            throw new ResourceNotFoundException();\n        }\n        return modelMapper.map(user, UserDTO.class);\n    } catch (UserRepositoryException e) {\n        throw new ResourceNotFoundException(e.getMessage());\n    }\n}","@GetMapping(\"/profile\")\npublic ResponseEntity<UserDTO> getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    try {\n        User user = userRepository.findByUserId(userId);\n        if (user == null) {\n            throw new ResourceNotFoundException();\n        }\n        return ResponseEntity.ok(modelMapper.map(user, UserDTO.class));\n    } catch (UserRepositoryException e) {\n        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);\n    }\n}","@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    User user = userRepository.findByUserId(userId);\n    if (user == null) {\n        throw new ResourceNotFoundException();\n    }\n    return modelMapper.map(user, UserDTO.class);\n}"]','{"correct":1}','APPLY',0.6,'["api-design","exception-handling"]'),
-('FULLSTACK','CODE_READING','다음 Java 코드는 Spring Boot에서 사용되는 @RequestMapping 어노테이션을 사용하여 REST API를 정의하고 있습니다.
-
-@RequestMapping(value = "/api", method = RequestMethod.GET)
-pubic String getApi() { return "Hello, World!"; }
-
-이 코드의 문제점은 무엇인가요?
-','["@RequestMapping 어노테이션에서 GET 메서드를 지원하지 않는다.","punic String 대신 public ResponseEntity<String>을 사용해야 한다.","\"Hello, World!\" 대신 JSON 형태로 반환해야 한다.","API 경로가 잘못되어 요청을 받지 못한다."]','{"correct":1}','EVALUATE',0.6,'["rest-api-contract"]'),
 ('FULLSTACK','CODE_READING','다음은 프론트엔드에서 REST API로 데이터를 요청하는 코드입니다. 
 
 fetch(`/api/products/${productId}`, {
@@ -2343,4 +2343,399 @@ socket.on(''newProduct'', data => {
 });
 someButton.addEventListener(''click'', () => {
   socket.emit(''addProduct'', {name: ''New Product''});
-});','["1. 클릭 이벤트가 발생할 때마다 새로운 WebSocket 연결을 생성합니다.","2. 새 제품이 추가될 때마다 서버로부터 메시지를 받습니다.","3. 모든 클라이언트에서 새 제품 정보를 공유하지 않습니다.","4. 클릭 시 새로운 제품을 서버에 등록하지 않습니다."]','{"correct":1}','ANALYZE',0.9,'["websocket-realtime-communication"]');
+});','["1. 클릭 이벤트가 발생할 때마다 새로운 WebSocket 연결을 생성합니다.","2. 새 제품이 추가될 때마다 서버로부터 메시지를 받습니다.","3. 모든 클라이언트에서 새 제품 정보를 공유하지 않습니다.","4. 클릭 시 새로운 제품을 서버에 등록하지 않습니다."]','{"correct":1}','ANALYZE',0.9,'["websocket-realtime-communication"]'),
+('PYTHON_BACKEND','MCQ','WSGI와 ASGI의 주요 차이점은 무엇인가?','["WSGI는 요청마다 워커 스레드를 블로킹하는 동기 방식의 호출만 지원하며, 비동기·WebSocket 같은 프로토콜은 애초에 처리할 수 없는 구조다.","ASGI는 이름과 달리 실제로는 WSGI와 동일하게 동기 방식의 호출만 지원하고 비동기 프로토콜은 다루지 못한다.","WSGI는 HTTP 요청 응답 프로토콜을 사용하며, ASGI는 HTTP 및 WebSocket 연결을 동시에 처리할 수 있다.","ASGI는 WSGI와 마찬가지로 HTTP 요청·응답 프로토콜만 지원하며 WebSocket 같은 장수명 연결은 다루지 못한다."]','{"correct":2}','REMEMBER',0.1,'["wsgi-asgi"]'),
+('PYTHON_BACKEND','MCQ','pytest 픽스처(fixture)의 정의와 목적은 무엇인가?','["픽스처는 테스트가 모두 끝난 뒤 실행 결과를 파일로 저장해 리포트를 생성하는 도구다.","픽스처는 pytest가 내부적으로 사용하는 변수·객체를 관리하는 별도의 설정 파일이다.","픽스처는 테스트 코드에서 공통적으로 사용되는 변수나 객체를 미리 준비해두는 함수이다.","픽스처는 프로젝트 설정 파일에 나열된 모든 단위 테스트를 실행하는 스크립트다."]','{"correct":2}','REMEMBER',0.1,'["pytest-fixtures"]'),
+('PYTHON_BACKEND','MCQ','GIL(Global Interpreter Lock)의 주요 기능은 무엇인가?','["파이썬 인터프리터가 한 번에 하나의 스레드만 실행하게 만든다.","파이썬 코드에서 동기 호출을 비동기로 변환한다.","파이썬 코드를 컴파일하여 빠른 실행을 가능하게 한다.","파이썬 프로그램에서 동시에 여러 스레드를 실행할 수 있게 한다."]','{"correct":0}','REMEMBER',0.1,'["gil"]'),
+('PYTHON_BACKEND','MCQ','Celery 워커(worker)와 브로커(broker, 예: Redis/RabbitMQ)의 역할은 무엇인가?','["워커는 작업을 실행하고 결과를 반환하며, 브로커는 작업 요청(메시지)을 전달하는 큐 역할을 한다.","브로커가 작업을 직접 실행해 결과를 반환하고, 워커는 그 작업 요청을 큐에 밀어 넣는 역할만 한다.","워커와 브로커는 역할 구분 없이 둘 다 똑같이 작업을 큐에 넣고 실행하는 동일한 컴포넌트다.","워커가 작업 요청을 처리하면서 동시에 브로커의 큐 역할까지 스스로 겸해서 수행한다."]','{"correct":0}','REMEMBER',0.1,'["celery-worker-broker"]'),
+('PYTHON_BACKEND','MCQ','캐시 무효화(cache invalidation) 전략 중 TTL(Time To Live)의 의미는?','["TTL은 캐시가 담을 수 있는 최대 메모리 용량 한도를 의미하는 값이다.","TTL은 캐시 키가 만료될 시점만 미리 표시해둘 뿐, 실제로 그 시점에 캐시에서 제거하는 동작까지 보장하지는 않는다고 잘못 알려져 있다.","TTL은 캐시 키의 유효기간을 관리하며, 시간 제한이 경과되면 자동으로 캐시를 무효화한다.","TTL은 캐시가 만료되기 전까지 조회될 수 있는 최대 횟수를 세는 값이다."]','{"correct":2}','REMEMBER',0.1,'["cache-ttl"]'),
+('PYTHON_BACKEND','MCQ','파이썬 제너레이터(`yield`)의 주요 특징은 무엇인가?','["함수 내부의 로컬 변수 상태를 유지하지 않는다.","함수 호출 시 함수 본체 코드가 즉시 실행된다.","제너레이터는 모든 값을 한 번에 계산해 반환하는 함수다.","함수가 여러 값을 순차적으로 반환할 수 있도록 한다."]','{"correct":3}','REMEMBER',0.2,'["generator"]'),
+('PYTHON_BACKEND','MCQ','HTTP 상태 코드 401과 403의 의미 차이는 무엇인가요?','["401은 권한 없음(Forbidden)을, 403은 무효한 요청 메서드(Method Not Allowed)를 나타낸다.","401은 서버 내부에서 발생한 오류를, 403은 요청이 그냥 거절된 경우를 나타낸다.","401은 무효한 요청 메서드 사용을, 403은 서버가 무시해버린 권한 문제를 나타낸다.","401은 인증되지 않은 상태에서 접근 시도를 나타내며, 403은 사용자에게 권한이 없는 리소스에 대한 요청을 나타낸다."]','{"correct":3}','REMEMBER',0.2,'["http-status-codes"]'),
+('PYTHON_BACKEND','MCQ','파이썬 컨텍스트 매니저(`with` 문)는 어떤 기능을 제공하는가?','["파일을 읽고 쓰는 동안 발생하는 모든 오류를 자동으로 무시해버린다.","특정 스코프에서 리소스를 안전하게 정리하거나 초기화할 수 있게 한다.","동기적으로 작성된 코드를 파이썬이 알아서 비동기 호출로 바꿔 실행해준다.","with 문을 쓰면 함수 실행 결과가 자동 캐싱되어 재사용된다."]','{"correct":1}','REMEMBER',0.2,'["context-manager"]'),
+('PYTHON_BACKEND','MCQ','FastAPI에서 경로 매개변수(path parameter)를 선언하는 방법은 무엇인가요?','["경로 매개변수는 반드시 Query 클래스로 감싸서 지정해야만 인식된다고 잘못 알려져 있다.","path parameter는 @path_parameter 전용 데코레이터를 붙여야만 지정된다고 오해하기 쉽다.","경로 템플릿의 {변수명}과 이름이 같은 함수 매개변수를 선언하고 타입 힌트를 붙이면 FastAPI가 자동으로 경로 매개변수로 인식한다.","경로 매개변수는 path parameter라는 키워드를 함수 앞에 붙여야 설정된다고 오해하기 쉽다."]','{"correct":2}','REMEMBER',0.2,'["fastapi-path-parameters"]'),
+('PYTHON_BACKEND','MCQ','파이썬 가상환경(venv)을 만드는 표준 명령어는 무엇인가요?','["pipenv shell","conda create --name myenv","python -m venv myenv","virtualenv myenv"]','{"correct":2}','REMEMBER',0.2,'["python-virtual-environment"]'),
+('PYTHON_BACKEND','MCQ','파이썬 예외 계층에서 커스텀 예외를 정의할 때 어떤 규칙을 따라야 하는가?','["커스텀 예외는 적절한 부모 클래스를 상속 받아야 한다.","이름이 `Exception`으로 시작해야 인식된다.","반드시 object만 상속해야 한다고 잘못 알려져 있다.","`BaseException`만 직접 상속해야 한다고 오해한다."]','{"correct":0}','UNDERSTAND',0.3,'["custom-exception"]'),
+('PYTHON_BACKEND','MCQ','Celery 태스크가 실패했을 때 자동으로 재시도되도록 설정하는 방법은?','["Celery는 재시도 기능을 아예 지원하지 않아 실패한 태스크는 수동으로 다시 호출해야 한다고 오해하기 쉽다.","@app.task(autoretry_for=(Exception,), max_retries=3)와 같이 데코레이터에 재시도 대상 예외와 최대 횟수를 지정한다.","태스크 함수 안에서 try/except로 감싸고 아무 것도 하지 않으면 Celery가 알아서 재시도해준다고 잘못 알려져 있다.","브로커(Redis) 설정에서 retry=true라는 전역 옵션을 켜면 모든 태스크가 자동 재시도된다고 오해하기 쉽다."]','{"correct":1}','UNDERSTAND',0.3,'["celery-retry-task"]'),
+('PYTHON_BACKEND','MCQ','파이썬 데코레이터가 함수를 감싸는 방식은 어떻게 작동하는가?','["데코레이터는 단순히 함수의 결과를 반환한다.","데코레이터는 함수 호출 전후로 코드를 추가할 수 있다.","데코레이터는 함수 내부에서 동작을 변경하지 않는다.","데코레이터는 클래스에는 적용할 수 없고 함수에만 사용할 수 있다."]','{"correct":1}','UNDERSTAND',0.3,'["decorator"]'),
+('PYTHON_BACKEND','MCQ','pip과 poetry의 의존성 관리 방식의 근본적인 차이는?','["poetry는 poetry.lock으로 전체 의존성 트리를 고정해 재현 가능한 설치를 보장하지만, pip은 기본적으로 lock 파일 없이 requirements.txt만으로 설치한다.","pip은 가상환경을 자동으로 만들어주는 반면 poetry는 가상환경 기능 자체를 전혀 지원하지 않는다고 잘못 알려져 있다.","poetry는 내부가 C 언어로 작성되어 있어서 pip보다 설치 속도가 항상 더 빠르다고 오해하기 쉽다.","pip과 poetry는 pyproject.toml이라는 같은 파일 형식을 쓰기 때문에 실질적 차이가 전혀 없다고 오해하기 쉽다."]','{"correct":0}','UNDERSTAND',0.3,'["poetry-vs-pip-dependency-management"]'),
+('PYTHON_BACKEND','MCQ','Django 시그널(signal)이 이벤트 발생 시 리시버를 호출하는 방식은?','["특정 이벤트에 대해 시그널 등록 후, 해당 이벤트 발생 시 자동 호출","시그널 없이 리시버 함수를 개발자가 매번 직접 호출해야 동작한다.","모든 이벤트에 대한 시그널 등록 후, 단일 리시버로 모든 이벤트 처리","뷰(View)에서 수동으로 시그널 객체를 생성해 매번 전송해야 한다."]','{"correct":0}','UNDERSTAND',0.3,'["django-signal-function-calling"]'),
+('PYTHON_BACKEND','MCQ','CPU 바운드 작업과 I/O 바운드 작업 중 각각 멀티프로세싱과 asyncio 중 어느 것이 더 적합한가?','["I/O 바운드 작업은 asyncio, CPU 바운드 작업은 멀티프로세싱이 더 적합합니다.","멀티프로세싱과 asyncio는 모든 유형의 작업에 동일하게 적용할 수 있습니다.","CPU 바운드와 I/O 바운드 모두 스레딩만으로 충분히 처리할 수 있습니다.","CPU 바운드 작업은 asyncio, I/O 바운드 작업은 멀티프로세싱이 더 적합합니다."]','{"correct":0}','EVALUATE',0.3,'["python-cpu-iobound-processing"]'),
+('PYTHON_BACKEND','MCQ','Django REST Framework Serializer의 주요 역할은 무엇인가?','["뷰(View) 로직 처리","쿼리셋 필터링","데이터 직렬화와 검증","데이터베이스 쿼리 생성"]','{"correct":2}','UNDERSTAND',0.3,'["drf-serializer-role"]'),
+('PYTHON_BACKEND','MCQ','중첩된 리스트를 포함한 객체를 얕은 복사(shallow copy)했을 때 나타나는 현상으로 옳은 것은?','["최상위 객체는 새로 생성되지만 내부의 중첩 객체는 원본과 참조를 공유한다.","얕은 복사는 모든 계층을 새로 생성해 원본과 완전히 무관해진다.","얕은 복사는 실제로 아무 것도 복사하지 않고 원본의 참조만 그대로 반환한다.","얕은 복사가 깊은 복사보다 항상 느리게 동작하는 것이 파이썬의 기본 동작이다."]','{"correct":0}','UNDERSTAND',0.3,'["shallow-deep-copy"]'),
+('PYTHON_BACKEND','MCQ','JWT(JSON Web Token) 기반 인증에서 서버가 토큰의 유효성을 검증하는 방식으로 옳은 것은?','["서버가 발급한 모든 토큰을 DB에 저장해두고 매 요청마다 세션 테이블과 대조한다고 잘못 알려져 있다.","클라이언트가 자신의 개인키로 서명을 검증한 뒤 결과만 서버에 통보하면 신뢰한다고 오해하기 쉽다.","대칭키(HMAC)라면 발급 때와 같은 비밀키로, 비대칭키(RS256 등)라면 그에 대응하는 공개키로 토큰의 서명을 검증해 위조 여부를 확인한다.","토큰의 만료 시간(exp) 클레임만 확인하고 서명 검증은 생략한다고 잘못 알려져 있다."]','{"correct":2}','UNDERSTAND',0.3,'["jwt-authentication"]'),
+('PYTHON_BACKEND','MCQ','FastAPI Pydantic 모델이 요청 바디를 자동으로 검증하는 방식은 무엇인가요?','["Pydantic 모델은 미들웨어에 전역 등록해야만 검증에 사용할 수 있다고 잘못 알려져 있다.","Pydantic 모델 인스턴스를 직접 생성해 매 요청마다 수동으로 유효성 검사를 호출해야 한다고 오해하기 쉽다.","request_body 데코레이터로 타입 힌트를 지정하면 Pydantic 모델을 자동 생성·검증한다고 잘못 알려져 있다.","함수 매개변수에 Pydantic 모델 타입 힌트를 사용하여 지정하면, FastAPI는 자동으로 요청 바디를 검증한다."]','{"correct":3}','UNDERSTAND',0.3,'["fastapi-pydantic-models"]'),
+('PYTHON_BACKEND','MCQ','Django에서 트랜잭션을 시작하고 특정 로직이 완료되면 자동으로 커밋되도록 설정하려면 어떻게 해야 하나?','["session.commit() 메서드를 직접 호출하기","db.session.commit() 메서드를 그대로 호출하기","@transaction.atomic() 데코레이터 사용","@atomic이라는 축약 데코레이터를 바로 사용하기"]','{"correct":2}','APPLY',0.3,'["django-transactions"]'),
+('PYTHON_BACKEND','MCQ','Django ORM 쿼리셋을 즉시 평가하도록 강제하는 방법은 무엇인가?','["list() 호출하기","filter() 사용하기","values_list() 메서드만 사용하기","all() 메서드 사용하기"]','{"correct":0}','APPLY',0.3,'["django-orm-querysets"]'),
+('PYTHON_BACKEND','MCQ','파이썬 패키지 구조에서 ''__init__.py'' 파일의 역할은 무엇인가요?','["패키지 경로를 sys.path에 추가한다.","모듈 import 시 실행되도록 한다.","패키지 내부 모든 모듈을 자동 import한다. 실제로는 명시적 import가 필요하다.","파이썬 인터프리터에게 이 디렉토리를 패키지로 처리하도록 알려준다."]','{"correct":3}','UNDERSTAND',0.4,'["python-package-structure"]'),
+('PYTHON_BACKEND','MCQ','Django 미들웨어가 요청/응답 처리 흐름에서 어떤 순서로 실행되는지?','["모든 미들웨어가 스레드로 동시에 병렬 실행되어 순서가 전혀 보장되지 않는다.","미들웨어는 등록된 순서대로 요청 처리 시에도 응답 처리 시에도 항상 동일한 방향으로 순차 실행된다.","등록 순서와 관계없이 매 요청마다 미들웨어 실행 순서가 무작위로 바뀐다.","요청은 등록 순서대로 위에서 아래로 통과하고, 응답은 그 역순으로 되돌아간다."]','{"correct":3}','UNDERSTAND',0.4,'["django-middleware-execution-order"]'),
+('PYTHON_BACKEND','MCQ','비동기 함수에서 `await asyncio.sleep(1)` 호출이 실행될 때 이벤트 루프는 어떻게 동작하는가?','["루프가 즉시 KeyboardInterrupt에 준하는 예외를 던지며 코루틴 실행을 강제로 중단시켜버린다.","코루틴이 일시 중단(suspend)되고, 이벤트 루프는 그동안 다른 태스크를 실행한다.","루프 자체가 완전히 멈추어 다른 모든 비동기 작업까지 함께 중단된 채로 계속 대기하게 된다.","루프는 계속 돌지만 asyncio.sleep 호출은 아무 효과 없이 무시되고 다음 줄로 바로 넘어간다."]','{"correct":1}','UNDERSTAND',0.4,'["python-async-await"]'),
+('PYTHON_BACKEND','MCQ','Django ORM 쿼리셋은 언제 데이터베이스에 실제 쿼리를 실행하나?','["쿼리셋을 순회하거나 리스트로 변환할 때","쿼리셋을 정의(할당)하는 시점","조회 메서드를 호출하는 시점","필터링(filter)을 적용하는 순간 곧바로 실행된다고 오해하기 쉽다."]','{"correct":0}','UNDERSTAND',0.4,'["django-orm-lazy-evaluation"]'),
+('PYTHON_BACKEND','MCQ','Celery 결과 백엔드(result backend)의 역할은 무엇인가?','["결과 백엔드는 큐에 쌓인 워커 프로세스들을 직접 관리하고 감독한다.","결과 백엔드는 브로커를 대체해 작업 자체를 워커들에게 직접 배포하고 스케줄링하는 역할까지 담당한다.","결과 백엔드는 새로운 작업 요청을 받아 큐에 추가하는 입구 역할을 한다.","결과 백엔드는 태스크 실행 상태와 반환값을 저장하고 조회 가능하게 한다."]','{"correct":3}','UNDERSTAND',0.4,'["celery-result-backend"]'),
+('PYTHON_BACKEND','MCQ','DRF ViewSet과 라우터(Router)가 URL을 자동 생성하는 방식은?','["라우터에 등록된 모든 ViewSet에 대해 라우트 자동 생성","라우터를 등록할 때 개발자가 URL 패턴을 하나하나 직접 지정해야 한다.","ViewSet 클래스 안에 urls.py 등록 코드를 직접 작성해 넣어야만 라우트가 생성된다.","별도 설정 없이도 라우터 없이 URL이 완전히 자동으로 생성된다."]','{"correct":0}','UNDERSTAND',0.4,'["drf-viewset-router-url-generation"]'),
+('PYTHON_BACKEND','MCQ','스레드(thread)와 코루틴(coroutine)의 동시성 처리 차이점은 무엇인가?','["스레드는 결코 비동기 작업을 지원할 수 없으며, 언제나 동기적인 순차 처리 방식으로만 동작한다.","코루틴은 스레드와 달리 이벤트 루프 없이는 여러 작업을 동시에 실행할 수 없다.","스레드는 CPU 스케줄링에 의존하여 실행되지만, 코루틴은 프로그래머가 직접 제어를 넘겨받는다.","코루틴은 스레드보다 항상 메모리 사용량이 훨씬 적어 무조건 더 효율적으로 동작한다."]','{"correct":2}','UNDERSTAND',0.4,'["thread-coroutine"]'),
+('PYTHON_BACKEND','MCQ','FastAPI에서 백그라운드 태스크를 실행하려면 어떻게 해야 하는가?','["@background 데코레이터를 함수 위에 적용하기","threading.Thread로 별도 스레드를 직접 생성하기","multiprocessing.Process로 별도 프로세스 생성하기","background_tasks.add_task() 호출하기"]','{"correct":3}','APPLY',0.4,'["fastapi-background-tasks"]'),
+('PYTHON_BACKEND','MCQ','`asyncio.gather` 함수의 주요 기능은 무엇인가?','["작업들을 순서대로 호출해 실행한다. 실제로는 동시 실행이 핵심이다.","작업들의 결과를 무시한다.","단일 작업만 동기 실행한다.","여러 비동기 작업 결과를 동시에 처리하고 반환한다."]','{"correct":3}','UNDERSTAND',0.4,'["asyncio-gather"]'),
+('PYTHON_BACKEND','MCQ','프로세스 기반(gunicorn worker) 병렬 처리와 스레드 기반 병렬 처리 중 GIL의 영향을 받는 것은 무엇인가요?','["GIL은 멀티프로세스 환경에서도 각 프로세스 사이에 공유되어 동일하게 적용됩니다.","GIL은 스레드·프로세스·비동기 코루틴 구분 없이 파이썬이 실행되는 모든 환경에 항상 예외 없이 동일하게 적용됩니다.","gunicorn worker가 여러 개여도 하나의 프로세스 안에서만 GIL 없이 동작하도록 자동으로 통합됩니다.","스레드 기반 병렬 처리는 GIL의 영향으로 인해 CPU 바운드 작업에서 성능 저하가 발생합니다."]','{"correct":3}','ANALYZE',0.4,'["python-gil-threading"]'),
+('PYTHON_BACKEND','MCQ','정적 파일(static files)을 Gunicorn/Uvicorn 같은 애플리케이션 서버가 아니라 Nginx나 CDN으로 서빙해야 하는 주된 이유는?','["애플리케이션 서버는 동적 요청 처리에 최적화되어 있어, 정적 파일을 대량으로 서빙하면 요청 처리 성능이 저하되기 때문이다.","정적 파일을 애플리케이션 서버에서 서빙하면 파일 경로 노출 같은 보안 취약점이 항상 자동으로 생겨난다. 실제로는 위치와 취약점이 자동 연결되지 않는다.","정적 파일은 반드시 데이터베이스에 저장해야만 하므로 별도의 서버가 필요해지기 때문이다.","정적 파일은 오직 파이썬 코드로만 처리할 수 있어 다른 서버로는 처리할 수 없기 때문이다."]','{"correct":0}','UNDERSTAND',0.4,'["static-files-serving"]'),
+('PYTHON_BACKEND','MCQ','FastAPI가 Pydantic 모델로부터 OpenAPI 스키마를 자동 생성하는 원리는 무엇인가요?','["FastAPI는 Pydantic 모델의 메서드를 직접 호출해 연결된 데이터베이스 테이블 정의에서 스키마 정보를 가져와 자동으로 생성한다.","Pydantic 모델과 전혀 무관하게 각 엔드포인트의 함수 이름과 docstring만 파싱해 스키마를 자동으로 만든다.","함수 매개변수와 반환값(response_model)에 사용된 Pydantic 모델의 필드·타입을 분석해 OpenAPI 스키마를 생성한다.","OpenAPI 스키마는 Pydantic 모델과는 무관하게 매 요청이 들어올 때마다 그때그때 새로 추론된다."]','{"correct":2}','UNDERSTAND',0.4,'["fastapi-pydantic-openapi"]'),
+('PYTHON_BACKEND','MCQ','다음 HTTP 메서드 중 멱등성(idempotency)이 보장되지 않는 것은?','["PUT","DELETE","POST","GET"]','{"correct":2}','APPLY',0.5,'["rest-api-idempotency"]'),
+('PYTHON_BACKEND','MCQ','Django에서 OneToOneField 또는 ForeignKey 관계의 N+1 문제를 해결하기 위해 select_related를 사용하는 방법은?','["queryset.filter(field_name__in=values)","queryset.select_related(''field_name'')","queryset.prefetch_related(''related_field'')","model.objects.annotate(field_name=''value'')"]','{"correct":1}','APPLY',0.5,'["django-select-related-n-plus-one"]'),
+('PYTHON_BACKEND','MCQ','DRF 권한 클래스(permission class)로 접근을 제어하는 방법은?','["view 함수에서 직접 체크","permission_classes 속성을 통해 적용","urls.py 라우팅에서 설정","settings.py에 전역으로만 정의해두면 충분하며, 실제로는 View·ViewSet 단위의 세밀한 제어가 불가능해진다."]','{"correct":1}','APPLY',0.5,'["drf-permission-classes"]'),
+('PYTHON_BACKEND','MCQ','uvicorn이 ASGI 애플리케이션을 실행하는 방식과, gunicorn과 함께 사용할 때의 설정은 무엇인가요?','["ASGI는 WSGI와 완전히 같은 프레임워크 규격이라서 uvicorn을 그냥 직접 실행하면 충분하다고 오해하기 쉽다.","uvicorn은 자체 이벤트 루프를 사용하여 ASGI 애플리케이션을 구동합니다. gunicorn에서는 -k 옵션으로 ''uvicorn.workers.UvicornWorker''를 지정해야 합니다.","ASGI는 uvicorn과 애초에 호환되지 않아서 gunicorn이 별도의 브릿지 기능으로 억지로 연결해준다고 잘못 알려져 있다.","gunicorn에서 uvicorn을 쓸 때는 ASGI를 직접 실행할 수 없어 반드시 WSGI로 먼저 변환해야만 구동된다고 오해하기 쉽다."]','{"correct":1}','UNDERSTAND',0.5,'["python-uvicorn-gunicorn"]'),
+('PYTHON_BACKEND','MCQ','FastAPI `Depends()`로 의존성 주입을 구성하는 방법은 무엇인가요?','["매개변수의 기본값으로 Depends(function)을 지정하면 FastAPI가 이를 해석해 자동으로 의존성을 주입한다.","depends()라는 전역 함수를 먼저 호출해 반환값을 매개변수에 수동으로 대입해야 한다고 오해하기 쉽다. 실제로는 그런 전역 함수가 없다.","함수 내부에서 의존성 객체를 생성한 뒤 다른 메서드에 전달해야 한다고 잘못 알려져 있다.","@depends() 데코레이터를 함수 위에 붙여 의존성을 선언해야 주입된다고 오해하기 쉽다."]','{"correct":0}','APPLY',0.5,'["fastapi-dependency-injection"]'),
+('PYTHON_BACKEND','MCQ','pytest에서 외부 API 호출을 목(mock)으로 대체하는 방법은?','["pytest가 자체적으로 제공하는 @patch라는 전용 메서드를 이용하면 된다.","mock 모듈을 import하고, 함수 내에서 직접 API 호출 부분을 대체하도록 설정한다.","외부 API 호출 부분을 mock 객체로 직접 교체하기만 하면 충분하다.","@mock.patch 데코레이터를 사용하여 필요한 위치에 테스트용 객체를 삽입한다."]','{"correct":3}','APPLY',0.5,'["pytest-mock-external-api"]'),
+('PYTHON_BACKEND','MCQ','pytest-cov 플러그인이 설치된 상태에서, 테스트 실행과 동시에 커버리지를 측정하려면 어떤 명령을 쓰는가?','["pytest --cov","coverage report","pytest --coverage","coverage html"]','{"correct":0}','APPLY',0.5,'["python-coverage-reporting"]'),
+('PYTHON_BACKEND','MCQ','DRF ModelSerializer로 모델 필드를 자동 매핑하는 방법은?','["모든 필드를 수동으로 다시 선언해야 매핑된다.","ListSerializer로 목록 형식을 정의한다.","ModelViewSet에 필드를 나열해야 매핑된다. 실제로는 Meta.model 지정만으로 충분하다.","serializers.ModelSerializer에서 모델 클래스 정의"]','{"correct":3}','APPLY',0.5,'["drf-modelserializer-mapping"]'),
+('PYTHON_BACKEND','MCQ','Celery beat로 주기적 작업(periodic task)을 예약하는 표준적인 방법은?','["beat_schedule 설정 또는 on_after_configure 시그널에서 sender.add_periodic_task()로 스케줄을 등록한다.","@periodic_task 데코레이터(레거시 API)만 붙이면 beat_schedule 등록 없이도 자동으로 스케줄링된다고 잘못 알려져 있다. 실제로는 별도 등록 절차가 여전히 필요하다.","워커 프로세스를 여러 개 띄우기만 하면 그 자체로 주기적 실행이 자동 활성화된다고 오해하기 쉽다.","태스크 함수 본문 안에 while True와 sleep()을 직접 넣어 무한 반복시켜야 한다고 잘못 알려져 있다."]','{"correct":0}','APPLY',0.5,'["celery-beat-periodic-task"]'),
+('PYTHON_BACKEND','MCQ','파이썬 로깅에서 print() 대신 logging 모듈을 사용해야 하는 이유는 무엇인가요?','["print()를 사용하면 그 자체만으로 프로그램 실행 성능이 눈에 띄게 저하될 수 있다.","파이썬 로깅 시스템은 print()를 아예 인식하지 못하도록 막아두어 logging 모듈만 지원한다.","logging 모듈은 오직 파일에만 메시지를 기록할 수 있고 콘솔 출력은 지원하지 않는다.","print() 함수보다 logging 모듈은 더 다양한 출력 포맷과 필터링 옵션을 제공합니다."]','{"correct":3}','APPLY',0.5,'["python-logging-module"]'),
+('PYTHON_BACKEND','MCQ','대용량 파일 업로드를 처리할 때 서버 메모리 사용을 줄이는 방법은 무엇인가요?','["파일 전송이 끝난 뒤 전체를 메모리에 통째로 올려 처리해야 스트리밍보다 안전하다고 오해하기 쉽다.","대용량 업로드는 서버 네트워크 대역폭만 고려하면 되고 메모리와는 무관하다고 잘못 알려져 있다.","파일을 파트로 나눠 전송해도 서버가 즉시 하나의 버퍼로 재조합해 절감 효과가 없다고 오해하기 쉽다.","스트림(Stream) 방식으로 파일을 읽어올 경우, 전체 데이터를 메모리에 올리지 않고 부분적으로 처리할 수 있어 메모리를 절약할 수 있다."]','{"correct":3}','APPLY',0.5,'["file-upload-streaming"]'),
+('PYTHON_BACKEND','MCQ','CORS 오류를 해결하기 위해 서버에서 설정해야 하는 것은 무엇인가요?','["서버는 모든 출처에 대해 무조건 접근 권한을 열어두면 CORS 문제가 저절로 해결된다.","서버 측에 CORS 미들웨어를 설치하고, 원하는 출처에 대한 허용 목록을 설정한다.","클라이언트 측에서 요청 시 Access-Control-Allow-Origin 헤더를 직접 붙여 서버 응답을 대체한다.","서버가 자동으로 CORS 문제를 알아서 해결해주므로 개발자가 따로 설정할 필요가 없다."]','{"correct":1}','APPLY',0.5,'["cors-configuration"]'),
+('PYTHON_BACKEND','MCQ','함수가 정수 id를 받아 User 객체 또는 None을 반환할 수 있을 때, 이를 타입 힌트로 정확히 표현한 것은?','["def get_user(id: int) -> User: ...  # None 가능성은 반환 타입에 반영하지 않아도 된다","def get_user(id: int) -> Optional[User]: ...","def get_user(id) -> int: ...  # id 타입과 반환 타입 모두 실제와 다르게 적어도 된다","def get_user(id: int) -> None: ...  # 반환값이 있어도 항상 None으로 명시해야 한다"]','{"correct":1}','APPLY',0.5,'["type-hinting"]'),
+('PYTHON_BACKEND','MCQ','웹 애플리케이션에서 SQLAlchemy 세션(Session)을 요청 단위로 관리하는 일반적인 패턴은?','["요청이 시작될 때 세션을 새로 생성하고, 요청이 끝나면 커밋 또는 롤백한 뒤 세션을 닫는다.","세션은 스레드와 무관하게 항상 전역 공유되며 종료할 필요가 없다고 잘못 알려져 있다.","세션은 첫 쿼리 실행 시점에만 생성되고 이후 재사용하지 않는다고 오해하기 쉽다.","애플리케이션 시작 시 세션 하나만 만들어 전체 요청에서 재사용한다고 잘못 알려져 있다. 실제로는 세션 공유가 데이터 오염을 부른다."]','{"correct":0}','UNDERSTAND',0.5,'["sqlalchemy-session-lifecycle"]'),
+('PYTHON_BACKEND','MCQ','FastAPI `response_model`로 응답 스키마를 제한하는 방법은 무엇인가요?','["함수 매개변수에 Pydantic 모델 타입 힌트를 사용하여 지정하면, FastAPI는 그것만으로 자동으로 응답 스키마를 제한한다고 잘못 알려져 있다.","경로 데코레이터(`@app.get(..., response_model=Model)`)에 Pydantic 모델을 지정하면 FastAPI가 응답을 그 스키마에 맞춰 직렬화·검증한다.","Pydantic 모델 클래스 변수에 직접 타입을 정의한 뒤 함수 매개변수로 써야 하며, response_model 인자는 이 경우 완전히 무시된다고 오해하기 쉽다. 실제로는 response_model이 그대로 적용된다.","함수 내부에서 Pydantic 모델을 직접 반환하기만 하면 되고, response_model이라는 인자 자체는 실제로 아무 효과가 없다고 잘못 알려져 있다."]','{"correct":1}','APPLY',0.5,'["fastapi-response-model"]'),
+('PYTHON_BACKEND','MCQ','가변 기본 인자(mutable default argument) 문제를 피하는 방법은 무엇인가?','["모든 가변 객체는 무조건 불변 객체로 바꿔야 하며 다른 방법은 없다.","가변 객체는 절대 기본값으로 쓸 수 없으므로 항상 함수 외부에서 미리 생성한 뒤 인자로만 전달해야 한다.","매개변수의 기본 값으로 `None`을 사용하고, 함수 내에서 필요할 때 값을 초기화한다.","함수 매개변수에 무결성 검사 로직을 추가하면 가변 기본 인자 문제가 자동으로 해결된다."]','{"correct":2}','APPLY',0.5,'["mutable-default-argument"]'),
+('PYTHON_BACKEND','MCQ','Django 프로젝트에서 개발(dev)과 운영(prod) 환경의 설정값을 분리해 관리하는 가장 흔한 방법은?','["settings/base.py에 공통 설정을 두고, settings/dev.py·settings/prod.py가 이를 상속한 뒤 DJANGO_SETTINGS_MODULE 환경변수로 선택한다.","환경에 관계없이 settings.py 파일 하나만 두고 조건 분기 없이 쓰는 것이 Django가 유일하게 공식 권장하는 방식이라고 잘못 알려져 있다.","운영 서버에 배포할 때마다 개발자가 settings.py 내용을 직접 손으로 하나하나 덮어써야 한다고 오해하기 쉽다.","settings.py 내용을 데이터베이스 테이블에 저장해두고 서버 시작 시점마다 런타임으로 조회해 읽어와야 한다고 오해하기 쉽다."]','{"correct":0}','APPLY',0.5,'["django-settings-environment-separation"]'),
+('PYTHON_BACKEND','MCQ','Redis를 이용한 cache-aside(캐시 조회 후 없으면 DB 조회 후 캐시 저장) 패턴 구현 순서는?','["1. DB에서 데이터를 먼저 가져온 뒤, 2. Redis에서 해당 데이터의 캐시 키를 조회, 3. 없으면 Redis에 저장.","1. Redis에서 캐시 키 조회, 5초 동안 대기 후 다시 Redis 조회, 2. 없다면 DB에서 데이터 가져오기, 3. Redis에 저장.","1. 캐시부터 무효화한 뒤 DB에서 데이터 가져오기, 2. Redis에 키가 있는지 재확인, 3. 없으면 캐시 저장.","1. Redis에서 캐시 키 조회, 2. 없다면 DB에서 데이터 가져오기, 3. 가져온 데이터를 Redis에 저장."]','{"correct":3}','APPLY',0.5,'["redis-cache-aside"]'),
+('PYTHON_BACKEND','MCQ','Kubernetes 스타일의 readiness 체크(다른 서비스로 요청을 받을 준비가 됐는지 판단하는 프로브)가 확인해야 할 항목은 무엇인가요?','["readiness 체크는 애플리케이션 서버의 CPU 사용량 하나만 확인하면 충분하다.","데이터베이스 연결, 캐시 연결 등 핵심 의존 서비스의 가용성을 체크합니다.","readiness 체크는 오직 네트워크 트래픽량만 모니터링하면 되는 지표다.","프로세스가 살아있는지만 확인하며 DB·캐시 같은 의존 서비스 상태는 절대 보지 않습니다."]','{"correct":1}','APPLY',0.5,'["python-health-check"]'),
+('PYTHON_BACKEND','MCQ','환경변수로 민감한 설정값(DB 비밀번호 등)을 관리해야 하는 이유는 무엇인가요?','["환경변수는 여러 개발자가 함께 작업할 때 서로 다른 설정 값을 관리하기 쉽습니다.","환경변수를 사용하면 설정 값이 런타임에 동적으로 변경될 수 있습니다.","환경 변수를 사용하면 설정 값이 소스 코드에 노출되지 않아 보안 위험이 줄어듭니다.","환경 변수는 테스트 환경에서만 작동하므로 개발과 프로덕션 사이의 차이를 방지합니다."]','{"correct":2}','APPLY',0.6,'["python-environment-variables"]'),
+('PYTHON_BACKEND','MCQ','웹 요청 핸들러 안에서 처리하면 안 되고 Celery 태스크로 분리해야 하는 작업의 특징은 무엇인가?','["작업이 데이터베이스 트랜잭션 커밋 이전 시점에 반드시 동기적으로 끝나야 하는 경우","작업이 오래 걸리거나 외부 서비스 호출처럼 응답 시간을 예측하기 어려운 경우","작업이 매우 단순한 계산이라 밀리초 단위로 곧바로 끝나버리는 경우","작업 결과를 응답 본문에 그대로 담아 즉시 반환해야만 하는 경우"]','{"correct":1}','EVALUATE',0.6,'["celery-web-requests"]'),
+('PYTHON_BACKEND','MCQ','커넥션 풀(connection pool) 크기를 실제 동시 요청 수보다 너무 작게 설정했을 때 발생하는 문제는?','["커넥션 풀이 작으면 오히려 쿼리 실행 속도가 항상 더 빨라진다.","동시 요청이 몰릴 때 커넥션을 얻지 못한 요청이 대기하거나 타임아웃 오류가 발생한다.","커넥션 풀이 작을수록 서버 메모리 사용량이 오히려 더 늘어나는 부작용이 생긴다.","데이터베이스가 부하를 감지하면 커넥션 풀 크기를 자동으로 늘려 요청을 모두 받아준다."]','{"correct":1}','APPLY',0.6,'["connection-pool-sizing"]'),
+('PYTHON_BACKEND','MCQ','migrations 작업을 수행하기 위해 Alembic의 주요 명령어들은 무엇인가요?','["migrations 작업에는 alembic upgrade 명령 하나만 있으면 그것만으로 스키마가 최신이 된다고 오해하기 쉽다.","Alembic에서는 Flask-Migrate처럼 python manage.py db init·migrate·upgrade 명령으로 진행해야 한다고 잘못 알려져 있다.","Alembic에는 migrations 전용 명령어가 없어서 개발자가 SQL 스크립트를 직접 작성해야 한다고 오해하기 쉽다.","Alembic에서 migrations 작업은 alembic init 명령으로 시작하고, 이후 alembic revision 및 upgrade 명령으로 업데이트한다."]','{"correct":3}','APPLY',0.6,'["alembic-migrations"]'),
+('PYTHON_BACKEND','MCQ','gunicorn 워커 프로세스 수를 `(2 × CPU 코어 수) + 1` 같은 공식으로 설정하는 이유는?','["워커 수는 CPU 코어 수와 무관하게 하드웨어 한계까지 많이 띄울수록 처리량이 계속 증가하기 때문이다. 실제로는 스위칭 비용이 늘어난다.","I/O로 블로킹되는 동안에도 CPU를 놀리지 않으면서, 과도한 워커로 인한 컨텍스트 스위칭 비용은 억제하려는 경험칙이다.","gunicorn은 워커 수가 CPU 코어 수를 초과하면 프로세스 생성을 거부하고 에러를 낸다.","워커 수는 초당 요청 수와 정확히 1:1 비율로 맞춰야만 정상 동작하기 때문이다."]','{"correct":1}','APPLY',0.6,'["gunicorn-workers-cpu-cores"]'),
+('PYTHON_BACKEND','MCQ','DRF에서 커서 기반 페이지네이션(cursor-based pagination)과 오프셋 기반 페이지네이션(offset-based pagination)의 주요 차이는?','["커서는 무작위 접근 가능, 오프셋은 순차적 접근만 가능","커서는 총 페이지 수를 항상 정확히 계산해 알려준다","커서는 특정 객체 ID를 사용, 오프셋은 객체 수를 사용","오프셋은 특정 객체 ID를 사용, 커서는 객체 수를 사용"]','{"correct":2}','APPLY',0.6,'["drf-pagination-strategy"]'),
+('PYTHON_BACKEND','MCQ','블로킹 호출(예: 동기 I/O)이 이벤트 루프를 멈추는 문제를 피하는 방법은 무엇인가?','["블로킹 호출을 그냥 무시하고 계속 실행시키기만 해도 시간이 지나면 파이썬이 알아서 문제를 자동으로 해결해준다고 오해하기 쉽다.","동기 함수 정의 앞에 async 키워드만 붙이면, 함수 내부의 모든 블로킹 호출까지 파이썬이 자동으로 논블로킹 코드로 바꿔준다고 잘못 알려져 있다. 실제로는 그렇게 자동 변환되지 않는다.","비동기 함수를 도로 동기 함수로 되돌려 놓기만 하면 이벤트 루프가 막히는 문제 자체가 저절로 사라진다고 오해하기 쉽다.","블로킹 함수 호출을 asyncio.to_thread() 또는 loop.run_in_executor()로 별도 스레드에 위임해 이벤트 루프를 막지 않는다."]','{"correct":3}','APPLY',0.6,'["blocking-call"]'),
+('PYTHON_BACKEND','MCQ','캐시 키(cache key)를 설계할 때 반드시 고려해야 할 사항은?','["캐시 키에는 콜론(:)이나 구분자 문자를 절대로 사용해서는 안 된다고 잘못 알려져 있다.","결과값에 영향을 주는 모든 파라미터(예: 사용자 ID, 필터 조건)를 키에 포함해 서로 다른 요청이 같은 키를 공유하지 않도록 한다.","키는 짧을수록 무조건 좋으므로 파라미터 없이 고정된 짧은 문자열 하나만 계속 재사용해야 한다고 오해하기 쉽다. 실제로는 요청 결과가 뒤섞여버린다.","캐시 키는 대소문자를 전혀 구분하지 않으니 설계할 때 신경 쓸 필요가 없다고 잘못 알려져 있다."]','{"correct":1}','APPLY',0.6,'["cache-key-design"]'),
+('PYTHON_BACKEND','MCQ','Django 마이그레이션을 생성하고 적용하기 위한 순서는?','["makemigrations -> runserver","syncdb -> migrate","makemigrations -> migrate","migrate -> makemigrations"]','{"correct":2}','APPLY',0.6,'["django-migration-management"]'),
+('PYTHON_BACKEND','MCQ','Django에서 시그널 대신 명시적 함수 호출을 선택해야 하는 상황은?','["특정 상황을 가리지 않고 모든 시나리오에서 항상 시그널을 사용해야 한다.","특정 이벤트에 대한 복잡한 처리나 실행 순서 보장이 필요할 때","뷰(View)에서 단순 데이터 조회만 수행하고 별도의 부수 효과가 전혀 없을 때","API 엔드포인트로 단순 데이터를 요청받아 그대로 반환할 때"]','{"correct":1}','EVALUATE',0.7,'["django-signal-usage-scenarios"]'),
+('PYTHON_BACKEND','MCQ','인덱스가 없는 컬럼으로 WHERE 조건을 거는 쿼리에서 발생할 수 있는 성능 문제는?','["인덱스가 없으면 쿼리 자체가 실행되지 않고 곧바로 오류를 반환한다.","쿼리 옵티마이저가 실행 시점에 필요한 인덱스를 자동으로 만들어주므로 성능 문제가 발생하지 않는다.","전체 테이블을 순차 스캔(full scan)하여 응답 시간이 늘어난다.","인덱스가 없어도 데이터베이스가 항상 캐시된 결과를 반환해 오히려 더 빨라진다."]','{"correct":2}','UNDERSTAND',0.7,'["sql-indexing"]'),
+('PYTHON_BACKEND','MCQ','Celery 태스크가 재시도될 때 멱등성(idempotency)이 없으면 발생하는 문제는 무엇인가?','["재시도된 태스크가 다른 태스크와 충돌해 전체 작업이 실패할 위험이 생긴다.","태스크가 재시도될 때마다 이전 실행의 메모리가 해제되지 않고 계속 쌓여 결국 워커 프로세스가 다운된다.","태스크가 중복 실행되어 결제·적립 등의 부작용이 두 번 이상 반영될 수 있다.","재시도 결과가 예측 불가능해져서 시스템 전체의 안정성이 저하된다."]','{"correct":2}','APPLY',0.7,'["celery-idempotency-retry"]'),
+('PYTHON_BACKEND','MCQ','DRF 중첩 Serializer(nested serializer)가 N+1 쿼리를 유발하는 상황은?','["모든 모델 필드를 관계 없이 그대로 단순 직렬화만 하는 경우","직렬화 대상 모델 사이에 아무런 연관 관계가 없는 경우","하나의 모델에서 단일 필드 하나만 골라 직렬화하는 경우","하나의 모델이 다른 여러 모델과 연관되어 있고, 목록을 직렬화할 때마다 각 항목의 연관 객체를 별도로 조회할 때"]','{"correct":3}','ANALYZE',0.7,'["drf-nested-serializer-n-plus-one"]'),
+('PYTHON_BACKEND','MCQ','@transaction.atomic() 블록 안에서 예외가 발생했을 때의 동작은?','["변경 사항 유지 또는 롤백은 설정에 따라 달라짐","예외 발생 시 모든 변경사항 롤백","예외 발생 시 변경 사항 유지","예외 발생 여부와 관계없이 항상 변경 사항 저장"]','{"correct":1}','APPLY',0.7,'["django-transaction-management"]'),
+('PYTHON_BACKEND','MCQ','캐시 스탬피드(cache stampede)가 발생하는 조건과 이를 완화하는 방법으로 옳은 것은?','["인기 키가 만료된 순간 다수의 요청이 동시에 캐시 미스를 겪어 DB로 몰리는 현상이며, 락(뮤텍스)이나 조기 재계산으로 완화한다.","캐시 서버 자체가 완전히 다운되었을 때만 발생하며, 복제본을 추가하기만 하면 항상 확실히 방지된다.","캐시 키의 TTL이 아직 충분히 남아있을 때 발생하며, 단순히 캐시 크기를 키우면 항상 해결된다.","여러 요청이 서로 다른 캐시 키를 동시에 조회할 때 발생하며, 모든 키를 하나로 통합해버리면 완전히 사라진다. 실제로는 적중률이 떨어지는 부작용이 남는다."]','{"correct":0}','ANALYZE',0.8,'["cache-stampede"]'),
+('PYTHON_BACKEND','MCQ','여러 개발자가 각자 브랜치에서 동시에 Alembic 마이그레이션을 작성해 리비전 히스토리에 여러 head가 생겼을 때 해결 방법은?','["가장 최근에 병합된 마이그레이션 파일 하나만 남기고 나머지 파일은 전부 지워버리면 된다.","`alembic merge heads` 명령으로 여러 head를 하나의 병합 리비전으로 합친다.","각 개발자가 서로 다른 데이터베이스를 쓰기만 하면 head 충돌이 자동으로 해소된다.","down_revision 값은 그냥 참고용이므로 무시하고 최신 파일부터 순서대로 실행하면 된다."]','{"correct":1}','ANALYZE',0.8,'["alembic-migration-conflicts"]'),
+('PYTHON_BACKEND','MCQ','세션 기반 인증과 JWT 기반 인증 중 수평 확장(scale-out) 환경에 더 적합한 방식은 무엇이며 그 이유는 무엇인가요?','["세션이나 JWT나 수평 확장 환경에서 차이 없이 완전히 동일하게 쓸 수 있다고 오해하기 쉽다.","세션 인증이 애초에 수평 확장을 염두에 두고 설계됐으므로 선호해야 한다고 잘못 알려져 있다.","JWT 인증은 토큰의 무상태성(statelessness)으로 인해 여러 서버 간에 별도 세션 저장소 없이 검증될 수 있으므로 JWT를 사용하는 것이 적합합니다.","세션이나 JWT나 단일 서버에서만 유용해서 서버가 늘어나면 둘 다 곧바로 멈춘다고 오해하기 쉽다."]','{"correct":2}','EVALUATE',0.8,'["python-session-jwt-authentication"]'),
+('PYTHON_BACKEND','CODE_READING','다음 Django settings.py를 운영 서버에 그대로 배포했을 때 발생할 수 있는 보안 문제는?
+
+from django.shortcuts import render
+
+DEBUG = True
+ALLOWED_HOSTS = []
+
+def custom_404(request, exception):
+    return render(request, ''404.html'', status=404)','["DEBUG는 로컬 개발 편의를 위한 옵션일 뿐 운영 환경 보안과는 아무 관련이 없다고 오해하기 쉽다.","ALLOWED_HOSTS가 비어 있으면 DEBUG 설정과 무관하게 모든 요청이 자동 차단되어 안전하다고 잘못 알려져 있다.","custom_404 핸들러가 정의돼 있으면 DEBUG 값과 무관하게 항상 그 핸들러만 노출된다고 오해하기 쉽다.","DEBUG=True 상태에서 처리되지 않은 예외가 발생하면, 소스 코드 경로·설정값·스택트레이스 등 민감한 정보가 담긴 디버그 페이지가 그대로 클라이언트에 노출된다."]','{"correct":3}','UNDERSTAND',0.4,'["django-debug-settings"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드를 실행하면 nested_list는 어떻게 되는가?
+
+import copy
+nested_list = [[1, 2], [3, 4]]
+copied_list = copy.copy(nested_list)
+copied_list[0].append(5)
+print(nested_list)','["append(5) 호출은 항상 새 리스트를 반환할 뿐 기존 객체는 절대 변경하지 않는다고 오해하기 쉽다.","copied_list와 nested_list는 완전히 독립된 메모리를 쓰기 때문에 서로 영향이 전혀 없다고 잘못 알려져 있다.","copy.copy()는 항상 깊은 복사를 수행하는 함수라서 nested_list는 전혀 변경되지 않는다고 오해하기 쉽다.","copy.copy()는 최상위 리스트만 새로 만들고 내부의 중첩 리스트는 원본과 참조를 공유하므로, copied_list[0]을 변경하면 nested_list에도 반영된다."]','{"correct":3}','ANALYZE',0.5,'["shallow-copy"]'),
+('PYTHON_BACKEND','CODE_READING','다음 SQLAlchemy 세션 관리 코드에서는 어떤 문제가 발생할까요?
+
+from sqlalchemy.orm import sessionmaker
+
+Session = sessionmaker(bind=engine)
+
+def get_session():
+    db_session = Session()
+    return db_session','["요청마다 커넥션 수가 자동으로 5개로 제한되어 예외 없이 안전하게 동작합니다.","get_session 호출 시점에 SQLAlchemy가 자동으로 예외를 발생시켜 세션 누수를 막아줍니다.","세션과 커넥션이 close되지 않고 계속 누적되어 결국 커넥션 풀이 고갈됩니다.","매 호출마다 이전 세션이 자동으로 재사용되어 조회 결과가 정상적으로 반환됩니다."]','{"correct":2}','ANALYZE',0.6,'["sqlalchemy-session-management"]'),
+('PYTHON_BACKEND','CODE_READING','두 마이그레이션 파일이 각각 아래와 같이 작성되었다. 이 상태에서 `alembic upgrade head`를 실행하면 어떤 문제가 발생하는가?
+
+# migration_a.py
+revision = ''a1b2''
+down_revision = ''base_rev''
+
+# migration_b.py
+revision = ''c3d4''
+down_revision = ''base_rev''','["두 마이그레이션이 같은 down_revision(''base_rev'')을 가리켜 리비전 히스토리에 head가 두 개 생기고, Alembic이 어느 것을 최신으로 적용해야 할지 알 수 없다는 오류를 낸다.","Alembic이 두 마이그레이션 파일의 생성 시간을 자동으로 비교해 시간순으로 정렬한 뒤 아무 충돌 없이 순차 적용한다고 잘못 알려져 있다.","down_revision 값이 서로 같더라도 revision 식별자(a1b2, c3d4) 자체는 다르니 아무 충돌 없이 순서대로 적용된다고 오해하기 쉽다.","먼저 작성된 마이그레이션 파일은 자동으로 무시되고 더 나중에 작성된 파일만 골라서 적용된다고 잘못 알려져 있다."]','{"correct":0}','EVALUATE',0.7,'["alembic-multiple-heads"]'),
+('PYTHON_BACKEND','CODE_READING','다음 SQLAlchemy 엔진 설정에서 동시 요청이 10개 몰릴 때 어떤 문제가 발생할 수 있는가?
+
+from sqlalchemy import create_engine, text
+
+engine = create_engine(''postgresql://user:pass@localhost/dbname'', pool_size=5, max_overflow=0)
+
+def fetch_data():
+    conn = engine.connect()
+    try:
+        result = conn.execute(text(''SELECT * FROM users''))
+        return result.fetchall()
+    finally:
+        conn.close()','["max_overflow=0은 오버플로우를 무제한으로 허용한다는 뜻이라 문제가 없다고 오해하기 쉽다.","pool_size는 요청 수와 무관하게 데이터베이스가 자동으로 늘려준다고 잘못 알려져 있다.","conn.close()가 finally에 있으니 커넥션이 항상 즉시 반환돼 풀 부족은 절대 없다고 오해하기 쉽다.","pool_size=5, max_overflow=0으로 최대 5개 커넥션만 허용되어, 6번째 이상 요청은 커넥션을 기다리다 타임아웃될 수 있다."]','{"correct":3}','ANALYZE',0.7,'["sqlalchemy-connection-pooling"]'),
+('PYTHON_BACKEND','CODE_READING','다음 Redis 캐시 코드에서는 어떤 문제가 발생할까요?
+
+import redis
+
+cache = redis.Redis()
+db = get_database_handle()  # 외부에서 주입되는 DB 핸들
+
+def get_value(key):
+    value = cache.get(key)
+    if not value:
+        result = db.query(key)
+        cache.set(key, result, ex=60)
+        return result
+    return value','["락을 쓰지 않아도 Redis가 내부적으로 요청을 자동 직렬화해줘서 문제가 없다고 잘못 알려져 있다.","캐시 키가 만료된 순간 동시에 몰린 다수의 요청이 전부 캐시 미스를 겪어 db.query가 동시에 여러 번 호출되는 캐시 스탬피드가 발생할 수 있다.","ex=60 옵션이 없으면 캐시가 영구히 만료되지 않아 오히려 안전하다고 오해하기 쉽다.","cache.get()이 항상 예외를 던지도록 구현돼 db.query가 절대 호출 못 된다고 잘못 알려져 있다."]','{"correct":1}','EVALUATE',0.7,'["redis-cache-stampede"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드를 실행하면 어떤 일이 벌어지는가?
+
+def get_user_age(age: int) -> int:
+    return age * 2
+
+result = get_user_age(''25'')','["타입 힌트가 문자열을 파이썬 내부적으로 자동 변환해줘서 result가 정수 50이 된다고 오해하기 쉽다.","mypy 같은 별도의 정적 검사기 없이도 인터프리터가 실행 시점에 타입을 검증해 오류를 낸다고 오해하기 쉽다.","타입 힌트가 int로 지정되어 있으니, 인터프리터가 호출 시점에 인자 타입을 검사해 문자열을 넘기면 TypeError를 던진다고 잘못 알려져 있다.","타입 힌트는 런타임에 강제되지 않으므로 문자열 ''25''가 그대로 전달되고, age * 2는 문자열을 반복해 ''2525''를 반환한다."]','{"correct":3}','EVALUATE',0.7,'["type-hint-not-enforced-runtime"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+def generate_data():
+    for i in range(10):
+        yield i
+
+gen = generate_data()
+first_three = [next(gen) for _ in range(3)]
+rest = list(gen)','["제너레이터는 멈춘 지점(yield 위치)의 상태를 유지하므로, next()로 3개를 먼저 소비한 뒤 남은 값을 순회하면 rest는 [3, 4, ..., 9]가 된다.","제너레이터는 next()를 한 번이라도 호출하면 상태가 완전히 소진되어, 이후 list(gen)은 항상 빈 리스트만 반환한다고 잘못 알려져 있다. 실제로는 멈춘 지점에서 이어진다.","first_three와 rest 둘 다 range(10) 전체를 담고 있어 두 리스트에 겹치는 값이 있다고 오해하기 쉽다.","제너레이터는 순회할 때마다 매번 처음부터 다시 시작해서 rest에도 [0, ..., 9]가 담긴다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.7,'["generator-behavior"]'),
+('PYTHON_BACKEND','CODE_READING','다음 데코레이터를 적용한 뒤 example.__name__을 출력하면 어떻게 되는가?
+
+def simple_decorator(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@simple_decorator
+def example():
+    """This is an example function."""
+    pass
+
+print(example.__name__)','["데코레이터가 example을 두 번 호출하도록 만들어서 부작용이 두 번 중복 발생한다고 오해하기 쉽다.","functools.wraps를 쓰지 않아도 파이썬이 원본 함수의 메타데이터를 자동으로 보존해 __name__이 여전히 ''example''로 남는다고 잘못 알려져 있다.","functools.wraps로 감싸지 않아 wrapper가 example을 대체하면서 __name__이 ''wrapper''가 되고 __doc__도 사라진다.","wrapper 함수가 example의 실제 로직을 실행하지 않아 항상 None만 반환하게 된다고 오해하기 쉽다."]','{"correct":2}','ANALYZE',0.7,'["decorator-no-wraps"]'),
+('PYTHON_BACKEND','CODE_READING','다음 pytest 픽스처 코드에서는 어떤 문제가 발생할까요?
+
+import pytest
+
+class TestOrders:
+    @pytest.fixture(scope=''session'')
+    def cart(self):
+        items = []
+        yield items
+
+    def test_add_item(self, cart):
+        cart.append(''apple'')
+        assert cart == [''apple'']
+
+    def test_cart_starts_empty(self, cart):
+        assert cart == []','["픽스처가 session 스코프이므로 테스트 간에 cart 리스트 상태가 공유되어, 실행 순서에 따라 test_cart_starts_empty가 실패할 수 있다.","pytest가 클래스 안 픽스처는 자동으로 새 cart를 만들어줘서 두 테스트 모두 통과한다고 오해하기 쉽다.","session 스코프도 클래스 컨텍스트에서는 자동으로 function 스코프로 낮춰진다고 잘못 알려져 있다.","픽스처가 제너레이터(yield)면 스코프와 무관하게 매 테스트마다 새로 생성된다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.7,'["pytest-fixtures-scope"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드를 실행하면 어떤 일이 벌어지는가?
+
+class CustomError(object):
+    pass
+
+try:
+    raise CustomError(''Custom error'')
+except Exception as e:
+    print(e)','["CustomError가 Exception을 상속하지 않았으니 except Exception 절을 그대로 통과해버려서 예외가 잡히지 않은 채 프로그램이 그대로 종료된다고 오해하기 쉽다.","raise CustomError(...) 시점에 파이썬이 ''exceptions must derive from BaseException'' TypeError를 발생시키고, 이 TypeError가 except Exception에 잡혀 출력된다.","CustomError가 아무 문제 없이 정상적으로 발생하고 except Exception이 이를 그대로 잡아 ''Custom error''라는 문자열을 화면에 곧바로 출력해버린다고 잘못 알려져 있다.","object를 상속한 클래스도 인터프리터가 자동으로 BaseException 서브클래스처럼 취급해줘서 아무 문제 없이 동작한다고 오해하기 쉽다."]','{"correct":1}','UNDERSTAND',0.7,'["custom-exception-must-inherit-baseexception"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드에서 might_fail() 태스크가 예외를 던지면 results 변수에는 무엇이 담기는가?
+
+import asyncio
+
+async def might_fail():
+    raise ValueError(''boom'')
+
+async def succeed():
+    return ''ok''
+
+async def main():
+    results = await asyncio.gather(might_fail(), succeed(), return_exceptions=True)
+    print(results)','["return_exceptions=True는 예외를 통째로 삭제해버려 results에는 정상 결과 ''ok'' 하나만 담긴다고 오해하기 쉽다.","return_exceptions=True이므로 gather()는 예외를 던지지 않고, results에 [ValueError(''boom''), ''ok'']처럼 예외 객체와 정상 결과가 함께 담긴다.","return_exceptions 값과 무관하게 첫 예외가 나면 gather()가 즉시 던져 results에는 아무 값도 안 담긴다고 잘못 알려져 있다.","예외가 발생한 태스크는 자동 재시도되어 results에는 정상 결과 두 개만 담긴다고 오해하기 쉽다."]','{"correct":1}','ANALYZE',0.7,'["asyncio-gather-exceptions"]'),
+('PYTHON_BACKEND','CODE_READING','다음 Django 시그널 리시버에서는 어떤 문제가 발생할까요?
+
+from django.db.models import signals
+from .models import Product
+
+def product_saved(sender, instance, created, **kwargs):
+    if not created:
+        instance.last_synced = True
+        instance.save()
+
+signals.post_save.connect(product_saved, sender=Product)','["instance.save()가 post_save 시그널을 다시 트리거해 무한 재귀 호출되고 결국 RecursionError로 이어질 수 있다.","업데이트된 제품에 한해서만 시그널 리시버가 정확히 한 번 호출되고, Django가 재귀 호출을 자동으로 감지해 두 번째 호출부터 조용히 무시해준다고 오해하기 쉽다.","제품 저장은 시그널 등록 여부와 무관하게 언제나 정확히 딱 한 번만 수행된다고 잘못 알려져 있다.","뷰 함수 쪽에서 처리되지 않은 예외가 나서 요청 전체가 실패로 끝난다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.7,'["django-signal-recursion"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드에서 lambdas[0](1)의 결과는 무엇인가?
+
+numbers = [1, 2, 3]
+lambdas = []
+for number in numbers:
+    lambdas.append(lambda x: x + number)
+print(lambdas[0](1))','["for문이 끝나는 순간 number 변수 자체가 사라져서 lambdas[0](1) 호출 시 NameError가 난다고 오해하기 쉽다.","람다는 number를 지연 바인딩(late binding)하므로 모든 람다가 반복문 종료 시점의 마지막 number 값(3)을 참조해, lambdas[0](1)은 4를 반환한다.","리스트에 저장된 람다들은 언제나 numbers의 첫 번째 값(1)만 사용해 2를 반환한다고 잘못 알려져 있다.","각 람다가 생성 시점의 number 값을 즉시 복사해 저장하므로 서로 다른 값으로 2를 반환한다고 오해하기 쉽다."]','{"correct":1}','ANALYZE',0.7,'["lambda-late-binding"]'),
+('PYTHON_BACKEND','CODE_READING','다음 함수를 여러 번 호출할 때 어떤 문제가 발생하는가?
+
+def add(item, items=[]):
+    items.append(item)
+    return items
+
+add(''a'')
+add(''b'')','["함수를 호출할 때마다 items 매개변수가 매번 새로운 빈 리스트로 초기화된다고 알려져 있다.","add 함수는 호출될 때마다 완전히 독립적인 items 리스트를 만들어 반환하므로 문제가 없다고 오해하기 쉽다.","items 매개변수의 기본값(list)은 함수 정의 시점에 단 한 번만 생성되어 호출 간에 공유·누적된다.","append() 호출 직후 items가 자동으로 새 빈 리스트로 교체되어 이전 값이 사라진다고 잘못 알려져 있다."]','{"correct":2}','ANALYZE',0.7,'["mutable-default-argument"]'),
+('PYTHON_BACKEND','CODE_READING','다음 FastAPI 엔드포인트에서는 어떤 문제가 발생할까요?
+
+from fastapi import APIRouter
+import time
+
+router = APIRouter()
+
+@router.get(''/slow'')
+async def read_slow():
+    time.sleep(5)
+    return {''message'': ''done''}','["time.sleep(5)는 5초가 지나면 파이썬이 자동으로 이를 취소해 응답이 즉시 반환된다고 오해하기 쉽다.","time.sleep()이 코루틴이 아니어서 서버가 곧바로 TypeError를 던지며 요청 자체가 실패한다고 잘못 알려져 있다.","time.sleep()은 동기(블로킹) 호출이라 5초 동안 이벤트 루프 전체가 멈춰, 같은 워커가 처리 중인 다른 요청들도 함께 지연된다.","async def로만 선언하면 FastAPI가 함수 안의 모든 동기 호출을 알아서 별도 스레드로 옮겨 실행해준다고 오해하기 쉽다. 실제로는 그런 자동 감지 기능이 없다."]','{"correct":2}','ANALYZE',0.7,'["fastapi-blocking-calls"]'),
+('PYTHON_BACKEND','CODE_READING','다음 엔드포인트를 호출했을 때, some_background_task 내부에서 예외가 발생하면 클라이언트는 어떤 응답을 받는가?
+
+from fastapi import APIRouter, BackgroundTasks
+
+def some_background_task():
+    raise ValueError(''background failure'')
+
+router = APIRouter()
+
+@router.post(''/endpoint'')
+def endpoint(background_tasks: BackgroundTasks):
+    background_tasks.add_task(some_background_task)
+    return {''status'': ''Task started''}','["add_task 함수는 응답을 만들기 전에 즉시 동기적으로 먼저 실행돼, 예외가 나면 엔드포인트가 실패한다고 오해하기 쉽다.","예외가 발생하면 FastAPI가 자동으로 재시도해 성공할 때까지 응답을 지연시킨다고 잘못 알려져 있다.","백그라운드 작업은 응답이 클라이언트로 전송된 이후에 실행되므로, 예외가 발생해도 클라이언트는 이미 200과 {''status'': ''Task started''}를 받은 뒤다.","백그라운드 작업의 예외는 응답 전송 전에 처리돼 클라이언트가 500 오류를 받는다고 오해하기 쉽다."]','{"correct":2}','ANALYZE',0.8,'["fastapi-background-tasks"]'),
+('PYTHON_BACKEND','CODE_READING','다음 인증 함수를 실행하면 만료된 토큰에 대해 어떤 결과가 나오는가?
+
+import jwt
+
+SECRET = ''my-secret''
+
+def authenticate(token):
+    try:
+        payload = jwt.decode(token, SECRET, algorithms=[''HS256''], options={''verify_exp'': False})
+        return True
+    except jwt.InvalidSignatureError:
+        return False','["서명이 유효하지 않으면 만료 여부와 무관하게 언제나 인증에 실패한다고만 알려져 있어 다른 함정은 놓치기 쉽다.","options 파라미터는 서명 알고리즘 이름만 지정하는 용도이며 만료 검증과는 전혀 무관하다고 오해하기 쉽다.","options={''verify_exp'': False}로 인해 만료 시간 검증이 꺼져 있어, 서명만 유효하면 만료된 토큰도 인증에 통과한다.","PyJWT는 언제나 만료 시간을 강제로 검증하므로 이 옵션은 실질적으로 아무 효과가 없다고 잘못 알려져 있다."]','{"correct":2}','ANALYZE',0.8,'["jwt-expiration-not-verified"]'),
+('PYTHON_BACKEND','CODE_READING','다음 FastAPI 의존성 주입에서는 어떤 동작이 일어날까요?
+
+from fastapi import APIRouter, Depends
+
+call_count = 0
+
+async def get_user_data():
+    global call_count
+    call_count += 1
+    return {''count'': call_count}
+
+router = APIRouter()
+
+@router.get(''/users'')
+async def read_users(a=Depends(get_user_data), b=Depends(get_user_data)):
+    return {''a'': a, ''b'': b}','["call_count 값이 요청이 들어올 때마다 자동으로 0으로 초기화된다고 오해하기 쉽다.","두 개의 Depends를 한 엔드포인트에서 동시에 쓰면 FastAPI가 예외를 던진다고 잘못 알려져 있다.","get_user_data가 매 요청마다는 물론 같은 요청 안 a와 b 계산 때도 매번 새로 호출된다고 오해하기 쉽다.","같은 요청 안에서 get_user_data가 두 번 쓰였지만 FastAPI가 결과를 캐시해 실제로는 한 번만 호출되므로 a와 b는 같은 값을 갖는다."]','{"correct":3}','UNDERSTAND',0.8,'["fastapi-dependency-injection-caching"]'),
+('PYTHON_BACKEND','CODE_READING','이 태스크가 네트워크 오류로 실패해 Celery가 자동으로 재시도하면 어떤 문제가 발생할 수 있는가?
+
+from celery import shared_task
+from .models import User
+
+@shared_task(bind=True, max_retries=3)
+def add_credit(self, user_id, amount):
+    user = User.objects.get(id=user_id)
+    user.balance += amount
+    user.save()','["balance 필드는 재시도 시점마다 자동으로 초기화되어 금액이 누적되지 않는다고 오해하기 쉽다.","user.balance += amount 연산은 실행할 때마다 잔액을 더하므로, 재시도로 같은 태스크가 두 번 실행되면 금액이 중복 반영된다.","Celery는 같은 태스크 ID의 재시도를 자동 감지해 중복 실행을 스스로 막아준다고 잘못 알려져 있다.","재시도가 일어나면 user_id 자체가 자동으로 바뀌어 다른 사용자에게 적립된다고 오해하기 쉽다."]','{"correct":1}','EVALUATE',0.8,'["celery-idempotency"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드를 프로덕션에서 실행하면 종종(항상은 아니게) notify_later가 실행되지 않고 조용히 사라진다. 원인은 무엇인가?
+
+import asyncio
+
+async def notify_later(user_id):
+    await asyncio.sleep(5)
+    await send_notification(user_id)
+
+async def handle_event(user_id):
+    asyncio.create_task(notify_later(user_id))
+    return {''status'': ''accepted''}','["asyncio.create_task()로 만든 태스크의 참조를 어디에도 보관하지 않아, 이벤트 루프의 가비지 컬렉션이 태스크를 실행 도중 수거해버려 콜백이 예고 없이 취소될 수 있다.","await asyncio.sleep(5)는 5초가 지나기 전에 런타임이 강제로 타임아웃시켜 send_notification 호출이 아예 이뤄지지 못한다고 오해하기 쉽다. 실제로는 타임아웃이 아니라 참조 소실이 원인이다.","asyncio.create_task()는 handle_event가 반환된 뒤에는 코루틴을 예약할 수 없어 태스크가 애초에 생성되지 않는다고 잘못 알려져 있다.","send_notification 안 예외가 이미 완료된 handle_event의 응답까지 역전파되어 응답을 소급 취소시킨다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.9,'["asyncio-task-lost-reference"]'),
+('PYTHON_BACKEND','CODE_READING','다음 설정에서 send_report 태스크가 정상 처리되고 있음에도(예외 없이) 같은 작업이 다른 워커에 또 배달되어 두 번 실행되는 일이 반복된다. 왜 그런가?
+
+# celeryconfig.py
+broker_transport_options = {''visibility_timeout'': 30}  # 초
+
+@app.task(acks_late=True)
+def send_report(report_id):
+    generate_and_send(report_id)  # 평균 90초 소요','["acks_late=True는 태스크가 실제로 실패했을 때만 재전달을 트리거하는 옵션이라서, 정상적으로 처리되고 있는 태스크가 중복 배달될 리는 전혀 없으며 visibility_timeout 값 자체가 무의미해진다고 오해하기 쉽다.","acks_late=True에서는 워커가 태스크를 ''완료한 뒤''에 ack을 보낸다. visibility_timeout(30초)이 이 태스크의 평균 처리 시간(90초)보다 훨씬 짧아, 브로커가 30초 안에 ack을 못 받으면 다른 워커가 아직 죽지 않은 태스크를 재실행 대상으로 간주해 다시 배달한다.","visibility_timeout이라는 설정은 결과 백엔드 쪽에만 영향을 줄 뿐 태스크가 실제로 배달되는 방식과는 아무 관련이 없으며 브로커는 이 값을 참조조차 하지 않는다고 잘못 알려져 있다.","코드 안에 명시적인 재시도 로직이 없으니 Celery가 이를 스스로 감지해 안전을 위해 알아서 태스크를 복제한 뒤 여러 워커에서 동시에 병렬로 실행하도록 판단해서 처리한다고 오해하기 쉽다."]','{"correct":1}','EVALUATE',0.9,'["celery-acks-late-visibility-timeout"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드에서 두 번째 for 루프는 몇 번의 추가 쿼리를 실행하는가?
+
+qs = Order.objects.prefetch_related(''items'').filter(status=''paid'')
+
+for order in qs.iterator():
+    pass
+
+for order in qs:
+    print(order.items.count())','["iterator()로 이미 한 번 순회했으므로 그 결과가 내부 결과 캐시에 자동으로 남아, 두 번째 루프는 추가 쿼리 없이 캐시된 결과만 그대로 재사용한다고 오해하기 쉽다. 실제로는 iterator가 캐시를 아예 만들지 않는다.","iterator()는 쿼리셋의 내부 결과 캐시를 채우지 않고 매번 새로 스트리밍하므로, 두 번째 for 루프는 order 목록을 다시 조회하는 쿼리 1번과, prefetch가 다시 적용되지 않아 order.items.count() 호출마다 별도 쿼리가 추가로 발생한다.","iterator()를 한 번이라도 호출한 쿼리셋은 그 뒤로 완전히 재사용이 금지되어 두 번째 순회를 시도하는 시점에 곧바로 예외가 발생한다고 잘못 알려져 있다.","prefetch_related는 iterator() 사용 여부와 완전히 무관하게 항상 내부적으로 결과를 캐시해두므로, 두 번째 순회에서도 캐시된 prefetch 결과가 재사용되어 추가 쿼리가 전혀 발생하지 않는다고 오해하기 쉽다."]','{"correct":1}','ANALYZE',0.9,'["django-queryset-iterator-prefetch"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드에서 마지막 Item.objects.create(sku=''B1'') 줄에서 어떤 일이 벌어지는가?
+
+from django.db import transaction, IntegrityError
+from .models import Item
+
+def create_items():
+    with transaction.atomic():
+        Item.objects.create(sku=''A1'')
+        try:
+            Item.objects.create(sku=''A1'')  # sku는 unique 제약
+        except IntegrityError:
+            pass
+        Item.objects.create(sku=''B1'')
+    return ''done''','["atomic 블록 안에서 IntegrityError를 그 자리에서 잡았으니 트랜잭션 상태가 완전히 정상으로 복구되어 B1 생성도 아무 문제 없이 수행된다고 오해하기 쉽다.","atomic 블록 내부에서 DB 수준 예외가 발생하면 해당 트랜잭션이 rollback 대상으로 표시되어, 이후 같은 블록 안의 쿼리 실행 시 TransactionManagementError가 발생한다.","A1이라는 sku가 중복 생성되어 unique 제약을 어긴 채로 데이터베이스에 두 레코드가 그대로 남는다고 잘못 알려져 있다.","IntegrityError는 Django의 트랜잭션 매니저가 알아서 조용히 무시해버려서 이후 코드는 영향받지 않는다고 오해하기 쉽다."]','{"correct":1}','ANALYZE',0.9,'["django-atomic-exception-inside-block"]'),
+('PYTHON_BACKEND','CODE_READING','다음 엔드포인트를 호출하면 응답 JSON에 is_admin 필드가 포함되는가?
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+
+class AdminUser(BaseModel):
+    id: int
+    email: str
+    is_admin: bool
+
+@app.get(''/users/{user_id}'', response_model=UserOut)
+def get_user(user_id: int):
+    return AdminUser(id=user_id, email=''a@b.com'', is_admin=True)','["함수가 실제로 반환한 값이 is_admin 필드까지 포함한 AdminUser 인스턴스이므로 그 필드도 그대로 응답에 실린다고 오해하기 쉽다.","response_model=UserOut이 실제로 반환된 값의 타입(AdminUser)과 정확히 일치하지 않으므로, FastAPI가 이를 스키마 위반으로 간주해 응답 직렬화 단계에서 즉시 500 오류를 던진다고 잘못 알려져 있다.","response_model은 문서화용 스키마 생성에만 관여할 뿐 실제 직렬화 결과는 반환값 그대로 나간다고 오해하기 쉽다.","FastAPI는 response_model에 선언된 필드(id, email)만 직렬화해 응답에 담고, is_admin은 조용히 걸러져 응답에 포함되지 않는다."]','{"correct":3}','EVALUATE',0.9,'["fastapi-response-model-field-truncation"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드에서 태스크가 외부에서 task.cancel()로 취소되면 finally 블록은 실행되는가, 그리고 except Exception은 취소를 잡아 삼키는가?
+
+async def worker():
+    conn = await acquire_connection()
+    try:
+        while True:
+            await process_next(conn)
+    except Exception:
+        logger.exception(''worker failed'')
+    finally:
+        await conn.close()','["asyncio.CancelledError는 파이썬 3.8부터 Exception이 아닌 BaseException을 직접 상속하므로 except Exception에 잡히지 않고 그대로 전파되며, finally의 conn.close()는 정상적으로 실행된다.","취소 시 CancelledError는 여전히 Exception의 서브클래스로 취급되어서 except Exception이 이를 그대로 잡아 로깅한 뒤 루프를 조용히 종료한다고 오해하기 쉽다.","task.cancel()이 호출되는 순간 런타임이 finally 블록 실행을 건너뛰고 즉시 태스크를 종료해버려서 conn.close()는 절대 호출되지 않는다고 잘못 알려져 있다.","CancelledError는 async 함수 문맥 안에서는 애초에 발생할 수 없는 개념이며 task.cancel() 호출은 사실상 아무 효과가 없다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.9,'["asyncio-cancelled-error-baseexception"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드는 주문 저장 후 이메일을 보낸다. 이 코드를 TestCase 기반 테스트에서 실행하면 이메일 발송 함수가 호출되는가?
+
+from django.db import transaction
+
+def place_order(order):
+    order.save()
+    transaction.on_commit(lambda: send_order_email(order.id))
+
+class OrderTest(django.test.TestCase):
+    def test_place_order_sends_email(self):
+        place_order(make_order())
+        assert email_was_sent()','["on_commit에 등록한 콜백은 save() 함수 호출 직후 예외 없이 즉시 동기적으로 실행되므로, 이 테스트는 어떤 상황에서도 항상 통과한다고 오해하기 쉽다.","django.test.TestCase는 각 테스트를 트랜잭션으로 감싸고 테스트가 끝나면 항상 롤백하므로, 실제 커밋이 일어나지 않아 on_commit 콜백이 전혀 실행되지 않는다. 운영에서는 되는데 테스트에서만 실패하는 전형적인 원인이다.","on_commit은 Django 시그널 시스템의 일종이라서 signals.py 파일에 별도로 등록하지 않으면 어떤 경우에도 무시된다고 잘못 알려져 있다.","TestCase는 각 테스트 메서드가 시작·종료될 때마다 실제 데이터베이스에 진짜 커밋을 수행하도록 설계되어 있어, 콜백도 매 테스트마다 정상 호출된다고 오해하기 쉽다."]','{"correct":1}','ANALYZE',0.9,'["django-on-commit-hook"]'),
+('PYTHON_BACKEND','CODE_READING','Order 모델은 nullable ForeignKey인 coupon(Coupon, null=True)을 갖고, Coupon은 여러 Order와 연결되는 역참조 관계다. 다음 코드에서 문제가 되는 부분은?
+
+orders = Order.objects.select_related(''coupon'', ''coupon__campaigns'')
+
+for order in orders:
+    print(order.coupon.code if order.coupon else ''no coupon'')
+    for campaign in order.coupon.campaigns.all() if order.coupon else []:
+        print(campaign.name)','["select_related(''coupon'')는 coupon 필드가 null인 주문을 만나는 순간 예외를 던져버려서 이 쿼리 자체가 실행 도중 실패한다고 오해하기 쉽다. 실제로는 nullable FK에도 select_related가 정상적으로 동작한다.","coupon__campaigns가 역참조(reverse FK) 또는 M2M 관계라면 select_related로는 가져올 수 없어 무시되고, campaigns.all() 순회 시 각 쿠폰마다 별도 쿼리가 실행되는 N+1이 그대로 발생한다. 그 경우 prefetch_related로 바꿔야 한다.","coupon이 nullable FK이니 select_related가 항상 INNER JOIN을 강제해서 coupon이 없는 주문은 결과 집합에서 자동으로 완전히 제외되고 반환되지 않는다고 잘못 알려져 있다. 실제로는 LEFT OUTER JOIN을 사용한다.","select_related에 필드를 여러 개 한꺼번에 넘기면 두 번째 인자부터는 조용히 무시되어 coupon만 조인되고 campaigns는 애초에 요청조차 되지 않는다고 오해하기 쉽다. 실제로는 두 필드 모두 처리를 시도한다."]','{"correct":1}','ANALYZE',0.9,'["django-select-related-limits"]'),
+('PYTHON_BACKEND','CODE_READING','다음 코드를 실행하면 마지막 print(user.name)에서 어떤 일이 벌어지는가?
+
+from sqlalchemy.orm import sessionmaker
+
+Session = sessionmaker(bind=engine)  # expire_on_commit 기본값(True) 그대로
+
+def get_username(user_id):
+    with Session() as session:
+        user = session.query(User).get(user_id)
+        session.commit()
+    return user
+
+user = get_username(1)
+print(user.name)','["expire_on_commit 기본값(True) 때문에 commit() 시점에 user 인스턴스의 속성이 만료(expire)되고, with 블록을 벗어나 세션이 닫힌 뒤 user.name에 접근하면 새로 SELECT를 시도하다가 DetachedInstanceError가 발생한다.","session.commit()은 인스턴스 속성에 어떤 영향도 주지 않으므로 print(user.name)은 세션이 닫힌 뒤에도 항상 처음에 캐시된 값을 그대로 출력한다고 오해하기 쉽다. 실제로는 expire_on_commit 기본값이 속성을 만료시킨다.","with 블록을 벗어나 세션이 닫히는 순간 user 객체 자체가 자동으로 None으로 바뀌어버려서, print(user.name)이 AttributeError를 낸다고 잘못 알려져 있다. 실제로는 객체 자체는 살아있고 속성 접근만 실패한다.","get_username이 값을 반환하기 전에 SQLAlchemy가 세션이 추적하던 모든 속성 값을 미리 순수 파이썬 타입으로 자동 복사해두어서, 세션이 닫힌 뒤에도 print(user.name)이 언제나 안전하게 출력된다고 오해하기 쉽다."]','{"correct":0}','ANALYZE',0.9,'["sqlalchemy-expire-on-commit"]'),
+('PYTHON_BACKEND','CODE_READING','다음 gunicorn 설정으로 서비스를 띄운 뒤 얼마 지나지 않아 워커들이 무작위로 ''connection already closed'' 또는 ''server closed the connection unexpectedly'' 오류를 던진다. 가장 유력한 원인은?
+
+# gunicorn.conf.py
+preload_app = True
+workers = 4
+
+# app.py (모듈 최상단, import 시점에 실행됨)
+engine = create_engine(DATABASE_URL)
+db_connection = engine.connect()','["preload_app=True는 오히려 각 워커가 자기 몫의 커넥션을 새로 여는 것 자체를 원천적으로 차단해버려서 워커가 뜰 때마다 언제나 즉시 오류가 발생한다고 오해하기 쉽다. 실제로는 커넥션을 여는 것을 막지 않는다.","workers=4로 설정하기만 하면 gunicorn이 데이터베이스 커넥션 풀 크기를 자동으로 4등분해 각 워커에게 정확히 나눠 배분해주므로 별도 설정이 전혀 필요 없다고 잘못 알려져 있다.","preload_app=True는 마스터 프로세스가 앱을 한 번만 로드한 뒤 fork로 워커를 만든다. 이때 import 시점에 이미 연 DB 커넥션(db_connection)까지 그대로 fork되어, 여러 워커가 같은 소켓을 공유하다가 한쪽이 사용하거나 닫으면 다른 워커의 연결이 깨진다.","gunicorn은 preload_app 설정과 무관하게 fork() 시점에 항상 부모의 모든 전역 변수(열린 커넥션 포함)를 완전히 새로 초기화해 자식에게 넘기도록 설계되어 있어, 이 코드에서는 충돌이 절대 일어날 수 없다고 잘못 알려져 있다."]','{"correct":2}','ANALYZE',0.9,'["gunicorn-preload-app-fork"]');
