@@ -20,7 +20,7 @@
     "title": { "type": "string", "minLength": 1 },
     "track": {
       "type": "string",
-      "enum": ["BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK"]
+      "enum": ["BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK", "PYTHON_BACKEND"]
     },
     "level": { "type": "string", "enum": ["INTRO", "INTERMEDIATE", "ADVANCED"] },
     "contentMd": { "type": "string", "minLength": 1 },

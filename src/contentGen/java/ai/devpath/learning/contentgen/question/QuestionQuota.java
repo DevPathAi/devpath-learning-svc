@@ -10,7 +10,8 @@ public final class QuestionQuota {
       "FRONTEND_REACT",
       "MOBILE_FLUTTER",
       "DEVOPS",
-      "FULLSTACK");
+      "FULLSTACK",
+      "PYTHON_BACKEND");
 
   public static final Map<String, Integer> TYPE_TARGETS = Map.of(
       "MCQ", 70,

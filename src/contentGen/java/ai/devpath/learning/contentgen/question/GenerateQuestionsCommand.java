@@ -2,11 +2,14 @@ package ai.devpath.learning.contentgen.question;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class GenerateQuestionsCommand {
 
   public static void main(String[] args) throws Exception {
-    var model = args.length > 0 ? args[0] : "qwen2.5:7b";
+    var model = args.length > 0 && !args[0].isBlank() ? args[0] : "qwen2.5:7b";
+    var only = args.length > 1 && !args[1].isBlank() ? args[1] : null;
+    var tracks = only == null ? QuestionQuota.TRACKS : List.of(only);
     var baseUrl = System.getenv().getOrDefault("OLLAMA_BASE_URL", "http://localhost:11434");
     var client = new OllamaQuestionDraftClient(baseUrl, model);
     var systemPrompt = Files.readString(Path.of("tools/content-gen/prompts/question-system.md"));
@@ -14,15 +17,16 @@ public class GenerateQuestionsCommand {
     Files.createDirectories(output.getParent());
 
     var draft = new StringBuilder();
-    for (String track : QuestionQuota.TRACKS) {
-      var trackPrompt = Files.readString(Path.of("tools/content-gen/prompts/tracks/" + slug(track) + ".md"));
+    for (String track : tracks) {
+      var trackPrompt = Files.readString(
+          Path.of("tools/content-gen/prompts/tracks/" + slug(track) + ".md"));
       draft.append(client.generate(track, QuestionQuota.PER_TRACK, systemPrompt + "\n\n" + trackPrompt));
       if (!draft.toString().endsWith("\n")) {
         draft.append("\n");
       }
     }
     Files.writeString(output, draft.toString());
-    System.out.println("Wrote draft questions to " + output);
+    System.out.println("Wrote draft questions for " + tracks + " to " + output);
   }
 
   private static String slug(String track) {

@@ -25,6 +25,12 @@ repositories {
 	}
 }
 
+// devpath-shared는 SNAPSHOT이고 자주 발행된다. Gradle이 changing 모듈을 24시간 캐시하면
+// 최신 아티팩트를 받지 못해 스키마 불일치로 테스트가 깨질 수 있다(2026-08-14 실측: CHECK 8값 확장 발행 후 CI 8건 실패).
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+}
+
 val contentGenSourceSet = sourceSets.create("contentGen") {
 	java.srcDir("src/contentGen/java")
 	resources.srcDir("tools/content-gen")
@@ -115,6 +121,18 @@ tasks.register<JavaExec>("validateQuestions") {
 	args("tools/content-gen/generated/approved/questions.jsonl")
 }
 
+tasks.register<JavaExec>("reviewQuestionsLocal") {
+	group = "content generation"
+	description = "Review approved questions with Claude. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.ReviewQuestionsCommand")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		(project.findProperty("track") as String? ?: ""),
+		"tools/content-gen/generated/review"
+	)
+}
+
 tasks.register<JavaExec>("makeQuestionSeedSql") {
 	group = "content generation"
 	description = "Create deterministic question_bank seed SQL from approved JSONL."
@@ -135,7 +153,8 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.question.GenerateQuestionsCommand")
 	args(
-		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
+		providers.gradleProperty("track").orElse("").get()
 	)
 }
 
@@ -167,7 +186,8 @@ tasks.register<JavaExec>("generateContentsLocal") {
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.content.GenerateContentsCommand")
 	args(
-		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
+		providers.gradleProperty("track").orElse("").get()
 	)
 }
 
