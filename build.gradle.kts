@@ -147,8 +147,8 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.question.GenerateQuestionsCommand")
 	args(
-		(project.findProperty("ollama.model") as String? ?: "qwen2.5:7b"),
-		(project.findProperty("track") as String? ?: "")
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
+		providers.gradleProperty("track").orElse("").get()
 	)
 }
 
@@ -180,7 +180,8 @@ tasks.register<JavaExec>("generateContentsLocal") {
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.content.GenerateContentsCommand")
 	args(
-		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get()
+		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
+		providers.gradleProperty("track").orElse("").get()
 	)
 }
 

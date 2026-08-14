@@ -12,7 +12,8 @@ public final class ContentQuota {
       "FRONTEND_REACT",
       "MOBILE_FLUTTER",
       "DEVOPS",
-      "FULLSTACK");
+      "FULLSTACK",
+      "PYTHON_BACKEND");
 
   public static final Map<String, Integer> LEVEL_TARGETS = levelTargets();
 
