@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ai.devpath.learning.assessment.QuestionBank;
 import ai.devpath.learning.assessment.QuestionBankRepository;
+import ai.devpath.learning.contentgen.question.QuestionQuota;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -22,16 +23,19 @@ class SeedSqlTest {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
+  // QuestionQuota.PER_TRACK 의 실제 값과 같다(100). 그 상수는 package-private 이라
+  // contentgen.question 밖인 이 seed 패키지에서 참조할 수 없어 이름 있는 값으로 복제한다.
+  private static final int PER_TRACK = 100;
+
   @Test
-  void seedLoadsFiveHundredMd2QuestionsWithTrackQuotas() throws Exception {
+  void seedLoadsAllTracksWithQuotas() throws Exception {
     var rows = questions.findAll();
 
-    assertThat(rows).hasSize(500);
+    assertThat(rows).hasSize(QuestionQuota.TRACKS.size() * PER_TRACK);
     assertThat(rows).extracting(QuestionBank::getBloomLevel).doesNotContain("CREATE");
 
     var byTrack = rows.stream().collect(Collectors.groupingBy(QuestionBank::getTrack));
-    assertThat(byTrack.keySet()).containsExactlyInAnyOrder(
-        "BACKEND_SPRING", "FRONTEND_REACT", "MOBILE_FLUTTER", "DEVOPS", "FULLSTACK");
+    assertThat(byTrack.keySet()).containsExactlyInAnyOrderElementsOf(QuestionQuota.TRACKS);
     for (var entry : byTrack.entrySet()) {
       assertThat(entry.getValue()).hasSize(100);
       var byType = entry.getValue().stream()

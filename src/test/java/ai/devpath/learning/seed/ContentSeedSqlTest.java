@@ -2,6 +2,7 @@ package ai.devpath.learning.seed;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ai.devpath.learning.contentgen.content.ContentQuota;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class ContentSeedSqlTest {
   @Autowired JdbcTemplate jdbc;
 
   @Test
-  void seedLoadsOneHundredFiftyPublishedContentsWithActiveEmbeddings() {
+  void seedLoadsAllTracksOfPublishedContentsWithActiveEmbeddings() {
     Integer contentCount = jdbc.queryForObject("select count(*) from contents", Integer.class);
     Integer embeddingCount = jdbc.queryForObject(
         "select count(*) from content_embeddings", Integer.class);
@@ -45,10 +46,11 @@ class ContentSeedSqlTest {
         )
         """, Integer.class);
 
-    assertThat(contentCount).isEqualTo(150);
+    int expectedContentCount = ContentQuota.TRACKS.size() * ContentQuota.PER_TRACK;
+    assertThat(contentCount).isEqualTo(expectedContentCount);
     // 콘텐츠는 ContentChunker가 H2 섹션·길이 기준으로 다중 청크로 분할하므로
     // 임베딩 수는 콘텐츠 수 이상이다(콘텐츠당 최소 1개는 아래 contentsWithoutEmbedding=0으로 보장).
-    assertThat(embeddingCount).isGreaterThanOrEqualTo(150);
+    assertThat(embeddingCount).isGreaterThanOrEqualTo(expectedContentCount);
     assertThat(nonPublished).isZero();
     assertThat(nonActive).isZero();
     assertThat(duplicateSlugs).isZero();
@@ -61,12 +63,9 @@ class ContentSeedSqlTest {
         """, (rs, rowNum) -> Map.entry(rs.getString("track"), rs.getInt("cnt")))
         .stream()
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    assertThat(byTrack).containsOnly(
-        Map.entry("BACKEND_SPRING", 30),
-        Map.entry("FRONTEND_REACT", 30),
-        Map.entry("MOBILE_FLUTTER", 30),
-        Map.entry("DEVOPS", 30),
-        Map.entry("FULLSTACK", 30));
+    Map<String, Integer> expectedByTrack = ContentQuota.TRACKS.stream()
+        .collect(Collectors.toMap(track -> track, track -> ContentQuota.PER_TRACK));
+    assertThat(byTrack).containsExactlyInAnyOrderEntriesOf(expectedByTrack);
 
     Double distance = jdbc.queryForObject("""
         select embedding <=> cast(? as vector)
