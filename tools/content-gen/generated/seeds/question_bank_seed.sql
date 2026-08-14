@@ -135,6 +135,18 @@ public class MyKafkaConsumer implements Consumer<KafkaMessage> {
     }
 }
 ','["메시지를 처리하지 않고 무시합니다.","Kafka 토픽에서 메시지가 도착하면 해당 메시지를 처리하고 출력합니다.","토픽에 대한 메시지는 Kafka 컨슈머 그룹이 아닌 다른 소비자에게 넘겨줍니다.","받은 메시지의 내용을 로그로 기록하지 않습니다."]','{"correct":1}','UNDERSTAND',0.6,'["kafka-consumer"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Cacheable(value = "cacheName", key = "{#id}")
+public User getUser(Long id){
+    return repository.findById(id).orElse(null);
+}
+
+@CacheEvict(value = "cacheName", key = "{#id}", beforeInvocation = true)
+public void deleteUser(Long id){
+    repository.deleteById(id);
+}
+','["삭제 이전에 캐시에서 해당 엔티티를 삭제한다.","DB에서 엔티티를 먼저 삭제한 후 캐시에서 해당 ID로 값을 찾는다.","엔티티가 DB에서 제거되었지만 캐시에서는 여전히 존재한다.","캐시에서 값이 삭제되지 않고 DB만 업데이트된다."]','{"correct":0}','REMEMBER',0.6,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Boot 애플리케이션에서 프로파일 기반 설정을 사용하는 예입니다.
 
 @Configuration
@@ -146,18 +158,6 @@ public class ProductionConfig {
     }
 }
 ','["production 환경에서만 데이터 소스를 설정합니다.","개발 환경에서 자동으로 데이터 소스가 생성됩니다.","prod 프로필이 활성화되지 않은 경우 데이터 소스가 설정됩니다.","application.yml에서 설정 값을 무시하고 프로파일을 사용합니다."]','{"correct":0}','ANALYZE',0.6,'["spring-boot-profiles"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Cacheable(value = "cacheName", key = "{#id}")
-pubic User getUser(Long id){
-    return repository.findById(id).orElse(null);
-}
-
-@CacheEvict(value = "cacheName", key = "{#id}", beforeInvocation = true)
-pubic void deleteUser(Long id){
-    repository.deleteById(id);
-}
-','["삭제 이전에 캐시에서 해당 엔티티를 삭제한다.","DB에서 엔티티를 먼저 삭제한 후 캐시에서 해당 ID로 값을 찾는다.","엔티티가 DB에서 제거되었지만 캐시에서는 여전히 존재한다.","캐시에서 값이 삭제되지 않고 DB만 업데이트된다."]','{"correct":0}','REMEMBER',0.6,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드 스니펫에서 @ControllerAdvice와 함께 사용되는 @ExceptionHandler 어노테이션의 동작을 설명해주세요.
 
 @ControllerAdvice
@@ -192,18 +192,6 @@ public void save(User user) {
     repository.save(user);
 }
 ','["트랜잭션의 격리 수준을 REPEATABLE_READ로 설정합니다.","트랜잭션의 격리를 새로운 독립 트랜잭션으로 시작합니다.","트랜잭션의 격리 수준을 READ_COMMITTED로 설정합니다.","트랜잭션의 격리를 현재 트랜잭션과 동일하게 유지합니다."]','{"correct":1}','UNDERSTAND',0.6,'["spring-transaction-propagation"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Transactional(readOnly = false)
-pubic void updateMethod(){
-    try{
-        repository.save(entity);
-        throw new Exception("Exception occurred");
-    } catch(Exception e){
-        System.out.println("caught exception");
-    }
-}
-','["예외가 catch 블록에서 처리되어 트랜잭션이 정상 커밋되고 엔티티가 저장된다.","checked exception이므로 Spring이 자동으로 트랜잭션을 롤백하여 엔티티가 저장되지 않는다.","catch 블록에서 예외를 처리했더라도 Spring은 트랜잭션을 강제로 롤백한다.","예외가 발생하는 즉시 트랜잭션이 종료되어 메서드 실행이 중단된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 @Cacheable 어노테이션을 사용하여 데이터베이스 쿼리를 캐시합니다.
 
 @Cacheable("userCache")
@@ -230,13 +218,6 @@ private void credit(Account account, int amount) throws SQLException {
     updateBalance(account, amount);
 }
 ','["동작은 정상적으로 이루어지며 두 계좌의 잔액이 변경됩니다.","fromAccount에서 금액을 빼고 toAccount에 추가하려고 시도했지만 비정상적인 트랜잭션으로 실패합니다.","transferMoney 메소드가 실행될 때 발생하는 예외는 롤백하지 않습니다.","위 코드에서는 @Transactional 어노테이션이 적용되지 않았습니다."]','{"correct":0}','ANALYZE',0.6,'["spring-transaction"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드는 @Transactional(readOnly = true)로 설정된 메서드에서 save()를 호출할 때 어떤 일이 발생하나?
-
-@Transactional(readOnly = true)
-pubic void readOnlyMethod(){
-    repository.save(entity);
-}
-','["실행 중 예외가 발생한다.","정상적으로 데이터베이스에 엔티티가 저장된다.","데이터베이스 연결이 열리지만 아무 작업도 수행되지 않는다.","엔티티는 영속성 컨텍스트에만 들어간다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정이 주어진 상황에서, self-invocation 문제는 어떻게 해결할 수 있는가?
 
 @Transactional(readOnly = true)
@@ -244,6 +225,25 @@ public void readOnlyMethod() {
     readOnlyMethod();
 }
 ','["메서드를 동기화 처리한다.","스프링 빈 프록시를 직접 호출하여 트랜잭션을 생성한다.","인터페이스 메서드를 통해 메서드를 호출한다.","@Transactional 어노테이션을 사용하지 않고 별도로 트랜잭션을 시작한다."]','{"correct":2}','EVALUATE',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Transactional(readOnly = false)
+public void updateMethod(){
+    try{
+        repository.save(entity);
+        throw new Exception("Exception occurred");
+    } catch(Exception e){
+        System.out.println("caught exception");
+    }
+}
+','["예외가 catch 블록에서 처리되어 트랜잭션이 정상 커밋되고 엔티티가 저장된다.","checked exception이므로 Spring이 자동으로 트랜잭션을 롤백하여 엔티티가 저장되지 않는다.","catch 블록에서 예외를 처리했더라도 Spring은 트랜잭션을 강제로 롤백한다.","예외가 발생하는 즉시 트랜잭션이 종료되어 메서드 실행이 중단된다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드는 @Transactional(readOnly = true)로 설정된 메서드에서 save()를 호출할 때 어떤 일이 발생하나?
+
+@Transactional(readOnly = true)
+public void readOnlyMethod(){
+    repository.save(entity);
+}
+','["실행 중 예외가 발생한다.","정상적으로 데이터베이스에 엔티티가 저장된다.","데이터베이스 연결이 열리지만 아무 작업도 수행되지 않는다.","엔티티는 영속성 컨텍스트에만 들어간다."]','{"correct":0}','REMEMBER',0.6,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(propagation = Propagation.REQUIRES_NEW) 설정이 주어진 상황에서, 기존 트랜잭션의 영향은 무엇인가?
 
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -251,6 +251,14 @@ public void processPayment() {
     paymentService.createTransaction();
 }
 ','["기존 트랜잭션이 롤백된다.","기존 트랜잭션이 커밋된다.","기존 트랜잭션은 유지되지만 새 트랜잭션을 추가한다.","기존 트랜잭션과 새 트랜잭션이 병렬로 실행된다."]','{"correct":2}','EVALUATE',0.6,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
+
+@Transactional(readOnly = false)
+public void updateMethod(){
+    repository.save(entity);
+    throw new RuntimeException("Exception occurred");
+}
+','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":2}','REMEMBER',0.8,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Security에서 인증을 처리하는 예입니다.
 
 @Override
@@ -260,13 +268,6 @@ protected void configure(HttpSecurity http) throws Exception {
         .anyRequest().authenticated();
 }
 ','["인증된 사용자만 비공개 경로에 대한 요청을 처리합니다.","비밀번호 해싱이 적용됩니다.","로그인 시 CSRF 보호를 무시합니다.","모든 요청은 인가 단계에서 허용됩니다."]','{"correct":0}','ANALYZE',0.8,'["spring-security-authentication"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 @Cacheable 동작을 선택하시오.
-
-@Cacheable(value = "cacheName", key = "{#id}")
-pubic User getUser(Long id){
-    return repository.findById(id).orElse(null);
-}
-','["메서드 호출 시마다 캐시에 저장된다.","캐시에서 값을 찾지 못하면 DB에서 가져와 캐시에 저장한다.","DB에서 값을 가져오지 않고 항상 캐시만 참조한다.","캐시를 무시하고 매번 DB에서 새로 조회한다."]','{"correct":1}','REMEMBER',0.8,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정은 어떤 역할을 하는가?
 
 @Transactional(readOnly = true)
@@ -274,6 +275,13 @@ public void readData() {
     List<User> users = userRepository.findAll();
 }
 ','["트랜잭션을 시작하지 않고 데이터를 읽는다.","데이터를 읽지만 변경사항을 커밋할 수 없다.","데이터베이스에 대한 모든 쓰기 작업을 금지한다.","데이터베이스에서 읽은 내용만 메모리에 저장한다."]','{"correct":2}','EVALUATE',0.8,'["spring-transaction"]'),
+('BACKEND_SPRING','CODE_READING','다음 코드의 @Cacheable 동작을 선택하시오.
+
+@Cacheable(value = "cacheName", key = "{#id}")
+public User getUser(Long id){
+    return repository.findById(id).orElse(null);
+}
+','["메서드 호출 시마다 캐시에 저장된다.","캐시에서 값을 찾지 못하면 DB에서 가져와 캐시에 저장한다.","DB에서 값을 가져오지 않고 항상 캐시만 참조한다.","캐시를 무시하고 매번 DB에서 새로 조회한다."]','{"correct":1}','REMEMBER',0.8,'["spring-cache"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드에서 @Transactional(readOnly = true) 설정이 주어진 상황에서, readOnlyMethod() 메서드의 호출은 어떻게 작동하는가?
 
 @Transactional(readOnly = true)
@@ -311,14 +319,6 @@ public class CustomSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
     }
 }
 ','["CSRF 보호를 비활성화하고, /admin 경로에 대한 요청은 ADMIN 역할이 있어야 합니다.","모든 경로에 대해 CSRF 보호가 적용됩니다.","/admin 경로에 대한 요청은 ADMIN 역할이 없어도 접근할 수 있습니다.","Spring Security 필터 체인을 사용하지 않습니다."]','{"correct":0}','UNDERSTAND',0.8,'["spring-security-csrf"]'),
-('BACKEND_SPRING','CODE_READING','다음 코드의 동작 결과를 선택하시오.
-
-@Transactional(readOnly = false)
-pubic void updateMethod(){
-    repository.save(entity);
-    throw new RuntimeException("Exception occurred");
-}
-','["트랜잭션이 유지되고 엔티티가 저장된다.","트랜잭션은 롤백되지만 엔티티는 저장되지 않는다.","엔티티는 저장되지만 트랜잭션이 예외로 인해 롤백된다.","예외 처리 없이 프로그램이 종료된다."]','{"correct":2}','REMEMBER',0.8,'["spring-transaction"]'),
 ('BACKEND_SPRING','CODE_READING','다음 코드는 Spring Boot에서 @ConditionalOnProperty를 사용해 설정된 프로파일에 따라 빈을 등록하는 예입니다.
 
 @Configuration
@@ -1049,20 +1049,6 @@ class MyWidget extends StatelessWidget {
 }
 ```','["final 변수 value가 변경될 때","Text 위젯이 변경될 때","MyWidget 클래스의 인스턴스가 새로 생성될 때","BuildContext 객체가 변경될 때"]','{"correct":2}','ANALYZE',0.9,'["flutter-widget-lifecycle","stateless-widget"]'),
 ('MOBILE_FLUTTER','MCQ','Flutter에서 InheritedWidget을 사용할 때, 어떤 상황에서 이를 적용해야 하는가?','["상태 관리에 필요한 클래스는 항상 StatefulWidget을 사용해야 한다.","하위 위젯 간 공유 상태를 효율적으로 관리하기 위해 InheritedWidget을 사용한다.","모든 위젯은 StatelessWidget만 사용하면 된다.","InheritedWidget은 앱의 모든 상태를 관리할 수 있다."]','{"correct":1}','ANALYZE',0.9,'["inheritedwidget"]'),
-('MOBILE_FLUTTER','CODE_READING','다음 코드에서 Flutter의 플랫폼 채널을 사용하여 네이티브 액션을 트리거하는 동작에 대한 설명을 제공하세요.
-
-import ''dart:io'' show Platform;
-class NativeActionHandler {
-nit() {} 
-nvokeNativeFunction(String actionName) async {
-if (Platform.isAndroid) {
-// Android 플랫폼에서 액션 호출
-} else if (Platform.isIOS) {
-// iOS 플랫폼에서 액션 호출
-}
-}
-}
-','["invokeNativeFunction 메서드는 Platform.isAndroid 또는 Platform.isIOS를 사용하여 특정 플랫폼에 맞는 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 모든 플랫폼에서 동일한 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 Flutter 앱 내부에서만 동작하며, 네이티브 코드와 상호 작용하지 않습니다.","invokeNativeFunction 메서드는 항상 Android 플랫폼에서만 동작합니다."]','{"correct":0}','EVALUATE',0.2,'["platform-channel"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드에서 `Navigator`가 어떤 동작을 하는가?
 
 void _navigateToProfile() {
@@ -1072,6 +1058,20 @@ void _navigateToProfile() {
   );
 }
 ','["현재 페이지를 보여주는 역할","새로운 페이지로 이동시키는 역할","페이지의 상태 관리를 위한 역할","위젯 트리 구조를 구성하는 역할"]','{"correct":1}','UNDERSTAND',0.2,'["navigation-concepts"]'),
+('MOBILE_FLUTTER','CODE_READING','다음 코드에서 Flutter의 플랫폼 채널을 사용하여 네이티브 액션을 트리거하는 동작에 대한 설명을 제공하세요.
+
+import ''dart:io'' show Platform;
+class NativeActionHandler {
+init() {} 
+invokeNativeFunction(String actionName) async {
+if (Platform.isAndroid) {
+// Android 플랫폼에서 액션 호출
+} else if (Platform.isIOS) {
+// iOS 플랫폼에서 액션 호출
+}
+}
+}
+','["invokeNativeFunction 메서드는 Platform.isAndroid 또는 Platform.isIOS를 사용하여 특정 플랫폼에 맞는 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 모든 플랫폼에서 동일한 네이티브 함수를 호출합니다.","invokeNativeFunction 메서드는 Flutter 앱 내부에서만 동작하며, 네이티브 코드와 상호 작용하지 않습니다.","invokeNativeFunction 메서드는 항상 Android 플랫폼에서만 동작합니다."]','{"correct":0}','EVALUATE',0.2,'["platform-channel"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드는 Flutter 앱에서 플랫폼 채널을 사용하여 네이티브 기능에 액세스합니다.
 
 Future<void> _getBatteryLevel() async {
@@ -1197,25 +1197,6 @@ class DataConsumer extends StatelessWidget {
   }
 }
 ','["InheritedWidget은 위젯 트리에 한 번만 생성되며, 모든 자식 위젯들이 접근할 수 있습니다.","InheritedWidget은 앱 내에서 특정 위젯들만 접근 가능하며, 다른 위젯들은 접근할 수 없습니다.","DataConsumer 위젯이 생성될 때마다 새로운 AppData 인스턴스가 생성됩니다.","위젯 트리에 InheritedWidget이 여러 번 생성되며, 각각의 인스턴스는 독립적으로 작동합니다."]','{"correct":0}','ANALYZE',0.4,'["inherited-widget"]'),
-('MOBILE_FLUTTER','CODE_READING','다음 코드에서 InheritedWidget을 사용한 상태 공유와 rebuild 최소화에 대한 설명을 제공하세요.
-
-class ThemeProvider extends InheritedWidget {
-final ThemeData theme;
-ThemeProvider({Key key, @required this.theme, Widget child}) : super(key: key, child: child);
-static ThemeProvider of(BuildContext context) =>
-castToInheritedElement(context.inheritFromElement());
-nit(): super();
-}
-class MyApp extends StatelessWidget {
-@override
-Widget build(BuildContext context) {
-return ThemeProvider(
-theme: ThemeData.light(),
-child: MaterialApp(title: ''Flutter Demo'', theme: ThemeData()),
-);
-}
-}
-','["ThemeProvider는 InheritedWidget을 사용하여 위젯 트리 전체에 주제 설정을 공유합니다.","ThemeProvider는 StatelessWidget을 사용하며, rebuild를 최소화하지 않습니다.","ThemeProvider는 InheritedWidget을 사용하지 않고 각각의 위젯에 개별적으로 주제를 전달합니다.","ThemeProvider는 MaterialApp에서 직접 ThemeData를 사용하여 상태를 관리합니다."]','{"correct":0}','EVALUATE',0.4,'["inheritedwidget-state-management"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드는 ListView.builder를 사용하여 많은 항목을 효율적으로 표시하려 합니다.
 
 ListView.builder(
@@ -1245,6 +1226,25 @@ void _incrementCounter() {
   });
 }
 ','["build 메서드에서 setState 호출","_incrementCounter 메서드에서 setState 호출","initState 메서드에서 setState 호출","dispose 메서드에서 setState 호출"]','{"correct":1}','UNDERSTAND',0.4,'["state-management"]'),
+('MOBILE_FLUTTER','CODE_READING','다음 코드에서 InheritedWidget을 사용한 상태 공유와 rebuild 최소화에 대한 설명을 제공하세요.
+
+class ThemeProvider extends InheritedWidget {
+final ThemeData theme;
+ThemeProvider({Key key, @required this.theme, Widget child}) : super(key: key, child: child);
+static ThemeProvider of(BuildContext context) =>
+castToInheritedElement(context.inheritFromElement());
+init(): super();
+}
+class MyApp extends StatelessWidget {
+@override
+Widget build(BuildContext context) {
+return ThemeProvider(
+theme: ThemeData.light(),
+child: MaterialApp(title: ''Flutter Demo'', theme: ThemeData()),
+);
+}
+}
+','["ThemeProvider는 InheritedWidget을 사용하여 위젯 트리 전체에 주제 설정을 공유합니다.","ThemeProvider는 StatelessWidget을 사용하며, rebuild를 최소화하지 않습니다.","ThemeProvider는 InheritedWidget을 사용하지 않고 각각의 위젯에 개별적으로 주제를 전달합니다.","ThemeProvider는 MaterialApp에서 직접 ThemeData를 사용하여 상태를 관리합니다."]','{"correct":0}','EVALUATE',0.4,'["inheritedwidget-state-management"]'),
 ('MOBILE_FLUTTER','CODE_READING','다음 코드에서 `Stack` 위젯이 어떤 동작을 하는가?
 
 @override
@@ -1355,7 +1355,7 @@ class MyHomePage extends StatefulWidget {
 _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
-nit(): super();
+init(): super();
 dispose() {
 super.dispose();
 // 리소스 해제 코드
@@ -1448,7 +1448,7 @@ Counter({Key key, this.initialCount}) : super(key: key);
 _CounterState createState() => _CounterState();
 }
 class _CounterState extends State<Counter> {
-nit(): count = widget.initialCount;
+init(): count = widget.initialCount;
 void increment() { setState(() { count++; }); }
 Widget build(BuildContext context) {
 return Text(count.toString());
@@ -2158,7 +2158,7 @@ public ResponseEntity<Map<String, String>> login(@RequestBody UserCredentials us
 ('FULLSTACK','CODE_READING','다음 코드가 Spring Boot에서 사용되는 @Transactional 어노테이션을 사용하여 트랜잭션 관리를 구현하고 있습니다.
 
 @Transactional(rollbackFor = Exception.class)
-pubic void saveUser(User user) {
+public void saveUser(User user) {
     userRepository.save(user);
 }
 
@@ -2203,6 +2203,13 @@ public Health health() {
             .withDetail("database", "connected")
             .build();
 }','["1. 배포 환경에서 데이터베이스 연결 상태를 확인하지 않습니다.","2. 항상 ''DOWN'' 상태를 반환합니다.","3. 헬스 체크 결과가 JSON 형식으로 반환됩니다.","4. ''database''와 같은 세부 정보는 없을 수 있습니다."]','{"correct":0}','ANALYZE',0.6,'["health-check-deployment"]'),
+('FULLSTACK','CODE_READING','다음 Java 코드는 Spring Boot에서 사용되는 @RequestMapping 어노테이션을 사용하여 REST API를 정의하고 있습니다.
+
+@RequestMapping(value = "/api", method = RequestMethod.GET)
+public String getApi() { return "Hello, World!"; }
+
+이 코드의 문제점은 무엇인가요?
+','["@RequestMapping 어노테이션에서 GET 메서드를 지원하지 않는다.","punic String 대신 public ResponseEntity<String>을 사용해야 한다.","\"Hello, World!\" 대신 JSON 형태로 반환해야 한다.","API 경로가 잘못되어 요청을 받지 못한다."]','{"correct":1}','EVALUATE',0.6,'["rest-api-contract"]'),
 ('FULLSTACK','CODE_READING','다음 코드는 사용자의 이메일 주소 변경을 처리하는 API 입니다.
 
 @PutMapping("/profile/email")
@@ -2233,13 +2240,6 @@ public UserDTO getUserProfile(@RequestParam String userId) {
 }
 
 userRepository.findByUserId() 메서드가 존재하지 않는 경우에 대한 처리를 추가해야 합니다.','["@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) {\n    User user = userRepository.findByUserId(userId);\n    if (user == null) {\n        throw new ResourceNotFoundException();\n    }\n    return modelMapper.map(user, UserDTO.class);\n}","@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    try {\n        User user = userRepository.findByUserId(userId);\n        if (user == null) {\n            throw new ResourceNotFoundException();\n        }\n        return modelMapper.map(user, UserDTO.class);\n    } catch (UserRepositoryException e) {\n        throw new ResourceNotFoundException(e.getMessage());\n    }\n}","@GetMapping(\"/profile\")\npublic ResponseEntity<UserDTO> getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    try {\n        User user = userRepository.findByUserId(userId);\n        if (user == null) {\n            throw new ResourceNotFoundException();\n        }\n        return ResponseEntity.ok(modelMapper.map(user, UserDTO.class));\n    } catch (UserRepositoryException e) {\n        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);\n    }\n}","@GetMapping(\"/profile\")\npublic UserDTO getUserProfile(@RequestParam String userId) throws UserRepositoryException {\n    User user = userRepository.findByUserId(userId);\n    if (user == null) {\n        throw new ResourceNotFoundException();\n    }\n    return modelMapper.map(user, UserDTO.class);\n}"]','{"correct":1}','APPLY',0.6,'["api-design","exception-handling"]'),
-('FULLSTACK','CODE_READING','다음 Java 코드는 Spring Boot에서 사용되는 @RequestMapping 어노테이션을 사용하여 REST API를 정의하고 있습니다.
-
-@RequestMapping(value = "/api", method = RequestMethod.GET)
-pubic String getApi() { return "Hello, World!"; }
-
-이 코드의 문제점은 무엇인가요?
-','["@RequestMapping 어노테이션에서 GET 메서드를 지원하지 않는다.","punic String 대신 public ResponseEntity<String>을 사용해야 한다.","\"Hello, World!\" 대신 JSON 형태로 반환해야 한다.","API 경로가 잘못되어 요청을 받지 못한다."]','{"correct":1}','EVALUATE',0.6,'["rest-api-contract"]'),
 ('FULLSTACK','CODE_READING','다음은 프론트엔드에서 REST API로 데이터를 요청하는 코드입니다. 
 
 fetch(`/api/products/${productId}`, {
