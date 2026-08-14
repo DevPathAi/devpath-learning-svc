@@ -159,6 +159,38 @@ class QuestionValidatorTest {
   }
 
   @Test
+  void rejectsLongestAnswerBias() {
+    var questions = validQuestions();
+    applyLongestAnswerBias(questions, "FULLSTACK", 70);
+
+    var report = validator.validate(questions);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("longest answer bias").contains("FULLSTACK"));
+  }
+
+  @Test
+  void doesNotCountTiedLongestOptions() {
+    var report = validator.validate(validQuestions());
+
+    assertThat(report.errors()).noneMatch(error -> error.contains("longest answer bias"));
+  }
+
+  @Test
+  void longestAnswerBiasBoundaryAtSixtyPercent() {
+    var atBoundary = validQuestions();
+    applyLongestAnswerBias(atBoundary, "DEVOPS", 60);
+    var boundaryReport = validator.validate(atBoundary);
+    assertThat(boundaryReport.errors()).noneMatch(error -> error.contains("longest answer bias"));
+
+    var overBoundary = validQuestions();
+    applyLongestAnswerBias(overBoundary, "DEVOPS", 61);
+    var overReport = validator.validate(overBoundary);
+    assertThat(overReport.errors()).anySatisfy(error ->
+        assertThat(error).contains("longest answer bias").contains("DEVOPS"));
+  }
+
+  @Test
   void rejectsContentWithoutKorean() {
     var questions = validQuestions();
     questions.set(0, withContent(questions.get(0), "What is the default bean scope?"));
@@ -250,5 +282,23 @@ class QuestionValidatorTest {
   private static ApprovedQuestion withContent(ApprovedQuestion q, String content) {
     return new ApprovedQuestion(q.track(), q.questionType(), content, q.options(), q.answerKey(),
         q.bloomLevel(), q.difficulty(), q.conceptTags(), q.explanation());
+  }
+
+  /**
+   * 지정한 트랙의 앞쪽 {@code count}개 문항에서 정답 보기만 길게 늘려
+   * "유일한 최장 보기 = 정답"이 되게 만든다. 기존 픽스처는 네 보기 길이가 모두 같으므로
+   * 텍스트를 덧붙이기만 해도 즉시 유일한 최장 보기가 된다.
+   */
+  private static void applyLongestAnswerBias(List<ApprovedQuestion> questions, String track, int count) {
+    int applied = 0;
+    for (int i = 0; i < questions.size() && applied < count; i++) {
+      var q = questions.get(i);
+      if (!track.equals(q.track())) continue;
+      int correct = q.answerKey().correct();
+      var options = new ArrayList<>(q.options());
+      options.set(correct, options.get(correct) + " 상세하게 설명하면 다음과 같은 이유로 정답입니다");
+      questions.set(i, withOptions(q, options));
+      applied++;
+    }
   }
 }

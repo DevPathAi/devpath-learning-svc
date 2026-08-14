@@ -15,6 +15,11 @@ public class QuestionValidator {
   private static final List<String> ALLOWED_BLOOM = List.of(
       "REMEMBER", "UNDERSTAND", "APPLY", "ANALYZE", "EVALUATE");
   private static final double MAX_ANSWER_KEY_SHARE = 0.5;
+  /**
+   * 정답이 "유일한 최장 보기"인 문항 비율의 상한. 기존 5트랙 실측 최대는 49%(MOBILE_FLUTTER)로
+   * 전부 이 값 아래이며, PYTHON_BACKEND 는 73%로 이 임계를 초과해 걸린다.
+   */
+  private static final double MAX_LONGEST_ANSWER_SHARE = 0.6;
 
   public QuestionValidationReport validate(List<ApprovedQuestion> questions) {
     var errors = new ArrayList<String>();
@@ -30,6 +35,7 @@ public class QuestionValidator {
     validateDuplicateOptionSets(questions, errors);
     validateDuplicateContents(questions, errors);
     validateAnswerKeyBias(questions, errors);
+    validateLongestAnswerBias(questions, errors);
     validateDistributionWarnings(questions, warnings);
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
@@ -227,6 +233,37 @@ public class QuestionValidator {
           errors.add(track.getKey() + ": answer key bias — position " + position.getKey()
               + " holds " + position.getValue() + "/" + total);
         }
+      }
+    }
+  }
+
+  private void validateLongestAnswerBias(List<ApprovedQuestion> questions, List<String> errors) {
+    var totalByTrack = new HashMap<String, Integer>();
+    var longestCorrectByTrack = new HashMap<String, Integer>();
+    for (ApprovedQuestion q : questions) {
+      if (q == null || q.track() == null) continue;
+      if (q.options() == null || q.options().isEmpty()) continue;
+      if (q.answerKey() == null || q.answerKey().correct() == null) continue;
+      int correct = q.answerKey().correct();
+      if (correct < 0 || correct >= q.options().size()) continue;
+
+      totalByTrack.merge(q.track(), 1, Integer::sum);
+
+      var lengths = normalizeAll(q.options()).stream().map(String::length).toList();
+      int maxLength = lengths.stream().mapToInt(Integer::intValue).max().orElse(-1);
+      long longestCount = lengths.stream().filter(len -> len == maxLength).count();
+      if (longestCount == 1 && lengths.get(correct) == maxLength) {
+        longestCorrectByTrack.merge(q.track(), 1, Integer::sum);
+      }
+    }
+    for (var track : totalByTrack.entrySet()) {
+      int total = track.getValue();
+      if (total == 0) continue;
+      int longestCorrect = longestCorrectByTrack.getOrDefault(track.getKey(), 0);
+      double share = (double) longestCorrect / total;
+      if (share > MAX_LONGEST_ANSWER_SHARE) {
+        errors.add(track.getKey() + ": longest answer bias — correct is the only longest option in "
+            + longestCorrect + "/" + total);
       }
     }
   }
