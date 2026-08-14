@@ -13,6 +13,9 @@
 - **영속성**: SQLAlchemy 세션 수명, 커넥션 풀, 인덱스, 트랜잭션 격리, 마이그레이션 도구(Alembic).
 - **테스트·품질**: pytest 픽스처, 목·패치, 커버리지, 의존성 관리(`pip`·`poetry`·가상환경), 패키지 구조.
 - **배포·운영**: gunicorn/uvicorn 워커, 프로세스 vs 스레드, 환경변수 설정, 로깅, 정적 파일, 헬스체크.
+- **Django REST Framework**: Serializer 검증·`ModelSerializer`, ViewSet·라우터, 권한 클래스, 페이지네이션, N+1 을 부르는 중첩 Serializer.
+- **작업 큐**: Celery 워커·브로커(Redis/RabbitMQ), 태스크 재시도·멱등성, 결과 백엔드, 주기 작업(beat), 웹 요청과 분리해야 하는 작업.
+- **캐시**: Redis 캐시 패턴(cache-aside), TTL, 키 설계, 캐시 무효화, 캐시 스탬피드.
 
 ## CODE_READING 지침
 
