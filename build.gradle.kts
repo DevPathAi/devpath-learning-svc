@@ -115,6 +115,18 @@ tasks.register<JavaExec>("validateQuestions") {
 	args("tools/content-gen/generated/approved/questions.jsonl")
 }
 
+tasks.register<JavaExec>("reviewQuestionsLocal") {
+	group = "content generation"
+	description = "Review approved questions with Claude. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.ReviewQuestionsCommand")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		(project.findProperty("track") as String? ?: ""),
+		"tools/content-gen/generated/review"
+	)
+}
+
 tasks.register<JavaExec>("makeQuestionSeedSql") {
 	group = "content generation"
 	description = "Create deterministic question_bank seed SQL from approved JSONL."
