@@ -2,8 +2,7 @@ package ai.devpath.learning.dashboard;
 
 import ai.devpath.learning.content.ContentProgressRepository;
 import ai.devpath.learning.path.LearningPathQueryService;
-import ai.devpath.learning.path.LearningPathView;
-import ai.devpath.learning.path.WeeklyTaskView;
+import ai.devpath.learning.path.ThisWeekView;
 import ai.devpath.learning.progress.UserStreakRepository;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -43,22 +42,10 @@ public class DashboardService {
         contentProgress.activePathCompletions(userId);
     List<ProgressPoint> progressHistory = DashboardTimeseries.progressHistory(today, pc);
 
-    LearningPathView path = paths.currentOptional(userId).orElse(null);
-    if (path == null) {
-      return new DashboardSummary(streakDays, 0, null, badges, completedContentCount,
-          weeklyActivity, progressHistory);
-    }
-
-    List<WeeklyTaskView> tasks = path.milestones().stream()
-        .flatMap(m -> m.tasks().stream())
-        .toList();
-    long completed = tasks.stream().filter(WeeklyTaskView::completed).count();
-    int progress = tasks.isEmpty() ? 0 : (int) Math.round(completed * 100.0 / tasks.size());
-    String nextTask = tasks.stream()
-        .filter(t -> !t.completed())
-        .findFirst()
-        .map(WeeklyTaskView::title)
-        .orElse(null);
+    int progress = pc.totalTasks() <= 0 ? 0
+        : (int) Math.round(pc.completedDates().size() * 100.0 / pc.totalTasks());
+    ThisWeekView mission = paths.thisWeek(userId);
+    String nextTask = mission.nextTask() == null ? null : mission.nextTask().title();
 
     return new DashboardSummary(streakDays, progress, nextTask, badges, completedContentCount,
         weeklyActivity, progressHistory);
