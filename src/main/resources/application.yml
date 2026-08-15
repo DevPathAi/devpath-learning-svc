@@ -14,6 +14,9 @@ devpath:
     completion:
       scroll-threshold: ${CONTENT_COMPLETION_SCROLL_THRESHOLD:0.8}
       min-dwell-sec: ${CONTENT_COMPLETION_MIN_DWELL_SEC:45}
+  claim:
+    # Absolute UTC instant, enabled only for the drained compatibility rollout and max 30 minutes.
+    legacy-bridge-until: ${CLAIM_LEGACY_BRIDGE_UNTIL:}
 
 spring:
   application:

@@ -11,6 +11,8 @@ public class Assessment {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @Column(name = "user_id") private Long userId;
+  @Column(name = "source_guest_id", length = 36, updatable = false, unique = true)
+  private String sourceGuestId;
   @Column(nullable = false) private String track;
   @Column(nullable = false) private String status;
   @Column(name = "current_difficulty", nullable = false) private double currentDifficulty;
@@ -21,6 +23,8 @@ public class Assessment {
   public Long getId() { return id; }
   public Long getUserId() { return userId; }
   public void setUserId(Long v) { this.userId = v; }
+  public String getSourceGuestId() { return sourceGuestId; }
+  public void setSourceGuestId(String v) { this.sourceGuestId = v; }
   public String getTrack() { return track; }
   public void setTrack(String v) { this.track = v; }
   public String getStatus() { return status; }
