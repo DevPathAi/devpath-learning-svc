@@ -13,7 +13,8 @@ public final class ContentQuota {
       "MOBILE_FLUTTER",
       "DEVOPS",
       "FULLSTACK",
-      "PYTHON_BACKEND");
+      "PYTHON_BACKEND",
+      "NODE_TYPESCRIPT");
 
   public static final Map<String, Integer> LEVEL_TARGETS = levelTargets();
 
