@@ -156,6 +156,12 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
 		providers.gradleProperty("track").orElse("").get()
 	)
+	// JavaExec 은 별도 JVM 이라 Gradle JVM 의 -D 를 물려받지 않는다. 명시로 넘겨야
+	// 셀당 재시도 예산이 실제로 적용된다.
+	systemProperty(
+		"harvest.attempts",
+		providers.gradleProperty("harvest.attempts").orElse("4").get()
+	)
 }
 
 tasks.register<JavaExec>("validateContents") {
@@ -188,6 +194,11 @@ tasks.register<JavaExec>("generateContentsLocal") {
 	args(
 		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
 		providers.gradleProperty("track").orElse("").get()
+	)
+	// JavaExec 은 별도 JVM 이라 Gradle JVM 의 -D 를 물려받지 않는다.
+	systemProperty(
+		"harvest.attempts",
+		providers.gradleProperty("harvest.attempts").orElse("4").get()
 	)
 }
 
