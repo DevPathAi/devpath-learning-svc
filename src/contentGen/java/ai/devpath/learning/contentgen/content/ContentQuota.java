@@ -14,7 +14,8 @@ public final class ContentQuota {
       "DEVOPS",
       "FULLSTACK",
       "PYTHON_BACKEND",
-      "NODE_TYPESCRIPT");
+      "NODE_TYPESCRIPT",
+      "DATA_AI");
 
   public static final Map<String, Integer> LEVEL_TARGETS = levelTargets();
 
