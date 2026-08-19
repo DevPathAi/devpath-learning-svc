@@ -11,7 +11,11 @@ import java.util.List;
  */
 public final class ContentHarvestPlan {
 
-  static final int MAX_BATCH = 6;
+  /**
+   * 콘텐츠 본문은 문항보다 훨씬 길다. 한 요청이 담아야 할 분량을 줄여 출력 상한(num_predict)
+   * 안에 들어오게 한다 — 6건으로 두었을 때 한 호출이 70분 넘게 늘어졌다.
+   */
+  static final int MAX_BATCH = 3;
 
   private ContentHarvestPlan() {}
 

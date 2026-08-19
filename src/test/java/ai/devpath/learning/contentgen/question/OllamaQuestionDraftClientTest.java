@@ -56,6 +56,27 @@ class OllamaQuestionDraftClientTest {
     }
   }
 
+  // 출력 상한이 없으면 한 호출이 컨텍스트를 채울 때까지 늘어진다(콘텐츠 쪽에서 70분 실측).
+  // 문항은 짧아 아직 드러나지 않았을 뿐 같은 위험이다.
+  @Test
+  void boundsOutputSoOneCallCannotRunAway() throws Exception {
+    try (var server = new MockWebServer()) {
+      server.enqueue(new MockResponse()
+          .addHeader("Content-Type", "application/json")
+          .setBody("{\"message\":{\"content\":\"{}\\n\"}}"));
+      server.start();
+
+      new OllamaQuestionDraftClient(server.url("/").toString(), "test-model")
+          .generate("BACKEND_SPRING", 6, "system prompt");
+
+      var body = server.takeRequest(2, TimeUnit.SECONDS).getBody().readUtf8();
+      var matcher = java.util.regex.Pattern.compile("\"num_predict\"\\s*:\\s*(\\d+)").matcher(body);
+
+      assertThat(matcher.find()).as("num_predict 가 요청에 실려야 한다").isTrue();
+      assertThat(Integer.parseInt(matcher.group(1))).isBetween(1, 4096);
+    }
+  }
+
   private static String seedOf(String body) {
     var matcher = java.util.regex.Pattern.compile("\"seed\"\\s*:\\s*(-?\\d+)").matcher(body);
     return matcher.find() ? matcher.group(1) : null;
