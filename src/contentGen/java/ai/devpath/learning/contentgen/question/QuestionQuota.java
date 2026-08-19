@@ -12,7 +12,8 @@ public final class QuestionQuota {
       "DEVOPS",
       "FULLSTACK",
       "PYTHON_BACKEND",
-      "NODE_TYPESCRIPT");
+      "NODE_TYPESCRIPT",
+      "DATA_AI");
 
   public static final Map<String, Integer> TYPE_TARGETS = Map.of(
       "MCQ", 70,

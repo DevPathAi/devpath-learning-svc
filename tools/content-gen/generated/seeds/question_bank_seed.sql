@@ -3389,4 +3389,361 @@ class DataProcessor {
         console.log(`Received chunk ${Buffer.from(chunk).toString()}`);
       });
       dataStream.once(''end'', () => resolve(bufferString));
-    }).then(result => {console.log(`Processed file content: ${result}.`)}, error=>{console.error(error)})} }','["스트림이 읽히는 대로 버퍼링하며 파일 내용을 완전히 처리한다.","스트림은 데이터를 부분적으로만 처리하고 파일의 일부가 누락될 수 있다.","`once(''end'')` 이벤트 핸들러에서 `resolve(bufferString)` 가 호출됨으로써 결과 전체가 전달된다.","스트림이 콜백을 종료할 때 프로세싱에 필요한 모든 데이터는 완전히 읽힌다."]','{"correct":1}','EVALUATE',0.9,'["streams-buffers"]');
+    }).then(result => {console.log(`Processed file content: ${result}.`)}, error=>{console.error(error)})} }','["스트림이 읽히는 대로 버퍼링하며 파일 내용을 완전히 처리한다.","스트림은 데이터를 부분적으로만 처리하고 파일의 일부가 누락될 수 있다.","`once(''end'')` 이벤트 핸들러에서 `resolve(bufferString)` 가 호출됨으로써 결과 전체가 전달된다.","스트림이 콜백을 종료할 때 프로세싱에 필요한 모든 데이터는 완전히 읽힌다."]','{"correct":1}','EVALUATE',0.9,'["streams-buffers"]'),
+('DATA_AI','MCQ','딥러닝에서 학습률(learning rate)이 크면 어떤 영향을 미칠까요?','["빠른 수렴","느린 수렴","진동(converge oscillation)","불안정한 훈련"]','{"correct":0}','REMEMBER',0.1,'["deep-learning-hyperparameters"]'),
+('DATA_AI','MCQ','pandas의 loc 인덱싱은 행과 열 레이블로 데이터를 선택합니다.','["행 레벨만 가능","열 레벨만 가능","행과 열 둘 다 가능","형식에 따라 다르다"]','{"correct":2}','REMEMBER',0.1,'["pandas-indexing"]'),
+('DATA_AI','MCQ','SQL에서 NULL 값을 포함한 열을 선택할 때 사용되는 연산자 또는 함수는 무엇입니까?','["IS NOT NULL","COALESCE(NULL, 값)","NULLIF(값, NULL)","NVL(값, 대체값)"]','{"correct":0}','REMEMBER',0.1,'["sql-nulls"]'),
+('DATA_AI','MCQ','pandas에서 시리즈(series)의 값에 접근할 때, 인덱스 이름을 사용하는 메서드는 무엇인가?','["loc","iloc","at","iat"]','{"correct":0}','REMEMBER',0.1,'["pandas-indexing"]'),
+('DATA_AI','MCQ','numpy 배열에서 축(axis) 0은 어떤 방향을 가리킵니다.','["행 방향","열 방향","깊이(dimensions)","위치(position)"]','{"correct":1}','REMEMBER',0.1,'["numpy-axis"]'),
+('DATA_AI','MCQ','데이터 누수(leakage)가 발생한 모델을 진단하는 방법 중 하나는 무엇입니까?','["모델의 정확도 향상 확인","검증 데이터와 학습 데이터간 특성 상관관계 분석","학습 데이터의 크기 증가","훈련 시간 점검"]','{"correct":1}','REMEMBER',0.2,'["data-leakage"]'),
+('DATA_AI','MCQ','차원 축소 기법인 PCA(principal component analysis)가 사용될 때 주의해야 할 사항은 무엇입니까?','["데이터 스케일링 무시","데이터 특성 간 상관 관계 고려","문제 해결 능력 향상","모델 복잡도 증가"]','{"correct":1}','REMEMBER',0.2,'["pca-dimensionality-reduction"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 결측치를 처리하기 위해 사용할 수 있는 방법은?','["dropna() 메서드로 행을 삭제함","fillna(0)으로 모든 결측값에 0을 할당함","bfill 또는 ffill 매개변수로 이웃 값으로 채움","isnull().sum() 함수를 사용하여 결측치의 개수를 확인"]','{"correct":1}','UNDERSTAND',0.3,'["pandas-missing-values-handling"]'),
+('DATA_AI','MCQ','pandas에서 `loc` 인덱싱과 `iloc` 인덱싱의 주요 차이는 무엇인가요?','["row와 column 모두 명시적 레이블을 사용한다.","row와 column 모두 위치 기반 인덱스를 사용한다.","row는 명시적 레이블, column은 위치 기반 인덱스를 사용한다.","row는 위치 기반 인덱스, column은 명시적 레이블을 사용한다."]','{"correct":0}','UNDERSTAND',0.3,'["pandas-indexing"]'),
+('DATA_AI','MCQ','pandas의 merge 함수에서 조인 유형에 대해 설명합니다. 어떤 옵션이 외부 조인(outer join)을 나타냅니다.','["''inner''","''left''","''right''","''outer''"]','{"correct":3}','UNDERSTAND',0.3,'["pandas-merge"]'),
+('DATA_AI','MCQ','통계 기초로, 분산과 표준 편차의 의미와 이해력을 평가합니다.','["분산은 데이터 세트에서 중앙값으로부터 각 값들의 거리제곱합을 말한다.","표준편차는 분산보다 더 쉬운 해석성 때문에 통계학적으로 유용하다고 알려져 있다.","데이터의 범위(최대-최소)가 작다면, 그 데이터 세트의 표준 편차 역시 작은 값을 가질 것이다.","중앙값과 최빈값이 모두 동일한 위치에 있으면 분산은 0으로 계산된다."]','{"correct":1}','UNDERSTAND',0.3,'["statistics-basics"]'),
+('DATA_AI','MCQ','SQL에서 GROUP BY 절과 HAVING 절의 차이는?','["GROUP BY는 결과 집합을 그룹화하고, HAVING은 해당 그룹을 필터링함","HAVING은 데이터베이스에 저장된 값을 조건으로 제한하며, GROUP BY는 실행 계획에 영향을 줌","GROUP BY와 HAVING은 같은 기능을 수행하지만 서로 다른 동작 방식을 가짐","GROUP BY는 개별 행을 그룹화하고, HAVING은 결과 집합의 전체를 필터링함"]','{"correct":0}','UNDERSTAND',0.3,'["sql-group-by-having-clause"]'),
+('DATA_AI','MCQ','데이터 시리즈의 결측치 처리에 대해 어떤 접근법이 가장 적합한가요?','["결측값을 모두 제거합니다.","결측값 위치를 찾아 해당 행을 삭제합니다.","평균 또는 중앙 값으로 결측 값을 채웁니다.","결측 값 치수로 인공 변수를 생성하여 해결합니다."]','{"correct":2}','UNDERSTAND',0.3,'["pandas-handling-missing-values"]'),
+('DATA_AI','MCQ','데이터프레임에서 중복되는 관측치를 제거하는 가장 일반적인 방법은 무엇인가요?','["중복되는 행을 모두 제거하기 위해 unique() 메서드 사용.","drop_duplicates() 함수로 중복된 행 제거.","groupby(\"변수\") 쿼리 이용 후 dropna().","데이터프레임의 모든 항목이 유일한지 확인하는 set() 활용."]','{"correct":1}','UNDERSTAND',0.3,'["pandas-drop-duplicates"]'),
+('DATA_AI','MCQ','numpy의 random 모듈에서 난수 시드(seed) 설정이 왜 중요한가요?','["일관된 실험 결과 재현을 가능하게 함.","컴퓨터 성능 향상을 위해 필요하다.","데이터 분석 과정에 불필요한 요소이다.","모델 학습 속도를 빠르게 하기 위함."]','{"correct":0}','UNDERSTAND',0.3,'["numpy-random-seed"]'),
+('DATA_AI','MCQ','데이터 프레임에서 ''loc''과 ''iloc''의 주요 차이는 무엇인가요?','["''loc''는 인덱스 이름을 기준으로, ''iloc''은 위치를 기준으로 행을 선택합니다.","''loc''와 ''iloc'' 모두 인덱스 이름을 사용하여 데이터 프레임에서 행을 선택합니다.","두 방법은 동일하게 작동하며, 차이점이 없습니다.","''loc''는 정수를 사용하고, ''iloc''는 문자열 인덱서를 기준으로 합니다."]','{"correct":0}','UNDERSTAND',0.3,'["pandas-loc-vs-ilocation"]'),
+('DATA_AI','MCQ','numpy에서 배열의 크기나 형태 변경에 대해 이해하는 능력을 평가합니다.','["np.shape()을 사용하여 배열의 높이와 너비 정보를 얻을 수 있다.","reshape 함수는 원본 배열의 모양만 바꾸고 복사하지 않는다.","np.resize()은 배열 크기를 증가시키거나 감소시킬 때 완전히 새로운 배열을 생성한다.","broadcasting 과정에서 축(axis) 차원이 늘어나면서 배열 형태 변경도 가능하다."]','{"correct":1}','UNDERSTAND',0.3,'["numpy-shape-resize"]'),
+('DATA_AI','MCQ','데이터 처리 중에 pandas의 SettingWithCopyWarning 경고가 발생하면 이를 해결하기 위한 가장 좋은 방법은 무엇인가요?','["경고를 무시하고 계속 진행할 것.","''copy()'' 메서드를 사용하여 복사본을 만들 것입니다.","원래 데이터프레임에서 동일한 작업을 다시 수행합니다.","데이터 프레임의 카피 방식을 변경하는 옵션을 조정해야 합니다."]','{"correct":1}','UNDERSTAND',0.35,'["pandas-copy-warning"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 ''loc''과 ''iloc''에 대한 이해도를 평가합니다.','["loc은 레이블을 기준으로 인덱싱하며, iloc는 위치번호를 기준으로 인덱싱한다.","loc은 위치번호를 기준으로 인덱싱하고, iloc는 레이블을 기준으로 인덱스한다.","두 방법 모두 위치 번호로 인덱싱할 수 있다.","loc와 iloc의 차이는 단순히 이름뿐이며 실제 동작에는 차이가 없다."]','{"correct":0}','UNDERSTAND',0.35,'["pandas-iloc-vs-loc"]'),
+('DATA_AI','MCQ','SQL에서 윈도 함수를 사용하여 특정 기준의 순위를 매기는 키워드는 무엇인가요?','["COUNT()","SUM()","ROW_NUMBER()","AVG()"]','{"correct":2}','UNDERSTAND',0.35,'["sql-window-functions-rank"]'),
+('DATA_AI','MCQ','SQL 쿼리를 작성하면서, NULL 값을 포함하는 필드를 처리할 때 가장 효과적인 방법은 무엇인가요?','["WHERE 절에서 모든 NULL 값에 대해 IS NULL 조건 추가.","IFNULL() 함수를 사용하여 NULL을 다른 특정값으로 대체하고 그 후 WHERE로 필터링.","COALESCE(컬럼, 빌드인)함수 활용이 일반적이다. 이는 제공된 인자의 첫 번째 NON-NULL 값을 반환한다.","LEFT JOIN과 함께 COALESCE 사용으로 두 테이블 간의 NULL을 대체하는 방법."]','{"correct":2}','UNDERSTAND',0.35,'["sql-null-handling"]'),
+('DATA_AI','MCQ','SQL에서 윈도 함수를 사용하여 특정 행의 순위와 프레임을 이해합니다.','["ROW_NUMBER()은 동일한 값이 있는 경우 첫 번째 행만 고려한다.","RANK()는 동일한 값을 가진 모든 행에 대해 같은 랭크를 지정하며, 순서가 정해지지 않은 동일한 값도 처리된다.","DENSE_RANK()과 RANK()의 차이는 구조적 측면에서만 존재하고 실제 결과에는 변화 없다.","ROW_NUMBER(), RANK(), DENSE_RANK() 모두 프레임 기본값이 다르다."]','{"correct":1}','UNDERSTAND',0.35,'["sql-window-functions"]'),
+('DATA_AI','MCQ','데이터 파이프라인에서 스키마 변경 대응 능력을 평가합니다.','["스키마 변경은 데이터의 일관성 유지에 중요한 요소로, 무작위 수정이 가능하다.","배치 프로세싱과 스트리밍 프로세싱 모두 같은 방식으로 스키마 변경을 관리할 수 있다.","불변형(immutable) 저장 메커니즘이나 버전 제어를 통해 더 안정적인 대응방법을 제공한다.","데이터 파이프라인에서 단순히 새로운 컬럼 추가에만 집중해야 한다."]','{"correct":2}','UNDERSTAND',0.35,'["data-pipeline-schema-change"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 특정 행과 열을 선택하려고 할 때, `loc`와 `iloc`는 어떻게 다릅니다.','["loc은 레이블 인덱싱만 가능하고 iloc은 위치 기반 인덱싱이다.","iloc은 레이블 인덱스로 작업할 수 있고 loc은 위치 기반 인덱싱으로만 작동한다.","loc과 iloc 모두 둘 다 위치기반 및 라벨인덱스를 지원하지만, loc는 라벨을 우선적으로 사용한다.","loc와 iloc 모두 위치기반 인덱싱만 가능하다."]','{"correct":0}','UNDERSTAND',0.35,'["pandas-iloc-vs-loc"]'),
+('DATA_AI','MCQ','데이터 누수(leakage)에 대한 이해를 평가합니다.','["트레이닝 데이터에서 결측치 처리 후 테스트 세트에서도 동일한 방식으로 처리해야 함.","상관관계 계산시 두 변수 사이의 공통 영향을 고려해 양자 모두 변동량이 있음을 확인해야 한다.","모델 학습 시, 향후 레코드의 정보를 이용하여 과적합 현상을 일으키지 않도록 주의할 필요가 있다.","데이터셋 분리 전에 스케일링을 적용하면, 나중에 새로운 데이터에 모델을 악용하는 것이 가능하다."]','{"correct":3}','UNDERSTAND',0.4,'["data-leakage"]'),
+('DATA_AI','MCQ','머신러닝에서 데이터세트가 분포 불균형을 일으키면, 어떤 평가 지표가 무효화되거나 신뢰성이 떨어질까요?','["정밀도(Precision)","재현율(Recall)","ROC-AUC","정확도(Accuracy)"]','{"correct":3}','UNDERSTAND',0.4,'["evaluation-metrics-imbalanced-dataset"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치 처리에 pandas의 fillna 메서드가 사용됩니다. fillna로 행별로 다른 값을 채워넣을 수 있는 방법은?','["fillna()를 호출할 때 매개변수 method=''ffill'' 또는 ''bfill''을 통해 가능하다.","fillna() 메소드에 칼럼 이름과 대체값으로 이루어진 딕셔너리를 전달하면 된다.","fillna() 함수에서 parameter axis=1를 설정하여 각 행별로 다른 값을 할당할 수 있다.","위 3가지 방법 모두 사용이 불가능하다."]','{"correct":1}','APPLY',0.5,'["pandas-fillna"]'),
+('DATA_AI','MCQ','numpy 배열에서 브로드캐스트가 발생하면 빠른 연산이 가능합니다. 하지만 잘못된 차원 사이즈 설정으로 인해 오류가 날 수 있습니다. 어떤 경우 브로드캐스팅이 성립하는지 설명해주세요.','["배열 간 크기 차이를 갖더라도 1인 축을 가진 배열의 차원은 다른 차원과 호환 가능하다","numpy 배열끼리 연산 수행시, 모든 차원이 동일한 값으로 구성되어야만 브로드캐스팅이 성립한다.","브로드캐스트는 항상 성립하며, 크기가 맞지 않아도 numpy가 자동으로 해결해준다.","2차원 배열에서 1차원 행 벡터와 연산할 때 그 차원은 무시된다."]','{"correct":0}','APPLY',0.5,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','pandas의 `loc` 인덱싱과 `iloc` 인덱싱은 어떤 차이가 있나?','["인덱스를 기준으로 하지 않는 경우, loc는 레이블을 사용하고 iloc는 위치 값을 사용한다.","열만 선택할 수 있다.","결측치 처리에 더 효과적이다.","loc와 iloc는 동일하다."]','{"correct":0}','APPLY',0.5,'["pandas-indexing"]'),
+('DATA_AI','MCQ','pandas에서 뷰(view)와 복사(copy)의 차이는 무엇인가요?','["뷰는 원본 데이터프레임을 변경하지 않고, 복사는 별도로 새로운 객체를 생성한다.","뷰는 독립된 객체이며 복사는 원본에 영향을 준다.","원본은 뷰와 복사 모두를 바라보므로 변화가 반영된다.","뷰는 불변이고 복사는 변할 수 있다."]','{"correct":0}','APPLY',0.5,'["pandas-view-copy"]'),
+('DATA_AI','MCQ','pandas의 데이터프레임에서 loc 인덱싱과 iloc 인덱싱은 다르게 작동합니다. 두 가지 방법 중 어떤 차이를 가진 것인가요?','["loc는 레이블 기반으로 행을 선택하고, iloc는 정수 위치 기반으로 행을 선택한다.","loc는 정수 위치 기반으로 행을 선택하며, iloc는 레이블 기반으로 행을 선택한다.","두 방법은 모두 레이블 기반이다.","두 방법은 모두 정수 위치 기반이다."]','{"correct":0}','APPLY',0.5,'["pandas-loc-vs-iloc"]'),
+('DATA_AI','MCQ','pandas DataFrame에서 `loc`과 `iloc`의 주요 차이는 무엇인가?','["''loc''은 인덱스 레이블을 기준으로, ''iloc''은 정수 위치를 기반으로 데이터에 접근한다.","''loc''는 인덱스 위치로만 작동하며, ''iloc''는 레이블로만 사용된다.","두 인덱싱 방법 모두 레이블과 위치를 혼용하여 사용할 수 있다.","정확히 같은 방식으로 동작하므로 차이는 없다."]','{"correct":0}','APPLY',0.5,'["pandas-loc-vs-iloc"]'),
+('DATA_AI','MCQ','pandas에서 loc와 iloc를 사용해 데이터프레임의 행과 열을 인덱싱할 때, loc는 포함된 라벨을 기준으로 인덱싱하고 iloc는 정수 위치를 기준으로 인덱싱합니다. 다음 중 pandas DataFrame의 인덱스로 정확히 0부터 시작하는 경우에만 사용 가능한 접근법은?
+','["loc","iloc","both loc and iloc","none of the above"]','{"correct":1}','APPLY',0.5,'["pandas-loc-iloc"]'),
+('DATA_AI','MCQ','numpy 배열의 브로드캐스팅에 대한 설명 중 맞는 것은?','["브로드캐스트는 항상 동일한 크기의 배열끼리만 적용된다.","차원이 작은 배열은 더 큰 차원으로 확장되어 연산을 수행한다.","브로드캐스트는 특정 축(axis)에서만 발생하며, 그 외에는 일치해야 한다.","numpy에서는 브로드캐스팅 기능을 사용할 수 없다."]','{"correct":1}','APPLY',0.5,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','데이터프레임에서 `merge` 함수를 사용하여 DataFrame을 합칠 때, 키 중복이 발생할 경우 어떻게 행의 개수가 증가하는지 설명해주세요.','["키 중복 없이 정확한 결합만 가능하다. 키 값 중복은 합침 기법에 의존한다","키값 중복시 각 데이터프레임에서 중복되는 key의 모든 combination이 결과 DataFrame으로 반영되어 행 수가 증가할 수 있다.","중복된 키를 가진 열 하나만 합치면 원본과 동일한 개수의 행을 유지하게 된다","키값 중복시 각 데이터프레임에서 중복되는 key는 무시하여 결과로 반환된다."]','{"correct":1}','APPLY',0.5,'["pandas-merge-duplicates"]'),
+('DATA_AI','MCQ','SQL의 GROUP BY와 HAVING 구문에 대한 설명 중 올바른 것은?','["GROUP BY는 여러 행을 하나로 그룹화하고, HAVING은 해당 그룹에서 조건을 필터링한다.","HAVING은 데이터베이스 테이블을 선택적으로 필터링하는 데 사용된다.","GROUP BY와 같은 컬럼만 HAVING에 사용할 수 있다.","GROUP BY는 단일 행만 처리하며 여러 행의 집합에서는 쓸 수 없다."]','{"correct":0}','APPLY',0.5,'["sql-group-by-having"]'),
+('DATA_AI','MCQ','데이터 분석에서 pandas의 groupby와 agg 함수를 사용할 때, 서로 다른 통계값을 각 그룹에 적용하려면 어떻게 해야 하는가?
+','["그룹별로 개별적으로 agg 메서드를 호출한다.","agg 메서드 내부에서 딕셔너리를 사용해 여러 통계 값을 지정한다.","groupby() 후 pandas.Series.apply() 를 이용하여 그룹에 따른 함수 적용한다.","pd.concat([df.groupby().agg(func), df.groupby().agg(another_func)])을 사용한다."]','{"correct":1}','APPLY',0.52,'["pandas-groupby-aggregate"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치 값을 채우기 위해 fillna 함수와 replace 함수를 각각 사용할 때, 어떤 차이가 있는지 설명해주세요. 다음 중 제대로 된 문장은?
+','["fillna는 결측치만 대체하고, replace는 모든 값에 대해 대체 가능.","replace는 결측치만 대체하고, fillna는 모든 값에 대해 대체 가능.","두 함수 모두 결측치와 일반값을 모두 대체할 수 있다.","두 함수 모두 결측치 만 대체한다."]','{"correct":0}','APPLY',0.52,'["pandas-fillna-replace"]'),
+('DATA_AI','MCQ','numpy의 브로드캐스팅(broadcasting)은 어떤 경우에 발생하는가?','["두 배열 중 하나가 스칼라인 경우.","두 배열의 차원이 일치하지 않아도 상수 차원을 늘려 맞출 수 있는 경우.","모든 배열이 동일한 크기여야 하는 경우.","브로드캐스팅은 모든 배열에서 발생한다."]','{"correct":1}','APPLY',0.53,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','numpy 배열에서 연산의 브로드캐스트(broadcasting)가 성립하기 위한 조건은 무엇인가?','["두 배열이 같은 모양(shape)을 가져야 한다.","하나 이상의 차원에서 다른 배열의 차원 크기가 1인 경우에만 가능하다.","모든 차원에서 두 배열 사이의 차원 크기는 동일하거나 하나의 차원 크기 값이 1여야 한다.","브로드캐스트는 언제든지 성립하며 특별한 조건은 필요 없다."]','{"correct":2}','APPLY',0.54,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','데이터프레임의 특정 열에서 중복 값을 찾고 싶을 때 사용하는 pandas 기능은?
+','["duplicated() 메서드","drop_duplicates() 메서드","unique() 메서드","value_counts() 메서드"]','{"correct":0}','APPLY',0.54,'["pandas-duplicates"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치를 채우거나 제거할 때 가장 적절한 방법은?
+','["dropna(axis=0) 이용하여 행을 삭제한다.","fillna(value=''Unknown'')로 단일 값으로 대체한다.","interpolate() 메서드를 사용해 근처 값을 보간한다.","value_counts(normalize=True)로 빈도 분포를 확인한다."]','{"correct":2}','APPLY',0.56,'["pandas-fillna-dropna"]'),
+('DATA_AI','MCQ','데이터 누수(data leakage)를 방지하기 위해, 학습 데이터에 fit 메소드를 적용해야 하는 모델의 예는 무엇인가?','["임베딩 모델","스케일러 객체(StandardScaler)","클러스터링 알고리즘(k-means)","위 모든 옵션이 적절함."]','{"correct":1}','APPLY',0.57,'["data-leakage-prevention"]'),
+('DATA_AI','MCQ','numpy 배열에서 브로드캐스팅이 발생하는 경우에 대해 설명해주세요. 다음 중 맞지 않은 문장은?
+','["두 배열의 차원수는 일치하지 않아도 됨.","브로드캐스팅은 작은 배열을 큰 배열과 동일한 크기로 늘림.","브로드캐스트가 발생하면 항상 성공적으로 계산됨.","결과값이 원래 큰 배열의 형태를 유지함."]','{"correct":2}','APPLY',0.58,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','머신러닝에서 특성 스케일링(feature scaling)은 언제 필요한가?','["모든 데이터 전처리 단계에 적용되어야 한다.","분할된 학습(training)과 테스트(testing) 데이터에 각각 따로 수행해야한다.","학습 데이터(train data)에만 적용하고, 테스트 데이터에는 학습시킨 스케일러를 사용하여 변환해야한다.","데이터 분할 전에 모든 특성을 일괄적으로 스케일링 처리해야 한다."]','{"correct":2}','APPLY',0.58,'["feature-scaling"]'),
+('DATA_AI','MCQ','차원 축소 기법으로 k-means와 PCA를 사용할 때 두 알고리즘이 서로 다른 목적이 무엇인지 설명해주세요.','["PCA는 비지도 학습에서 차원을 감소시키는데 사용되며, k-means는 군집화에 적합하다","k-means와 PCA 모두 주성분 분석 기법을 통해 데이터의 큰 특징만 표현한다","PCA는 선형적이고 높은 설명력을 가지지만, 비지도 클러스터링에 대해선 성능이 좋지 않다.","PCA를 사용하면 군집화가 더 잘되며 k-means보다 효율성이 좋은 결과 도출을 가능하게 한다."]','{"correct":0}','APPLY',0.6,'["kmeans-pca"]'),
+('DATA_AI','MCQ','SQL 문장을 사용하여 데이터베이스 내 테이블 간 연결을 수행할 때 ON 조건과 USING 조건은 어떻게 다를까요? 두 가지 방법의 차이점을 설명해주세요.','["ON 조건으로는 특정 컬럼만 선택하지만, USING에서는 모든 공통된 칼럼이 사용된다","USING은 테이블 간 동일한 이름을 가진 레코드들을 자동적으로 연결하고, ON은 명시적인 릴레이션 조건을 지정한다.","ON과 USING 모두 완전히 똑같으며 차이점 없음.","SQL에서 ON 조건과 USING 조건은 유사하지만, 복잡한 연결 상황에서는 다르게 작동함."]','{"correct":1}','APPLY',0.6,'["sql-on-vs-using"]'),
+('DATA_AI','MCQ','데이터프레임(df)에서 groupby-agg를 사용하여 계산한 그룹별 평균은 어떤 형태로 반환되나요?
+예시 코드:
+```python
+result = df.groupby(''category'').mean()```
+그 결과는 어떻게 표현되는가?','["각 카테고리에 대한 각 컬럼의 평균이 딕셔너리 형식으로 나타난다.","데이터프레임의 모든 행과 그룹별로 계산된 개별 열만 포함한 데이터프레임이다.","계산 결과가 하나뿐인 값만 반환된다.","각 카테고리를 키로 하는 그룹들의 평균을 갖는 pandas.Series 객체를 반환한다."]','{"correct":1}','ANALYZE',0.7,'["pandas-groupby-agg"]'),
+('DATA_AI','MCQ','SQL 윈도 함수(`SUM() OVER ()`)는 어떤 역할을 수행하나요?
+예시 SQL 코드:
+```sql
+SELECT department, 
+       employee_name,
+       salary, 
+       SUM(salary) OVER (PARTITION BY department ORDER BY hire_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total```
+위 SQL 구문에서 `SUM() OVER ()` 함수가 어떤 기능을 수행하는지 설명해보세요.','["동일 부서 내 직원들의 누적 급여를 표시한다.","부서별로 각 사원의 급여 합계를 계산하여 나타낸다.","데이터베이스 트랜잭션 처리 중 데이터 변경사항을 추적합니다.","비교할 수 없는 새로운 열을 생성한다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions-sum-over"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 경우는 어떤 상황인가요?','["훈련 데이터에서 특성 엔지니어링을 수행한 후, 테스트 세트에서도 같은 전처리를 적용하지 않음.","비지도 학습 모델에서는 항상 데이터 누수 문제가 생기지 않습니다.","테스트 세트의 레이블 정보가 훈련 과정에 미리 노출되어 있음.","데이터 분할 시, 시간 순서 상관 관계를 고려하지 않아 미래 데이터가 학습에 사용됨."]','{"correct":3}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','pandas 브로드캐스팅을 사용하면 계산 결과가 어떻게 바뀌게 되나요?
+예시 코드:
+```python
+import pandas as pd
+A = pd.DataFrame({''a'': [1, 2], ''b'':[3,4]})
+B = A + 5```
+위 스니펫에서 `pd.DataFrame B`는 어떻게 이루어질까요?','["결과 값이 행렬로 표현되어 각 열에 5가 더해진다.","전체 DataFrame의 shape를 유지하고 원래 키값을 모두 그대로 둔다.","B와 A 사이에 연산 중 오류가 발생하게 된다.","새롭게 만들어진 B는 각각 a, b 열과 기존 인덱스 및 컬럼명이 동일한 값들만 가지게 된다."]','{"correct":0}','ANALYZE',0.75,'["pandas-broadcasting"]'),
+('DATA_AI','MCQ','SQL 윈도 함수(`ROW_NUMBER()`)는 어떤 역할을 수행하나요?
+예시 SQL 코드:
+```sql
+SELECT ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS row_num,
+       employee_name, 
+       department, 
+       salary 
+FROM employees```
+위 코드에서 `ROW_NUMBER()` 함수가 어떤 기능을 수행하는지 설명해보세요.','["임의로 순서를 매긴다.","동일한 부서 내 소속 사원들의 급여에 대한 랭킹을 제공한다.","상태별로 데이터 행을 정렬한다.","데이터베이스 트랜잭션을 처리하며 데이터를 보장해 준다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions-row-number"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 다음과 같은 코드 스니펫의 문제점은 무엇인가요?
+```python
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)```
+위 코드에서 `x_train`과 `x_test` 사이에 데이터 누수가 발생할 수 있는 이유는 무엇인가요?','["데이터 분리 이후 스케일러를 학습시키기 때문에 x_train의 특성이 x_test에도 영향을 줄 수 있다.","스케일링은 비지도학습 방법이므로 원본 데이터에 직접적인 변경이 발생한다.","x_train과 x_test 사이에는 아무런 연결 관계가 없으므로 문제는 없다.","스케일러를 만들어 학습시키지 않아서 스케일링 과정에서 오류가 생긴다."]','{"correct":0}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 Python 코드 조각은?
+```python
+X_train, X_test, y_train, y_test = train_test_split(X_all, y_all)
+scale_X_train = scaler.fit_transform(X_train)
+scale_X_test = scaler.transform(X_test)
+y_pred = model.predict(scale_X_test)
+```','["train_test_split() 이전에 스케일러를 fit 했다.","스케일링 직후 모델을 학습시켰다.","훈련 및 검증 데이터가 모두 분리되었다.","scale_X_train 과 scale_X_test 는 동일한 범위로 스케일 되었다."]','{"correct":0}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 누수가 발생하는 한 가지 예시를 고르세요.','["학습 데이터에서 정답을 미리 이용해 모델 파라미터 튜닝","검증 세트의 정보를 학습 과정에 반영하여 하이퍼파라미터 선택","테스트 세트에서 얻은 성능 지표로 매개변수 조절","학습 데이터와 테스트 데이터 사이 특성 불일치"]','{"correct":1}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','SQL 윈도 함수 `ROW_NUMBER()`와 `RANK()` 사이에서 차이점을 설명하는 올바른 문장은 무엇인가요?','["ROW_NUMBER()는 중복된 값에 대해 연속 숫자를 할당하지만, RANK()는 중복값 간 동일한 순위를 부여합니다.","ROW_NUMBER()와 RANK() 모두 중복된 값을 무시하고 다음 번호로 넘깁니다.","ROW_NUMBER()은 중복되지 않은 각 행에 고유의 이전 번호를 배정하지만, RANK()는 중복값 간 동일한 순위를 부여합니다.","ROW_NUMBER()와 RANK() 모두 모든 값이 고유하게 처리되며 중복된 값을 복잡한 알고리즘으로 처리합니다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','MCQ','딥러닝 모델의 과적합 문제에 대처하기 위한 전략 중 한 가지는 무엇인가요.','["데이터 세트에서 훈련 데이터 비율을 늘리는 것","훈련 단계에서 학습률을 점진적으로 증가시키는 것","드롭아웃(dropout) 또는 조기 종료(early stopping)을 사용하여 과적합 방지","모델 복잡도를 무시하고 신경망의 모든 레이어를 사용하는 것"]','{"correct":2}','ANALYZE',0.76,'["deep-learning-overfitting"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 머신러닝에서, pandas를 사용하여 DataFrame ''df''에 대해 다음 Python 코드 조각은 어떤 동작을 수행하는지 분석하시오.
+```python
+df[''group''] = df.apply(lambda x: sum(x), axis=1)
+df.groupby(''group'').agg({''value'':''mean''})```
+ 이 코드가 발생할 수 있는 문제점과 효과는 무엇인가?','["그룹화 후 각 그룹의 평균 값을 계산한다.","df[''a''] 와 df[''b''] 열 값이 모두 0으로 설정된다.","원본 데이터프레임이 변경되어 체이닝 인덱싱 문제가 발생할 수 있다.","groupby와 agg 메서드 사용 시, 동일한 그룹 내에서 중복된 행의 처리가 잘못될 가능성이 있다."]','{"correct":3}','ANALYZE',0.76,'["pandas-merge-grouping"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 데이터 사이언스에서 다음 쿼리는 어떤 역할을 하는지 분석하시오.
+```sql
+SELECT * FROM customer_orders WHERE order_date BETWEEN ''2023-01-01'' AND ''2023-12-31''
+```','["사용자 주문 데이터의 특정 기간 동안 수집된 데이터를 필터링한다.","새로운 고객이 등록되는 날짜를 반환한다.","주문별로 사용자가 상품을 얼마나 구매했는지를 계산하여 반환한다.","특정 제품에 대한 판매량을 집계하고 정렬한다."]','{"correct":0}','ANALYZE',0.78,'["sql-window-functions"]'),
+('DATA_AI','MCQ','스트리밍 데이터 파이프라인에서 발생할 수 있는 주요 문제 중 하나를 선택하세요.','["데이터 로스 없음","불균형 데이터 처리 불가능","의미 없는 임시 테이블 생성","데이터 정확성과 일관성 유지"]','{"correct":2}','ANALYZE',0.78,'["streaming-data-pipeline"]'),
+('DATA_AI','MCQ','딥러닝에서 학습률이 너무 높을 때 발생할 수 있는 한 가지 문제점을 고르세요.','["경사하강법의 스텝 크기가 작아져 최적점에 도달하는 시간이 길어짐","모델 파라미터가 잔잔하게 업데이트 되면서 미세 조정 필요함","학습 과정에서 오버슈팅이 발생하여 최적점을 지나치는 현상","비용 함수의 볼록성이 약화되어 최소점 찾기가 어려워짐"]','{"correct":2}','ANALYZE',0.79,'["deep-learning-optimization"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 머신러닝에서, 다음 Python 코드 조각은 어떤 동작을 수행하는지 분석하시오.
+```python
+import pandas as pd
+data = [{''a'':1},{''b'':2,''a'':3}]df = pd.DataFrame(data)
+df[''c''] = df.apply(lambda x: sum(x), axis=1)```
+ 이 코드가 발생할 수 있는 문제점은 무엇인가?','["결측치 처리를 수행한다.","데이터프레임의 모든 열을 합산하여 새로운 열 ''c'' 를 생성한다.","원본 데이터프레임이 변경되지 않아 체이닝 인덱싱 문제가 발생할 수 있다.","df[''a''] 와 df[''b''] 열 값을 모두 0으로 설정하고 새로 행을 추가한다."]','{"correct":1}','ANALYZE',0.79,'["pandas-view-copy"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 다음과 같은 코드 스니펫에서 어떤 것이 문제를 일으키는지 설명하십시오.
+```python
+from sklearn.pipeline import Pipeline
+pipeline = make_pipeline(preprocessor, scaler, estimator)
+pipeline.fit(X_train, y_train)```
+위와 같이 학습 데이터에 대해 파이프라인을 적용한 경우, 테스트 데이터에 대한 평가 결과는 어떻게 되는지?','["평가에서의 성능이 개선됨.","데이터 누수가 발생하여 실제 테스트 세트를 학습 과정에서 사용하게 됨.","테스트 시에는 특성이 변환되지 않아 차이나게 될 가능성이 있다.","결과가 정확도와 재현율을 동시에 측정한다."]','{"correct":1}','ANALYZE',0.8,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 파이프라인에서 멱등성(Indempotence)을 구현하려면 어떤 특성을 가져야 하나요?','["비동기 작업의 결과가 여러 번 실행되어도 동일한 효과를 가진다.","모든 시퀀스 작업이 순차적으로 수행되며 중복은 없어야 한다.","데이터가 한 번 처리되면 그 이후에도 같은 데이터는 무시한다.","처리된 테이블에서 새로운 레코드만 추가할 수 있다."]','{"correct":0}','EVALUATE',0.9,'["data-pipelines"]'),
+('DATA_AI','MCQ','데이터 누러(leakage)를 방지하기 위해, 학습 데이터와 테스트 데이터 간의 특성 분포 불일치를 왜 피해야 할까요?','["특성 분포가 일정하지 않으면 모델이 과적합될 위험이 있다.","테스트 데이터에서 볼 수 없는 값에 대한 예측을 오류로 만들 수 있다.","분산과 편향의 균형이 깨질 위험이 있다.","모든 옵션이 정답이다."]','{"correct":1}','EVALUATE',0.9,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 재현성(Reproducibility)을 위해 어떤 요소들을 고려해야 할까요?','["고정된 랜덤 시드를 사용한다.","모델의 버전 관리를 철저히 한다.","학습 데이터와 전처리 프로세스가 일관되게 유지된다.","위 모두이다."]','{"correct":3}','EVALUATE',0.9,'["reproducibility"]'),
+('DATA_AI','MCQ','A/B 테스트를 설계할 때 표본 크기를 정하는 데 어떤 요소들이 고려되어야 하나요?','["효과를 감지하기 위한 충분한 이벤트 수","검증 통계의 유의수준(p-value) 설정","표시된 차이가 실제로 의미 있는지를 판단할 수 있게 하기 위해","위 모두이다."]','{"correct":3}','EVALUATE',0.9,'["ab-testing"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 때, 어떤 조치가 효과적이지 않을까요?','["훈련 데이터와 테스트 데이터 간의 시간적 격리","훈련 데이터에서 직접 생성된 피처를 다시 훈련에 사용하기","피처 엔지니어링 과정에서 비즈니스 로직을 고려하지 않기","데이터 수집 시점을 주의 깊게 고려하여 누수 가능성을 최소화하기"]','{"correct":1}','EVALUATE',0.9,'["data-leakage"]'),
+('DATA_AI','MCQ','시계열 분석에서 리샘플링 재료의 시점 품질을 유지하기 위해 어떤 방법들이 사용될까요?','["불균형 데이터 대비 로짓 회귀","특성 스케일 조정 후 모델 학습","데이터 누러를 피한 특성 선택","변환 전후 데이터 분포 일치 보장"]','{"correct":3}','EVALUATE',0.9,'["time-series-analysis"]'),
+('DATA_AI','MCQ','데이터 과적합(Overfitting)을 방지하는 전략 중 어떤 것이 효과적인가요?','["많은 특성을 사용해 훈련 데이터에 맞추는 것","교차 검증(cross-validation)으로 일반화 성능 평가","모델 복잡도를 무시하고 모든 변수를 사용하기","학습과 테스트 데이터셋의 구분을 제거한다."]','{"correct":1}','EVALUATE',0.9,'["overfitting"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리는 CTE(Common Table Expression)를 사용하여 고객들의 구매 내역을 집계한 후 특정 조건에 만족하는 고객들을 필터링합니다.
+
+```
+WITH purchases AS (
+    SELECT customer_id, SUM(amount) as total_amount FROM orders GROUP BY customer_id)
+SELECT * FROM purchases WHERE total_amount > 100;
+```','["이 쿼리는 각 고객의 구매 내역에서 금액 합계가 100원 이상인 경우에만 결과를 반환합니다.","SQL 문법 오류로 실행할 수 없습니다.","CTE 부분은 무시되고 마지막 SELECT문 만 수행됩니다.","결과는 모든 주문을 포함하고 특정 조건 없이 고객당 총 금액을 계산한다."]','{"correct":0}','REMEMBER',0.1,'["sql-cte"]'),
+('DATA_AI','CODE_READING','다음 코드는 데이터프레임 df에서 ''date'' 열의 값에 따라 길이가 다른 그룹을 생성하고 각 그룹별로 특정 작업을 수행합니다.
+
+```
+df.groupby(df[''date''].dt.floor(''D'')).agg({''value'':''sum''})
+```','["코드는 date를 일 단위로 라운드 후 value 열의 합계를 계산한다.","이 코드는 실행할 수 없는 오류가 있다.","각 그룹은 연도별로만 분리되며, 날짜 값에 따라 세분화되지 않는다.","df[''date'']와 df[''value''] 중 하나만 사용하여 길이 단위 그룹을 만든다."]','{"correct":0}','REMEMBER',0.1,'["pandas-resampling"]'),
+('DATA_AI','CODE_READING','다음 코드가 데이터프레임 df에서 ''A''와 ''B'' 열의 값이 모두 0인 행을 필터링합니다.
+
+```
+pd.DataFrame(df[(df[''A''] == 0) & (df[''B''] == 0)])
+```','["코드는 df에서 A, B 두 칼럼값이 모두 0인 모든 행만 선택한다.","코드에는 오류가 있어 실행할 수 없다.","df[''A'']와 df[''B''] 중 하나의 열 값이 0인 행을 필터링한다.","이 코드는 A열과 B열 각각에 대해 0인 값을 가진 항목들만 따로 저장한다."]','{"correct":0}','REMEMBER',0.1,'["pandas-boolean-indexing"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장의 실행 결과에 대해서 옳은 것은?
+
+```sql
+SELECT ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num, name 
+FROM employees;
+```
+ROW_NUMBER() 함수를 사용하여 순위를 계산합니다.','["직원들의 이름을 급여 기준으로 정렬한 후 행 번호를 반환합니다","salary가 가장 낮은 직원부터 모든 직원의 이름과 고유번호를 반환합니다","row_num 컬럼이 없으면 오류 메시지를 던집니다","ROW_NUMBER()는 데이터베이스에서 사용되지 않는 함수입니다"]','{"correct":0}','UNDERSTAND',0.3,'["sql-window-functions-row-number"]'),
+('DATA_AI','CODE_READING','다음 pandas 코드의 실행 결과로 옳은 것은?
+
+```python
+import pandas as pd
+
+data = {''A'': [1, 2], ''B'': [-30, -4]}
+df = pd.DataFrame(data)
+squared_df = df.apply(lambda x: x**2)
+```
+물론 `squared_df`의 각 열은 원래 값을 제곱한 새로운 Series가 됩니다.','["각 행을 순서대로 제곱합니다","df에서 결측치를 제거하고 난수로 채웁니다","df의 모든 원소를 제곱하여 새로운 DataFrame을 만듭니다","원본 데이터프레임 df에 직접 값을 업데이트합니다"]','{"correct":2}','UNDERSTAND',0.3,'["pandas-apply-method"]'),
+('DATA_AI','CODE_READING','다음 코드가 주어졌을 때 `transform` 과 `agg` 의 차이를 설명합니다.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({''A'': [1, 2], ''B'': [-30, -4]})
+groups = df.groupby(''A'')
+a_result = groups.transform(lambda x: x**2)
+b_result = groups.agg(sum)
+```
+`transform` 과 `agg` 는 그룹을 기준으로 다른 동작을 수행합니다.','["변환은 각 그룹에 대해 Series를 반환하고, 애그리는 DataFrame의 집계값을 반환합니다","두 메서드 모두 Series로 결과를 반환하며 결측치 처리를 달리 합니다","애그리는 시리즈와 같은 값만 변환하지만, 변환은 그렇지 않습니다.","변환과 애그는 유사하게 동작하므로 서로 대체할 수 있습니다"]','{"correct":0}','UNDERSTAND',0.35,'["pandas-groupby-transform-aggregate"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장에서 `SUM` 함수가 하는 동작은 무엇입니까?
+
+```sql
+SELECT SUM(column) FROM table WHERE column IS NOT NULL;
+```
+SQL 문장을 실행하면 다음과 같은 결과를 얻게 됩니다.','["column이 null인 행만 합산합니다","column의 모든 값을 합한 뒤 결측치는 제외됩니다","결과 집합에서 중복을 일으키고, sum은 각 unique row에 대한 합계를 반환합니다","WHERE 절이 쓰이는 순간에는 더 이상 데이터가 없어집니다"]','{"correct":1}','UNDERSTAND',0.35,'["sql-aggregate-functions-sum-nulls"]'),
+('DATA_AI','CODE_READING','다음 코드가 주어졌을 때, 데이터 누수(data leakage)의 위험성을 설명하세요.
+
+```python
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+
+data = {''A'': [1, 2], ''B'': [-30, -4]}
+df = pd.DataFrame(data)
+scale_df = df.copy()
+scaler = StandardScaler().fit(scale_df[''B'']) 
+```
+위 코드의 문제점은 스케일러를 훈련 데이터에 맞출 때 범주형 피처가 포함되어 있을 수 있다는 점입니다.','["스케일링 전 후, 모든 원래 값이 동일한 분포를 유지합니다","훈련용과 검증/테스트 용 데이터셋 간의 특성이 일치하지 않게 됩니다","결측치로 인해 모델 학습에 문제가 발생할 수 있습니다","스케일링은 피처 간 상호작용을 무효화하지 않습니다"]','{"correct":1}','UNDERSTAND',0.35,'["data-leakage-solution-preprocessing-techniques"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장은?
+
+```sql
+SELECT DISTINCT a.id, b.name 
+FROM table_a AS a INNER JOIN table_b AS b ON a.key = b.foreign_key;
+```
+INNER JOIN을 사용하여 두 테이블에서 중복되지 않는 결합된 결과를 얻습니다.','["중복되는 모든 id와 이름을 가져옵니다","각 행의 유일한 조합만 반환합니다(중복 제거)","표 a와 b 간의 외래키에 의존하는 모든 레코드를 검색합니다","table_a에서 중복된 ID만 선택합니다"]','{"correct":1}','UNDERSTAND',0.35,'["sql-distinct-clause"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+def split_data(df):
+    X = df.drop(''target'', axis=1)
+    y = df[''target'']
+    return train_test_split(X, y, test_size=0.2, random_state=42)','["분할된 데이터셋에서 학습 세트와 테스트 세트 사이에는 데이터 누수가 발생하지 않는다.","훈련시킬 때 모든 특성 스케일링을 적용해야 한다.","스플릿 후 원본 훈련 데이터의 분산이 변한다.","테스트 세트가 전체 데이터의 80%를 차지할 것이다."]','{"correct":0}','APPLY',0.51,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음 Python pandas 코드 스니펫은 데이터 프레임 df의 특정 열 ''A''를 기준으로 분리를 수행하며, 그 결과를 새로운 딕셔너리 변수 dict_var에 저장하는 과정입니다.
+
+dict_var = {key: value for key, value in df[''A''].iteritems()}
+
+해당 코드 스니펫의 실행 결과로 옳은 설명은?
+','["df의 열 ''A''를 기준으로 데이터를 딕셔너리 형태로 저장합니다.","새 DataFrame을 생성하여 반환합니다.","각 행에 결측치가 있는지를 확인한 후 삭제합니다.","정확도 스코어를 계산합니다."]','{"correct":0}','APPLY',0.51,'["pandas-iteritems-dict"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def process_missing_values(df):
+    df[''column_a''].fillna(df.groupby(''grouping_key'')[''column_a''].transform(lambda x: x.fillna(x.mean())), inplace=True)
+    return df','["결측값이 있는 모든 행을 제거한다.","결측치가 있는 칼럼의 값은 그룹별로 평균으로 채워진다.","주어진 데이터프레임 전체에서 결측치의 평균 값을 사용하여 채운다.","groupby 와 transform 을 사용했으므로 각각의 행에 다른 값이 대체된다."]','{"correct":1}','APPLY',0.53,'["data-preprocessing"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def handle_data_leakage(df):
+    df[''target''] = (df[''date''] > ''2023-01-01'').astype(int)
+    train, test = train_test_split(df, test_size=0.2, random_state=42)
+    return train,test','["불필요한 정보가 훈련 세트와 테스트 세트 사이로 누출될 수 있다.","훈련세트는 80%이며 테스트 세트는 전체 데이터의 20%를 차지한다.","''date'' 칼럼이 ''target'' 칼럼으로 변환되어 정확한 예측을 만드는데 사용된다.","테스트 세트에서 target 값은 항상 1이다."]','{"correct":0}','APPLY',0.54,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+def scale_data(df):
+    scaler = StandardScaler()
+    scaled_features = scaler.fit_transform(df[[''feature1'', ''feature2'']])
+    df[''scaled_feature1''] = scaled_features[:, 0]
+    df[''scaled_feature2''] = scaled_features[:, 1]
+    return df','["스케일링된 피처의 평균은 이제 0이다.","df에서 기존 피처는 변형되지 않는다.","새로운 데이터 샘플이 입력될 때 스케일러를 다시 학습해야 한다.","결측값을 처리하지 못한다."]','{"correct":0}','APPLY',0.56,'["feature-scaling"]'),
+('DATA_AI','CODE_READING','다음 pandas 코드는 결측치가 있는 DataFrame에서 결측치 행을 제거하는 작업입니다.
+
+filtered_data = data.dropna()
+
+data에는 여러 열이 있으며, 일부 레코드에 결측값(NULL)이 있을 수 있습니다. dropna()를 적용한 결과로 옳은 설명은?
+','["결측치가 있는 모든 행을 제거합니다.","모든 열의 결측치만 제거하고 나머지 데이터는 그대로 보존합니다.","data라는 새로운 DataFrame이 생성되어 반환됩니다.","전체 데이터프레임에 결측치를 0으로 채웁니다."]','{"correct":0}','APPLY',0.56,'["pandas-dropna"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리의 동작으로 옳은 것은?
+
+SELECT AVG(score), student_id FROM exam_results GROUP BY student_id HAVING COUNT(*) > 1','["학생별로 중복된 레코드가 없는 평균 점수를 반환한다.","특정 학생이 여러 시험을 친 경우 그들의 평균 점수가 계산된다.","평균 점수가 가장 낮은 학생들만 반환한다.","학년별로 중복된 레코드가 없는 평균 점수를 반환한다."]','{"correct":1}','APPLY',0.57,'["sql-aggregation"]'),
+('DATA_AI','CODE_READING','다음 코드는 pandas DataFrame df에 대해 특정 조건에 따라 행을 필터링한 후, 그룹별로 평균값을 계산합니다.
+
+filtered = df[df[''column1''] > 5]
+grouped_mean = filtered.groupby(''category'').mean()
+
+df에는 ''column1''과 ''category'' 열이 있습니다. 코드가 실행된 결과로 옳은 설명은?
+','["groupby() 메서드는 필터링한 데이터의 각 그룹별 평균을 계산합니다.","필터링 후 전체 DataFrame df에 직접 적용됩니다.","그룹별로 최대값을 계산합니다.","df라는 새로운 DataFrame이 생성되어 반환됩니다."]','{"correct":0}','APPLY',0.57,'["pandas-groupby-mean"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def apply_window_function(df):
+    df[''rank''] = df.groupby(''group_key'').cumcount() + 1
+    return df','["각 그룹 내의 레코드는 누적 카운트 순서대로 정렬된다.","그룹 내의 각 행에 ''rank'' 열이 추가되며, 전체 데이터 프레임의 누적 개수로 계산된다.","단일 그룹에서만 적용 가능하다.","각 그룹별로 마지막 레코드를 반환한다."]','{"correct":0}','APPLY',0.59,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 코드가 시계열 데이터의 특정 주기를 분할하려고 한다.
+
+from sklearn.model_selection import TimeSeriesSplit
+import pandas as pd
+
+times = pd.date_range(''2021-03'', periods=5, freq=''M'')
+data = pd.DataFrame({''value'': range(5)}, index=times)
+splits = list(TimeSeriesSplit(n_splits=4).split(data.index))
+question: 주어진 코드에서 time_series_split 은 적절한 분할을 제공하나요?','["주어진 데이터를 시계열 기반으로 안전하게 분리한다.","데이터의 연속성을 보장하지 못하여 잘못된 결과를 생성한다.","분할 갯수 n_splits 가 올바르지 않아 에러가 발생한다.","시계열 데이터에 적용하기 위해서는 별도로 날짜 처리가 필요하다."]','{"correct":1}','ANALYZE',0.7,'["time-series-cross-validation"]'),
+('DATA_AI','CODE_READING','다음 코드는 데이터프레임에서 `NULL` 값이 있는 행들을 처리하려고 합니다.
+
+```python
+df.dropna(inplace=True)
+```
+이 코드가 실행될 때 어떤 일이 발생할까요?','["데이터 프레임의 모든 `NULL` 값을 제거하여, 데이터 품질을 개선합니다.","코드는 오류를 일으킵니다. dropna 메서드는 inplace 옵션을 지원하지 않습니다.","`dropna()` 함수가 적용되어 데이터프레임에서 ''key'' 칼럼의 모든 NULL 값이 제거됩니다.","데이터 프레임 내 `NULL` 행들만 삭제되며, 그 외에는 원래 데이터셋에 영향을 미치지 않습니다."]','{"correct":3}','ANALYZE',0.7,'["sql-null-operations"]'),
+('DATA_AI','CODE_READING','다음 Python 코드가 수행할 때 어떤 문제가 생길까요?
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+df = pd.read_csv(''data.csv'') # 가상의 데이터 세트
+X = df[[''feature1'', ''feature2'']]
+y = df[''target'']
+scaler = StandardScaler()
+scaler.fit(X)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)','["train-test 분할 후 스케일링이 적용되지 않았다.","train-test 분할 전에 이미 전체 데이터를 스케일링 했다.","scaler가 별도의 테스트 세트를 생성해야 한다.","모든 프로세스는 올바르게 수행되었다."]','{"correct":1}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음은 SQL 윈도우 함수를 사용한 예시 코드입니다.
+
+```sql
+SELECT ROW_NUMBER() OVER (ORDER BY timestamp ASC) as row_num,
+       value, 
+       timestamp FROM table;
+```
+위 쿼리의 동작 결과는 무엇인가요?','["각 행에 대해 데드록이 발생할 수 있는 순서대로 번호를 부여합니다.","날짜 기준으로 정렬된 각 행에 대한 고유 번호(ROW_NUMBER)와 해당 값을 반환합니다.","쿼리는 성공하지만, ROW_NUMBER 함수는 사용되지 않은 채로 남아 있습니다.","해당 테이블의 모든 열을 포함하는 SELECT 문입니다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리의 동작으로 옳은 것은?
+
+SELECT ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS rank,
+       employee_id, name, department, salary 
+FROM employees;
+
+question: 이 쿼리는 무엇을 구현하나요?','["각 부서 내에서 급여 순위를 매긴다.","각 직원의 고유 ID와 이름만 반환한다.","전체 기업 전체로 가장 높은 급여자를 찾는다.","데이터베이스에 새로운 열 rank을 생성한다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 코드가 수행할 때 어떤 효과가 있을까요?
+
+WITH cumulative_sales AS (
+    SELECT order_date,
+           product_id,
+           SUM(quantity) OVER (PARTITION BY product_id ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as cumul_sum
+    FROM orders)
+SELECT * 
+FROM cumulative_sales','["기간 동안 각 상품별 누적 판매량을 나타낸다.","일정 기간 내에서 최대 순위를 가진 상품만 뽑아 낸다.","주문 날짜 별로 가장 많이 팔린 제품을 정렬한다.","누적 합계가 포함된 모든 주문을 보여준다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 코드에서 row_number() 함수는 어떤 역할을 할까요?
+
+WITH ranked_sales AS (
+    SELECT order_date,
+           product_id, 
+           SUM(quantity) as total_quantity,
+           ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY SUM(quantity)) as rank
+FROM orders)
+SELECT * FROM ranked_sales','["product_id에 따른 주문 날짜의 순서를 매긴다.","quantity 합계가 가장 높은 제품 순으로 등록번호 부여한다.","주문마다 다른 상품을 판매한 횟수를 센다.","상품별로 모든 주문 데이터를 정렬한다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 Python 코드가 수행할 때 어떤 문제가 있을까요?
+
+import numpy as np
+x = np.array([1, 2, 3])
+y = np.array([[4], [5], [6]])
+z = x * y
+print(z)','["결과는 차원에 맞게 broadcasting 되어서 곱셈이 가능하다.","모든 요소가 브로드캐스팅되어 (1*4, 2*5, 3*6)의 결과를 생성한다.","차원 크기가 일치하지 않아 ValueError 가 발생할 것이다.","결과는 x와 y가 같은 형태를 가지도록 broadcasting 되지만 값이 잘못 계산된다."]','{"correct":2}','ANALYZE',0.75,'["numpy-broadcasting"]'),
+('DATA_AI','CODE_READING','다음 코드는 pandas를 사용하여 데이터프레임에 새로운 칼럼을 추가하는 과정입니다.
+
+```python
+df[''new_column''] = df.groupby(''key'')[''value''].transform(lambda x: (x - x.mean()) / x.std())```
+이 코드가 수행할 동작은 무엇인가요?','["새로운 칼럼을 생성하여, 각 그룹별로 표준화된 값들을 대입합니다.","데이터프레임에 새로운 칼럼이 추가되지만, 모든 행의 값을 0으로 채웁니다.","코드는 실행 중 오류를 일으킵니다. `transform` 함수가 해당 방식의 lambda 표현을 지원하지 않기 때문입니다.","새로운 칼럼은 생성되지 않습니다. 이 코드는 기존 카테고리형 값에 레이블 인코딩을 수행합니다."]','{"correct":0}','ANALYZE',0.8,'["pandas-groupby-transform"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+import pandas as pd
+
+df = pd.read_csv(''data.csv'')
+grouped_df = df.groupby([''category''])[''sales''].agg({''total_sales'': ''sum'', ''min_price'': lambda x: min(x.dropna())})','["''total_sales''는 카테고리별로 판매액의 합을 계산한다.","''min_price''는 각 카테고리를 기준으로 가장 작은 가격 값을 추출한다.","각 그룹에서 ''sales''를 제외하고 나머지 컬럼에 대한 처리가 이뤄진다.","카테그리별로 판매액의 합과 최소 가격을 함께 계산한다."]','{"correct":3}','EVALUATE',0.9,'["groupby-aggregation"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+from sklearn.datasets import make_classification
+X, y = make_classification(random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+scores = cross_val_score(LogisticRegression(), X, y, cv=5)','["각 교차검증 폴드에서 훈련 및 검정 데이터세트를 분리한다.","훈련 데이터 전체에 대해 검증 점수가 계산된다.","교차검증의 각 단계에서는 모든 샘플이 한 번씩 검사된다.","모델을 5번 학습하고, 매 폴드마다 훈련 세트로 다른 샘플 사용."]','{"correct":0}','EVALUATE',0.9,'["cross-validation"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+df = pd.read_csv(''data.csv'')
+x, x_val, y, y_val = train_test_split(df.drop(columns=[''target'']), df[''target''], test_size=0.2)
+scaler = StandardScaler()
+x_scaled = scaler.fit_transform(x.append(x_val))','["스케일러를 학습할 때 테스트 데이터가 누설된다.","테스트 데이터와 동일한 스케일을 적용한다.","모델의 성능이 과적합될 것이다.","분리된 훈련과 검증데이터 사이에 특성누수가 발생한다."]','{"correct":0}','EVALUATE',0.9,'["training-serving-skew"]');

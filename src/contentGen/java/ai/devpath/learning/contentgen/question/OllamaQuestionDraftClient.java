@@ -36,8 +36,11 @@ public class OllamaQuestionDraftClient implements QuestionDraftClient {
     var body = mapper.writeValueAsString(Map.of(
         "model", model,
         "stream", false,
+        // num_predict 가 없으면 한 호출이 끝없이 늘어질 수 있다(콘텐츠 쪽에서 70분 실측).
+        // 셀 배치는 최대 6문항이라 이 상한이면 충분하다.
         "options", Map.of(
             "seed", seed.getAndIncrement(),
+            "num_predict", 2048,
             "temperature", 0.9,
             "top_p", 0.95,
             "repeat_penalty", 1.15),

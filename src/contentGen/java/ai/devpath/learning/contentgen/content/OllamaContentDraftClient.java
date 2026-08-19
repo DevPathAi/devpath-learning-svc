@@ -39,7 +39,13 @@ public class OllamaContentDraftClient implements ContentDraftClient {
             Map.of("role", "system", "content", prompt),
             Map.of("role", "user", "content", userPrompt)),
         // 기본 num_ctx(4096)로는 프롬프트만으로 상당 부분이 소진돼 뒷부분이 깨진다(실측).
-        "options", Map.of("num_ctx", 16384, "seed", seed.getAndIncrement(), "temperature", 0.85)));
+        // num_predict 를 두지 않으면 한 호출이 컨텍스트를 채울 때까지 늘어진다 — DATA_AI
+        // 콘텐츠 생성이 70분 넘게 한 요청에 매달렸다. 배치 상한(3건)에 맞춰 출력을 묶는다.
+        "options", Map.of(
+            "num_ctx", 16384,
+            "num_predict", 3072,
+            "seed", seed.getAndIncrement(),
+            "temperature", 0.85)));
     var request = HttpRequest.newBuilder(URI.create(baseUrl + "/api/chat"))
         .header("Content-Type", "application/json")
         .POST(HttpRequest.BodyPublishers.ofString(body))
