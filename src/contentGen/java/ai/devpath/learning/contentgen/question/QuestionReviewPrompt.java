@@ -20,10 +20,11 @@ public final class QuestionReviewPrompt {
 
   /**
    * 배치 예산에서 문항 앞에 미리 차감할 프리앰블(안내문+트랙 헤더) 크기. batch() 는 트랙명을
-   * 받지 않아 정확한 값을 실측할 수 없으므로 상수로 둔다. 실측(트랙명 14자, 예: BACKEND_SPRING):
-   * build(track, List.of()).length() == 310. 더 긴 트랙명·여유를 대비해 40자를 더한다.
+   * 받지 않아 정확한 값을 실측할 수 없으므로 상수로 둔다. 적대 검증 축(반박 우선·복수 정답·
+   * 자립성)을 추가한 2026-08-22 프리앰블은 구판(310자)보다 길다 — 보수적 상한 700 으로
+   * 잡는다(과대 차감은 배치가 조금 작아질 뿐, 과소 차감은 예산 초과를 만든다).
    */
-  private static final int PREAMBLE_BUDGET = 350;
+  private static final int PREAMBLE_BUDGET = 700;
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -31,12 +32,15 @@ public final class QuestionReviewPrompt {
 
   public static String build(String track, List<ApprovedQuestion> batch) {
     var sb = new StringBuilder();
-    sb.append("당신은 개발자 진단 문항을 검수한다. 트랙: ").append(track).append("\n\n");
-    sb.append("각 문항에 대해 아래 네 가지를 본다.\n");
-    sb.append("1. 사실오류 — 기술적으로 틀린 서술\n");
+    sb.append("당신은 개발자 진단 문항의 적대적 검증자다. 기본 태도는 반박이다 — ")
+        .append("통과시키려 하지 말고 결함을 찾아라. 트랙: ").append(track).append("\n\n");
+    sb.append("각 문항에 대해 아래 다섯 가지를 본다.\n");
+    sb.append("1. 사실오류 — 기술적으로 틀린 서술. 코드가 있으면 머릿속에서 실제로 실행해 검증하라\n");
     sb.append("2. 정답키 오류 — answerKey.correct 가 가리키는 보기가 정답이 아님\n");
-    sb.append("3. 정답을 흘리는 선택지 — 길이·구체성만으로 정답이 보이는 문항\n");
-    sb.append("4. 어색한 한국어 — 번역투·비문\n\n");
+    sb.append("3. 복수 정답 — 오답이어야 할 보기 중 하나라도 방어 가능하게 옳으면 결함이다. ")
+        .append("오답 3개가 각각 틀렸음을 논증할 수 없으면 지적하라\n");
+    sb.append("4. 정답을 흘리는 선택지 — 길이·구체성만으로 정답이 보이는 문항\n");
+    sb.append("5. 자립성·한국어 — 문항만 보고 풀 수 없거나(외부 맥락 의존·모호), 번역투·비문\n\n");
     sb.append("문제가 없는 문항은 결과에 넣지 않는다. ");
     sb.append("결과는 JSON 배열만 출력한다(설명 금지): ");
     sb.append("[{\"index\": 0, \"axis\": \"정답키\", \"detail\": \"...\", \"suggestion\": \"...\"}]\n\n");

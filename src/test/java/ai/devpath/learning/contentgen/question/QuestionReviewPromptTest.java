@@ -28,11 +28,14 @@ class QuestionReviewPromptTest {
   }
 
   @Test
-  void promptAsksForTheFourReviewAxes() {
+  void promptAsksForTheFiveAdversarialReviewAxes() {
     var prompt = QuestionReviewPrompt.build("PYTHON_BACKEND", List.of(question("문항")));
 
-    assertThat(prompt).contains("사실오류").contains("정답키").contains("정답을 흘리는")
-        .contains("한국어");
+    // 2026-08-22 검수 교훈: 사실 검증은 반박 우선이어야 한다 — 복수 정답(오답의
+    // 방어 가능성)과 코드 실제 실행 검증을 명시적으로 요구한다.
+    assertThat(prompt).contains("반박").contains("사실오류").contains("정답키")
+        .contains("복수 정답").contains("정답을 흘리는").contains("한국어")
+        .contains("머릿속에서 실제로 실행");
   }
 
   @Test
