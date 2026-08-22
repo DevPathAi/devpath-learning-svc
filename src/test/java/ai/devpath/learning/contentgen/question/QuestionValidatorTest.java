@@ -230,6 +230,127 @@ class QuestionValidatorTest {
         assertThat(error).contains("content must contain Korean"));
   }
 
+  // ── 사실 검증 축 (2026-08-22 문항 800 검수 후속) ──────────────────────────
+  // 구조·분포 게이트만으로는 29.6% 결함율이 재발한다(검수 루프를 거친
+  // PYTHON_BACKEND 3건 vs 미검수 트랙 21~47건). 검증 장부(fingerprint 기반)가
+  // 없거나 낡으면 validate 가 실패해 리뷰 루프를 건너뛸 수 없게 한다.
+
+  @Test
+  void verifiedQuestionSetPassesWithManifest() {
+    var questions = validQuestions();
+
+    var report = validator.validate(questions, stampAll(questions));
+
+    assertThat(report.errors()).isEmpty();
+  }
+
+  @Test
+  void missingManifestFailsEveryQuestion() {
+    var questions = validQuestions();
+
+    var report = validator.validate(questions, List.of());
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("fact verification"));
+  }
+
+  @Test
+  void editedQuestionInvalidatesItsVerification() {
+    var questions = validQuestions();
+    var stamps = stampAll(questions);
+    // 검증 후 문항이 수정되면(fingerprint 불일치) 재검증 없이는 통과할 수 없어야 한다.
+    questions.set(0, withContent(questions.get(0), "수정된 한국어 문항 내용"));
+
+    var report = validator.validate(questions, stamps);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("missing or stale fact verification"));
+  }
+
+  @Test
+  void nonPassVerdictFails() {
+    var questions = validQuestions();
+    var stamps = new ArrayList<>(stampAll(questions));
+    var first = stamps.get(0);
+    stamps.set(0, new QuestionVerification(first.track(), first.fingerprint(),
+        "FAIL", first.axes(), first.reviewer(), first.reviewedAt()));
+
+    var report = validator.validate(questions, stamps);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("verdict"));
+  }
+
+  @Test
+  void missingRequiredAxisFails() {
+    var questions = validQuestions();
+    var stamps = new ArrayList<>(stampAll(questions));
+    var first = stamps.get(0);
+    stamps.set(0, new QuestionVerification(first.track(), first.fingerprint(),
+        "PASS", List.of("FACT"), first.reviewer(), first.reviewedAt()));
+
+    var report = validator.validate(questions, stamps);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("axes"));
+  }
+
+  @Test
+  void duplicateFingerprintInManifestFails() {
+    var questions = validQuestions();
+    var stamps = new ArrayList<>(stampAll(questions));
+    stamps.add(stamps.get(0));
+
+    var report = validator.validate(questions, stamps);
+
+    assertThat(report.errors()).anySatisfy(error ->
+        assertThat(error).contains("duplicate"));
+  }
+
+  @Test
+  void orphanVerificationIsOnlyWarning() {
+    var questions = validQuestions();
+    var stamps = new ArrayList<>(stampAll(questions));
+    stamps.add(new QuestionVerification("BACKEND_SPRING", "0".repeat(64), "PASS",
+        QuestionVerification.REQUIRED_AXES, "tester", "2026-08-22"));
+
+    var report = validator.validate(questions, stamps);
+
+    assertThat(report.errors()).isEmpty();
+    assertThat(report.warnings()).anySatisfy(warning ->
+        assertThat(warning).contains("orphan"));
+  }
+
+  @Test
+  void fingerprintChangesWhenAnyGradedFieldChanges() {
+    var base = validQuestions().get(0);
+    var baseline = QuestionVerification.fingerprintOf(base);
+
+    assertThat(QuestionVerification.fingerprintOf(withContent(base, "다른 내용")))
+        .isNotEqualTo(baseline);
+    assertThat(QuestionVerification.fingerprintOf(new ApprovedQuestion(
+        base.track(), base.questionType(), base.content(),
+        List.of("가", "나", "다", "라"), base.answerKey(), base.bloomLevel(),
+        base.difficulty(), base.conceptTags(), base.explanation())))
+        .isNotEqualTo(baseline);
+    assertThat(QuestionVerification.fingerprintOf(new ApprovedQuestion(
+        base.track(), base.questionType(), base.content(), base.options(),
+        new ApprovedQuestion.AnswerKey(
+            (base.answerKey().correct() + 1) % base.options().size()),
+        base.bloomLevel(), base.difficulty(), base.conceptTags(), base.explanation())))
+        .isNotEqualTo(baseline);
+    // bloom·difficulty·tags 는 채점과 무관 — fingerprint 를 바꾸지 않는다(재검증 불요).
+    assertThat(QuestionVerification.fingerprintOf(withBloom(base, "ANALYZE")))
+        .isEqualTo(baseline);
+  }
+
+  static List<QuestionVerification> stampAll(List<ApprovedQuestion> questions) {
+    return questions.stream()
+        .map(q -> new QuestionVerification(q.track(), QuestionVerification.fingerprintOf(q),
+            "PASS", QuestionVerification.REQUIRED_AXES, "tester", "2026-08-22"))
+        .toList();
+  }
+
   static List<ApprovedQuestion> validQuestions() {
     var questions = new ArrayList<ApprovedQuestion>();
     for (String track : QuestionQuota.TRACKS) {

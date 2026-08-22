@@ -59,6 +59,72 @@ public class QuestionValidator {
     return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
   }
 
+  /**
+   * 구조·분포 게이트에 더해 **사실 검증 축**을 판정한다: 모든 문항은 검증 장부에서
+   * fingerprint 가 일치하는 PASS 판정을 가져야 한다. 채점 필드가 바뀌면 fingerprint 가
+   * 어긋나므로, 리뷰 루프 없이 문항을 추가·수정하는 경로가 구조적으로 막힌다
+   * (2026-08-22 검수: 사실 검증 없는 게이트는 결함율 29.6%).
+   */
+  public QuestionValidationReport validate(List<ApprovedQuestion> questions,
+      List<QuestionVerification> verifications) {
+    var base = validate(questions);
+    var errors = new ArrayList<>(base.errors());
+    var warnings = new ArrayList<>(base.warnings());
+    validateFactVerifications(questions, verifications, errors, warnings);
+    return new QuestionValidationReport(List.copyOf(errors), List.copyOf(warnings));
+  }
+
+  private void validateFactVerifications(List<ApprovedQuestion> questions,
+      List<QuestionVerification> verifications, List<String> errors, List<String> warnings) {
+    if (verifications == null) {
+      errors.add("fact verification manifest is required");
+      return;
+    }
+    var byFingerprint = new HashMap<String, QuestionVerification>();
+    for (QuestionVerification v : verifications) {
+      if (v == null || blank(v.fingerprint())) {
+        errors.add("verification entry without fingerprint");
+        continue;
+      }
+      if (byFingerprint.putIfAbsent(v.fingerprint(), v) != null) {
+        errors.add("duplicate verification fingerprint " + v.fingerprint());
+        continue;
+      }
+      if (!QuestionVerification.VERDICT_PASS.equals(v.verdict())) {
+        errors.add("verification " + v.fingerprint() + " verdict must be PASS but was "
+            + v.verdict());
+      }
+      if (v.axes() == null || !v.axes().containsAll(QuestionVerification.REQUIRED_AXES)) {
+        errors.add("verification " + v.fingerprint() + " axes must cover "
+            + QuestionVerification.REQUIRED_AXES);
+      }
+      if (blank(v.reviewer()) || blank(v.reviewedAt())) {
+        errors.add("verification " + v.fingerprint() + " must name reviewer and reviewedAt");
+      }
+    }
+
+    var used = new HashSet<String>();
+    for (int i = 0; i < questions.size(); i++) {
+      var q = questions.get(i);
+      if (q == null) continue;
+      var fingerprint = QuestionVerification.fingerprintOf(q);
+      var verification = byFingerprint.get(fingerprint);
+      if (verification == null
+          || !QuestionVerification.VERDICT_PASS.equals(verification.verdict())) {
+        errors.add("line " + (i + 1) + " (" + q.track()
+            + "): missing or stale fact verification — 리뷰 루프를 거친 뒤 장부를 갱신하라");
+        continue;
+      }
+      used.add(fingerprint);
+    }
+
+    for (String fingerprint : byFingerprint.keySet()) {
+      if (!used.contains(fingerprint)) {
+        warnings.add("orphan verification " + fingerprint + " matches no approved question");
+      }
+    }
+  }
+
   private void validateQuestion(int line, ApprovedQuestion q, List<String> errors) {
     if (q == null) {
       errors.add("line " + line + ": question must not be null");
