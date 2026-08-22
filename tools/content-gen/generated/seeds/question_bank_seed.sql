@@ -2738,4 +2738,1012 @@ workers = 4
 
 # app.py (모듈 최상단, import 시점에 실행됨)
 engine = create_engine(DATABASE_URL)
-db_connection = engine.connect()','["preload_app=True는 오히려 각 워커가 자기 몫의 커넥션을 새로 여는 것 자체를 원천적으로 차단해버려서 워커가 뜰 때마다 언제나 즉시 오류가 발생한다고 오해하기 쉽다. 실제로는 커넥션을 여는 것을 막지 않는다.","workers=4로 설정하기만 하면 gunicorn이 데이터베이스 커넥션 풀 크기를 자동으로 4등분해 각 워커에게 정확히 나눠 배분해주므로 별도 설정이 전혀 필요 없다고 잘못 알려져 있다.","preload_app=True는 마스터 프로세스가 앱을 한 번만 로드한 뒤 fork로 워커를 만든다. 이때 import 시점에 이미 연 DB 커넥션(db_connection)까지 그대로 fork되어, 여러 워커가 같은 소켓을 공유하다가 한쪽이 사용하거나 닫으면 다른 워커의 연결이 깨진다.","gunicorn은 preload_app 설정과 무관하게 fork() 시점에 항상 부모의 모든 전역 변수(열린 커넥션 포함)를 완전히 새로 초기화해 자식에게 넘기도록 설계되어 있어, 이 코드에서는 충돌이 절대 일어날 수 없다고 잘못 알려져 있다."]','{"correct":2}','ANALYZE',0.9,'["gunicorn-preload-app-fork"]');
+db_connection = engine.connect()','["preload_app=True는 오히려 각 워커가 자기 몫의 커넥션을 새로 여는 것 자체를 원천적으로 차단해버려서 워커가 뜰 때마다 언제나 즉시 오류가 발생한다고 오해하기 쉽다. 실제로는 커넥션을 여는 것을 막지 않는다.","workers=4로 설정하기만 하면 gunicorn이 데이터베이스 커넥션 풀 크기를 자동으로 4등분해 각 워커에게 정확히 나눠 배분해주므로 별도 설정이 전혀 필요 없다고 잘못 알려져 있다.","preload_app=True는 마스터 프로세스가 앱을 한 번만 로드한 뒤 fork로 워커를 만든다. 이때 import 시점에 이미 연 DB 커넥션(db_connection)까지 그대로 fork되어, 여러 워커가 같은 소켓을 공유하다가 한쪽이 사용하거나 닫으면 다른 워커의 연결이 깨진다.","gunicorn은 preload_app 설정과 무관하게 fork() 시점에 항상 부모의 모든 전역 변수(열린 커넥션 포함)를 완전히 새로 초기화해 자식에게 넘기도록 설계되어 있어, 이 코드에서는 충돌이 절대 일어날 수 없다고 잘못 알려져 있다."]','{"correct":2}','ANALYZE',0.9,'["gunicorn-preload-app-fork"]'),
+('NODE_TYPESCRIPT','MCQ','Express.js 애플리케이션에 미들웨어를 추가할 때 주로 사용하는 함수 이름은 무엇인가?','["app.use()","app.addMiddleware()","app.middleware()","useApp()"]','{"correct":0}','REMEMBER',0.1,'["expressjs-middleware"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript에서 두 개의 유니온 타입 A와 B가 주어졌을 때, 이들을 교차(Cross)하는 방법은?','["A & B","A + B","A | B","union<A,B>"]','{"correct":0}','REMEMBER',0.1,'["typescript-union-intersection"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript에서 ''unknown'' 타입은 어떤 용도로 사용됩니까?','["변수의 타입을 모를 때 사용합니다.","any 타입과 동일하게 모든 유형에 대해 호환됩니다.","불확실한 값이나 데이터 입력 시 검사해야 할 경우 사용합니다.","never 타입과 마찬가지로 존재할 수 없는 상태를 표현하는 데 사용됩니다."]','{"correct":2}','REMEMBER',0.1,'["unknown"]'),
+('NODE_TYPESCRIPT','MCQ','스트림(Stream)을 처리하기 위해 Node.js에서 Buffer 클래스의 어떤 메서드가 자주 이용되는가?','["write()","pipe()","toString()","concat()"]','{"correct":1}','REMEMBER',0.15,'["nodejs-streams-buffer"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 작업이 동기를 대체하는 주요 이점은 무엇인가?','["성능 향상","코드의 가독성 증가","자원 사용량 감소","응답 시간 단축"]','{"correct":0}','REMEMBER',0.15,'["nodejs-asynchronous-programming"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js의 process.nextTick() 메서드는 무엇을 호출하는 데 사용되는가?','["기존 콜백 함수 대신 실행할 새로운 콜백 함수를 설정한다.","다음 이벤트 루프 반복에서 처리해야 할 작업을 추가한다.","즉시 실행된 후 다음 주 동작이 수행되기 전에 실행될 작업을 정의한다.","현재 메서드가 종료되면 즉시 호출된다."]','{"correct":2}','REMEMBER',0.17,'["nodejs-process-nexttick"]'),
+('NODE_TYPESCRIPT','MCQ','TS의 타입 애너테이션 ''@module''은 무엇을 정의하는가?','["모듈 수준에서 변수나 함수의 타입을 지정한다.","클래스의 멤버 함수에 대한 반환타입을 명시적으로 선언한다.","ES6 모듈 내부에서 import/export 문법을 사용하여 다른 모듈과 상호작용할 때 필수적인 타입 정보를 제공한다.","주석 블록 안에 추가적인 메타데이터 정보를 포함합니다."]','{"correct":2}','REMEMBER',0.18,'["typescript-modules"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js 모듈 시스템에서 CommonJS 와 ESM 의 주요 차이점은 무엇인가?','["CommonJS 는 `require`를 사용하고, ESM 은 `import/export 문법을 사용한다.","ESM 만 비동기 방식으로 동작하며, CommonJS는 동기화된다.","CommonJS는 .js 확장자를 지원하지만 ESM은 .mjs 를 요구한다.","모듈 캐시와 로딩 시점이 다르다."]','{"correct":0}','UNDERSTAND',0.3,'["node-module-system"]'),
+('NODE_TYPESCRIPT','MCQ','스트림(Stream) 작업에서 백프레셔(backpressure)는 어떤 상황에 발생하나?','["데이터를 소비하는 쪽이 데이터 생산자보다 느린 경우.","스트림을 통한 모든 요청이 성공적으로 처리된 후.","소스 스트림의 크기 제한을 초과할 때.","응답 스트림이 대량의 데이터로 인해 멈춤."]','{"correct":0}','UNDERSTAND',0.3,'["node-streams-backpressure"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 클래스 메서드를 가르키는 타입을 정확히 표현하려면 어떻게 해야 하나?','["`Function`\n\n    `Function`만 사용하면 실제 함수의 구체적 형태에 대한 정보가 사라진다.","`(this: ClassName, args...) => returnType;`\n\n    메서드에서 사용할 this 타입과 인자 반환 타입을 함께 지정한다.","`ClassName.methodName`","`(args) => returnType`"]','{"correct":1}','UNDERSTAND',0.3,'["typescript-function-types"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js의 이벤트 루프에서 `setTimeout(fn, 0)`은 어떻게 동작하나?','["함수 fn이 즉시 실행된다.","현재 단계(`poll` 또는 `check`)가 끝난 후 마이크로 태스크 대기열에 추가된다.","다음 매크로태스크까지의 디바운싱을 한다.","코드가 정상적으로 작동하지 않게 만든다."]','{"correct":1}','UNDERSTAND',0.3,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 `type` 속성이 올바르게 설정되었는지를 확인하는 TypeScript 유틸리티 타입은 무엇인가?','["Partial<T>","Pick<T, K>","Record<K,T>","ReturnType<>()"]','{"correct":1}','UNDERSTAND',0.3,'["typescript-utility-types-pick"]'),
+('NODE_TYPESCRIPT','MCQ','Express.js 애플리케이션에서 미들웨어의 실행 순서를 결정하는 요소는 무엇입니까?','["1) 미들웨어가 등록된 순서","2) 라우트 매핑 우선순위","3) 미들웨어의 이름 길이","4) 요청 URL의 정규표현식 패턴"]','{"correct":0}','UNDERSTAND',0.3,'["express-middleware-order"]'),
+('NODE_TYPESCRIPT','MCQ','다음 TypeScript 코드에서 `Person` 타입의 인스턴스는 어떠한 조건을 가진가?
+type Person = {
+  name: string;
+  age?: number;
+};','["name 이 string, age 는 필수적으로 number.","name 이 string, age 는 선택적 number.","age 이 number로 존재해야 하지만 name 은 없어도 됨.","age 와 함께 필수적인 다른 속성이 필요하다."]','{"correct":1}','UNDERSTAND',0.3,'["typescript-optional-properties"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript의 `readonly<T>` 타입을 사용할 때, 다음 중 올바른 설명은 무엇인가?','["T 속성 모두 읽기 전용으로 제한","T 객체 자체를 읽기 전용으로 변경한다.","변수에 대한 T 타입에서 읽기 전용 속성을 정의합니다.","read-only는 배열 내부 원소도 함께 제한합니다."]','{"correct":2}','UNDERSTAND',0.3,'["typescript-readonly"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript 에서 `unknown` 와 `any` 의 주요 차이는 무엇인가?','["`unknown`은 모든 타입과 호환되지만, 안전하게 처리하기 위해 좁히기 필요.","`any`는 어떤 작업도 실행 가능하지만, 런타임 오류를 발생시킬 위험이 있다.","`unknown`을 사용하면 코드의 가독성이 향상되고, 모든 타입과 호환된다.","`any`은 안전성을 위해 좁히기가 필요하며, `unknown` 은 그렇지 않다."]','{"correct":1}','UNDERSTAND',0.35,'["typescript-unknown-type"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript에서 `unknown` 타입은 어떤 상황에 주로 사용됩니까?','["변수의 타입이 아직 알려지지 않은 경우","어떤 값도 할당될 수 있는 유연한 변수를 만들 때","타입 안전성을 보장하기 위해 런타임에서 모든 값을 검사할 필요가 있을 때","배열이나 객체 내부 타입을 정의하는 상황"]','{"correct":2}','UNDERSTAND',0.35,'["typescript-unknown-type"]'),
+('NODE_TYPESCRIPT','MCQ','Express.js 미들웨어에서 4번째 인자를 받은 함수에 대한 역할은 무엇인가?','["응답 객체를 반환하는 경로 설정.","요청 객체만을 수정하고 계속 진행한다.","요청과 응답 모두 수정하며, 처리 중단.","다음 미들웨어 함수 호출을 무시한다."]','{"correct":2}','UNDERSTAND',0.35,'["express-middleware"]'),
+('NODE_TYPESCRIPT','MCQ','비동기 작업이 여러 개가 있을 때, 일부 작업에 실패하면 즉시 에러 처리하는 방법으로 적절한 API는 무엇인가?','["Promise.all()","Promise.any()","Promise.race()","Promise.allSettled()"]','{"correct":1}','UNDERSTAND',0.35,'["node-asynchronous-control-any-promise"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 `never` 타입은 어떤 상황에서 사용되는가?','["함수의 반환 타입으로 쓰여 함수의 종료를 의미하거나 에러 처리에 활용한다.","비동기 작업이 완료될 때까지 대기를 위한 특별한 타입이다.","타입스크립트에서 유효하지 않은 타입이나 결론 없음 상태만을 표현하기 위해 쓰인다.","클래스 생성자 함수의 반환 타입으로 사용된다."]','{"correct":0}','UNDERSTAND',0.35,'["typescript-never-type"]'),
+('NODE_TYPESCRIPT','MCQ','Express.js의 미들웨어 체인에서, 오류 핸들링 라우터는 어떤 형태를 취하나?','["`function(err: Error, req: Request, res: Response) => void;`\n\n    이 모듈은 오직 에러만을 처리하고 실행되지 않을 때 사용된다.","`(req: Request, res: Response, next: NextFunction) => Promise<void>;`\n\n    비동기 작업이 완료된 후에 예외를 처리하게 한다.","`function(err: Error, req: Request, res: Response, next: NextFunction) => void;`\n\n    오류 발생 시 사용되며 에러와 요청 및 응답 객체를 받는다.","`(req: Request, err?: Error, res: Response) => void;`\n\n    모든 가능성을 처리하는데 유용하며, 예외가 없을 수도 있다."]','{"correct":2}','UNDERSTAND',0.35,'["express-error-handling"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기적으로 작업을 처리할 때, `Promise`와 `async/await` 구문 중 어떤 것이 순차적인 코드 작성에 더 적합한가?','["`Promise`\n\n    프로미스는 비동기 상태를 관리하기 위한 최소 단위로서 데드락 위험을 증가시킬 수 있다.","`async/await`\n\n    `async/await`은 비동기에 동기적인 코드 작성 스타일이 가능하도록 만들어진 구문으로 순차적 처리에 적합하다.","둘 다 비슷한 역할을 하지만, 특정 상황에서 더 효율적인 기법이 있다.","비교 불가능\n\n    `Promise`와 `async/await`는 동등하게 비동기 작업 처리를 위해 사용되며 각각의 장단점은 없다."]','{"correct":1}','UNDERSTAND',0.35,'["node-asynchronous-programming"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 ''never'' 타입은 언제 사용됩니까?','["1) 함수가 결코 반환하지 않는 경우","2) 모든 가능한 유니온 타입을 나타낼 때","3) 변수를 아직 초기화하지 않은 상태일 때","4) 객체의 특정 프로퍼티를 무시할 수 없게 할 때"]','{"correct":0}','UNDERSTAND',0.35,'["typescript-never-type"]'),
+('NODE_TYPESCRIPT','MCQ','Express 미들웨어에서 4개 인자(`req`, `res`, `next`)가 모두 필요할 때, 각각 어떤 역할을 하는지 제대로 설명한 것은?','["요청 객체, 응답 객체, 오류 처리 함수.","응답 객체, 요청 객체, 프로세스 종료 함수.","모든 HTTP 메소드의 공통 처리를 위한 컨트롤러.","요청 객체, 응답 객체, 다음 미들웨어 호출을 위해 사용되는 함수."]','{"correct":3}','UNDERSTAND',0.35,'["express-middlewares"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js 프로세스에서 `setTimeout` 이 실행되는 타이밍은 언제인가?','["다음에 바로 실행되는 마이크로태스크.","지정된 시간 경과 후 매크로태스크로서 큐에 추가됨.","프로세스 초기 직후에 가장 먼저 실행 됨.","Promise.then 의 이후 빈도를 결정하는 타이밍으로 설정된다."]','{"correct":1}','UNDERSTAND',0.4,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 `unknown` 타입은 어떤 상황에서 유용하게 쓸 수 있나?','["스트링이나 숫자 같은 원시 타입과 구분할 때 사용.","비교적 안전한 값을 받을 때 무언가를 대체해야 할 때 사용.","타입이 불확실하거나 확인하기 어려운 경우, 향후 형상화나 검사를 위해 적합하다.","환경 변수처럼 외부 입력에 대한 동적으로 결정되는 타입의 복잡한 경우"]','{"correct":3}','UNDERSTAND',0.4,'["typescript-unknown-type"]'),
+('NODE_TYPESCRIPT','MCQ','Promise.all이 여러 프ром리스를 받았을 때 어떤 경우에 거부(reject)된다?','["모든 프로미스가 거절될 때.","하나라도 거절되면 즉시 거절한다.","프로미스들이 모두 성공하면 거절한다.","여러 프로미스 중 하나만 실패해도 거절되지 않는다."]','{"correct":1}','APPLY',0.5,'["node-asynchronous-control"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 프로세스 모델에 대한 설명 중 올바른 것은 무엇인가?','["단일 스레드 멀티태스킹 환경이다.","다중 쓰레드를 통해 병렬 처리가 가능하다.","worker_threads 모듈을 사용하면 동기적으로 작업이 수행된다.","프로세스는 비동기에만 작동한다."]','{"correct":0}','APPLY',0.5,'["node-process-model"]'),
+('NODE_TYPESCRIPT','MCQ','NestJS에서 컨트롤러와 서비스 간 의존성 주입(injection)이 일어날 때 사용되는 DI(Dependency Injection) 모듈은 다음과 같다.','["CommonJS 모듈 시스템","@nestjs/common과 @nestjs/core","Express 미들웨어 팩토리","TypeORM"]','{"correct":1}','APPLY',0.5,'["nestjs-dependency-injection"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 `User` 타입의 모든 프로퍼티를 옵셔널(`?`)으로 만드는 유틸리티 타입은 무엇인가?
+type Nullable<T> = { [P in keyof T]?: T[P]; }','["Partial<User>","Pick<User, keyof User>","Nullable<User>","Readonly<User>"]','{"correct":2}','APPLY',0.5,'["typescript-utility-types"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 작업을 제어하기 위해 사용할 수 있는 메소드 중 하나는 `Promise.all` 이다. 여러 프라미스를 동시에 실행하고 모두 성공해야 다음 단계로 넘어갈 때 사용하는 것이 있다.','["Promise.allSettled()","Promise.race()","Promise.any()","Promise.all()"]','{"correct":3}','APPLY',0.5,'["promise-api"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 TypeScript의 readonly 키워드를 사용하면 어떻게 되는가? ```ts const person = {readonly name: ''Alice'', age: 25};```','["name 속성은 읽기만 가능하게 된다.","age 속성도 읽기 전용으로 변한다.","person 객체 자체가 readonly로 바뀐다.","이 코드는 TypeScript에서 유효하지 않다."]','{"correct":0}','APPLY',0.5,'["typescript-readonly"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 Pick 타입은 무엇을 제공하는가?','["특정 프로퍼티만 포함된 객체의 타입.","모든 키를 readonly 속성으로 만드는 타입.","객체 내의 일부 값을 제외한 나머지 타입을 정의한다.","비어있는 인터페이스 또는 타입이다."]','{"correct":0}','APPLY',0.5,'["typescript-utility-types"]'),
+('NODE_TYPESCRIPT','MCQ','스트림 처리에서 백프레셔(backpressure)는 스트림이 데이터의 속도에 따라 읽기나 쓰기를 제어하는 기제로 작동한다. `ReadableStream` 객체가 생성되면 끊임없이 데이터를 제공하기 때문에, 이를 제어해야 하는 방법은 무엇인가.','["스트림을 바로 종료한다","데이터 소비자가 스트림의 속도에 맞춰 읽기 위한 시그널을 발생시킨다","스트림에서 직접 데이터 처리량을 늘린다","Stream API를 사용하지 않고 파일 시스템으로 직접 쓴다"]','{"correct":1}','APPLY',0.5,'["nodejs-streams"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js 이벤트 루프에서 `process.nextTick`과 `Promise.then`은 어떤 차이점으로 인해 동작 방식이 다르게 되는가?','["macro-task 대 micro-task 순서의 우선순위","스케줄링 타입의 편리성","비동기 작업 처리 시간","실행 시점에 의존성"]','{"correct":0}','APPLY',0.52,'["process-nexttick-promise-then-nodejs"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 배열 내부 요소를 비동기적으로 처리하는 함수는 어떤 것인가?
+promises.forEach(async (promise) => await promise;)
+주어진 `promises`의 모든 요소가 성공할 때까지 기다리는 가장 효과적인 방법은 무엇일까?','["Promise.all(promises)","promises.map(promise => promise.catch(() => null))","promises.reduce((acc, curr) => acc.then(curr), Promise.resolve())","promises.filter(async (promise) => await promise;).length === promises.length"]','{"correct":0}','APPLY',0.53,'["async-await-promise","node-asynchronous-control-flow"]'),
+('NODE_TYPESCRIPT','MCQ','타입스크립트에서 `readonly` 키워드를 사용하여 객체 프로퍼티의 읽기 전용성을 강제하는 경우, 이는 어떤 상황을 방지합니다.','["불필요한 속성 수정","타이핑 오류 무시","클래스 인스턴스 간 의존성 문제","속성을 삭제하거나 재할당하기"]','{"correct":0}','APPLY',0.54,'["readonly-property-typescript"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 함수 내부에서 `throw new Error(''error'')`가 발생했을 때 이를 처리하기 위해선 어떤 문법을 사용해야 하는지?
+async function example() {
+  // ...
+}
+
+example().then(() => console.log(''resolved''))
+.catch((err) => { 
+    console.error(err);
+});','["Promise.prototype.catch()",".finally()","throw를 try/catch 블록 안에서 실행","(이미 정답인) .catch()"]','{"correct":3}','APPLY',0.56,'["async-await-promise-error-handling"]'),
+('NODE_TYPESCRIPT','MCQ','TypeScript에서 어떤 유형의 키와 값이 모두 문자열인 객체 타입은 어떻게 정의할 수 있을까?','["Record<string, string>","Pick<object, ''string''>","Map<string, string>","Partial<{}>"]','{"correct":0}','APPLY',0.56,'["typescript-record-partial-type"]'),
+('NODE_TYPESCRIPT','MCQ','익스프레스 미들웨어에서 오류를 전달하기 위한 핸들러는 몇 개의 파라미터를 받나?','["2개","3개","4개","5개"]','{"correct":2}','APPLY',0.57,'["express-middleware-error-handling"]'),
+('NODE_TYPESCRIPT','MCQ','Express에서 라우팅 경로를 정할 때, 루트 경로 `/`와 `/:id` 로 구분되는 두 개의 GET 요청 핸들러가 동시에 정의되었을 경우, 먼저 일치하는 경로는 어디서부터 검사되나?','["경로 우선순위에 따라 결정","정확한 매칭에서부터 와일드카드로 이동","/:id 루트를 무시하고 / 처리","/:id의 모든 요청을 먼저 보냄"]','{"correct":1}','APPLY',0.57,'["express-routing-priority"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 `process.nextTick` 이 실행되는 시점을 고려하면, 어떤 함수가 먼저 실행되나?
+```javascript
+function firstFunction() {
+  console.log(''First function'');
+}
+setTimeout(firstFunction);
+process.nextTick(() => console.log(''Next tick''));
+```','["firstFunction","nextTick 콜백","둘 다 동시에","정답이 없음"]','{"correct":1}','APPLY',0.57,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 `Promise.all`과 비슷하지만 하나라도 거부되면 즉시 모든 작업이 취소되는 메서드는 무엇인가?','["Promise.race","Promise.any","Promise.settled","AbortController"]','{"correct":1}','APPLY',0.58,'["promise-all-settled-nodejs"]'),
+('NODE_TYPESCRIPT','MCQ','스트림 API를 사용하여 대용량 파일을 읽고 쓸 때 발생하는 주요 문제 중 하나인 백프레셔(backpressure)는 무엇을 의미하나?','["데이터의 오버플로우 방지","서버와 클라이언트 간 통신 지연 시간 최소화","스트림 데이터가 잘못 전송될 위험 감소","파일 시스템에서 I/O 에러를 줄이는 것"]','{"correct":0}','APPLY',0.58,'["nodejs-streams-backpressure"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js 프로그램이 `SIGTERM` 시그널을 받았을 때, 모든 쓰레드가 정상적으로 종료될 수 있도록 필요한 방법은 무엇인가?','["process.exit()","throw new Error(\"shutdown\");","process.on(''SIGTERM'', () => process.abort());","require(''worker_threads'').Worker.terminateAll()"]','{"correct":1}','APPLY',0.59,'["node-process-model-graceful-shutdown"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js의 cluster 모듈이 주로 어떤 문제를 해결하나?','["복잡한 순환 참조를 처리하기 위해.","프론트엔드 라우팅 로직을 분리하기 위한 용도이다.","웹 스케일링 시 여러 프로세스 간 작업 분배 및 병렬화한다.","비동기 요청의 성능 최적화에 활용된다."]','{"correct":2}','APPLY',0.6,'["node-process-model"]'),
+('NODE_TYPESCRIPT','MCQ','스트림 모듈에서 백프레셔(backpressure)는 무엇을 의미하는가?','["데이터를 무시할 수 있는 상황.","스트림이 데이터의 전송 속도를 제어한다.","스트림은 항상 최대한 많은 데이터를 처리해야 한다.","스트림은 모든 입력을 보장하며 버퍼링하지 않는다."]','{"correct":1}','APPLY',0.6,'["node-streams-and-buffers"]'),
+('NODE_TYPESCRIPT','MCQ','모듈 시스템에 대한 이해 중 올바르지 않은 것은 무엇인가?','["CommonJS 모듈은 동기적으로 로딩되며, ESM는 비동기로 로딩된다.","package.json의 main 필드는 기본으로 실행할 모듈을 지정한다.","순환 의존성은 모든 모듈이 정상적으로 초기화될 때까지 불가능하다.","최상위 await를 사용하면 프로세스 종료 시점에서 비동기 작업 완료를 기다릴 수 있다."]','{"correct":2}','ANALYZE',0.7,'["module-system"]'),
+('NODE_TYPESCRIPT','MCQ','다음 TypeScript 코드에서 ''value'' 변수의 타입은 무엇인가?
+```ts
+const obj = { value: 123 };
+type ObjValue<T> = T extends object ? (T[keyof T] | undefined) : never;
+type Value = ObjValue<typeof obj>;
+```','["number","(number|undefined)","never","any"]','{"correct":1}','ANALYZE',0.7,'["typescript-utilities-types"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 `process.nextTick` 의 역할은 무엇인가?
+
+```typescript
+function asyncFunc() {
+  console.log(''Task1'');
+}
+setTimeout(asyncFunc, 0);
+asyncFunc();
+setImmediate(() => console.log(''task2''));
+```
+- 이 코드에서 `console.log` 의 출력 순서는?','["''Task1'', ''task2''","''task2'', ''Task1''","''Task1'', 콘솔에 아무 것도 출력되지 않음","''task2'', 콘솔에 아무 것도 출력되지 않음"]','{"correct":0}','ANALYZE',0.7,'["node-process-model"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 프로세스 모델에 대한 이해는 어떻게 달라질 수 있는가?','["단일 스레드 모드에서는 비동기 작업이 순차적으로 실행된다.","worker_threads를 사용하면 모든 비동기 호출은 병렬로 처리될 것이다.","SIGTERM 신호를 받으면 프로세스는 자동으로 종료되지만 unhandled rejection에 대해서는 그렇지 않다.","프로세스 모델은 개발 환경과 동일하게 운영환경에서 작동한다."]','{"correct":2}','ANALYZE',0.7,'["process-model"]'),
+('NODE_TYPESCRIPT','MCQ','스트림과 버퍼에 대한 이해 중 옳지 않은 것은 무엇인가?','["Buffer는 고정 길이로 데이터를 저장한다.","pipeline 함수는 복잡한 스트림의 연결을 단순화할 수 있다.","백프레셔는 출력된 데이터와 입력되는 데이터 양 사이에 항상 일치해야 한다.","스트리밍 응답을 사용하면 대용량 파일을 메모리에 올릴 필요가 없다."]','{"correct":2}','ANALYZE',0.75,'["streams-buffers"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 코드를 작성할 때 다음 중 제어 흐름을 올바르게 이해하고 있는 것은 무엇인가?','["비동기 콜백은 반드시 try-catch로 감싸서 사용해야 한다.","Promise.all이 거부된 한 개의 Promise만 취소한다.","await를 이용한 순차적인 비동기 작업에서는 병렬 처리 기회를 잃을 수 있다.","모든 비동기 함수는 unhandled rejection을 발생시킬 가능성이 있다."]','{"correct":2}','ANALYZE',0.75,'["async-control"]'),
+('NODE_TYPESCRIPT','MCQ','다음 TypeScript 코드에서 ''UserDetails'' 인터페이스는 어떤 종류의 타입 시스템을 사용하고 있는가?
+```ts
+interface UserDetails {
+  name?: string;
+  age: number | null;
+}
+const userDetails: UserDetails = {};
+details.name; // (string | undefined)
+details.age; // (number | null)```
+','["타입 단언(typed assertions)","확장된 타입(extension types)","필수 값은 대체 가능하고 옵셔널 속성의 조합으로 표현됨.","매핑 형식(mapping types)"]','{"correct":2}','ANALYZE',0.75,'["typescript-interface-declarations"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 프로세스 모델이 어떻게 동작하는지 설명하십시오.
+
+```typescript
+const spawn = require(''child_process'').spawn;
+
+function startServer() {
+  const childProcess = spawn(''node'', [''app.js''], {stdio: ''inherit''});
+}
+```
+- 위 코드에서 `startServer` 함수가 실행되면서 발생하는 프로세스 상태는?','["서버 프로세스와 부모 프로세스가 동일한 메모리 공간을 공유","부모 프로세스가 종료될 때 자식 프로세스도 함께 종료된다.","자식 프로세스의 표준 입력, 출력, 오류를 부모 프로세스에게 전송한다.","서버 프로세스가 실행되고 부모 프로세스는 다른 작업을 계속 진행"]','{"correct":2}','ANALYZE',0.75,'["node-process-model"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 테스크의 우선순위를 비교할 때, `process.nextTick`과 `Promise.then` 사이에 어떤 차이점이 있나?
+```ts
+console.log(''A'');
+promise1.then(() => console.log(''B''));
+timer1 = setTimeout(() => console.log(''C''), 0);
+nextTickCallback(); // process.nextTick 호출
+process.on(''exit'', () => console.log(''D''));```
+위 코드에서 출력 순서는?
+','["A -> B -> C -> D","A -> D -> B -> C","A -> C -> B -> D","A -> B -> D -> C"]','{"correct":2}','ANALYZE',0.75,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','MCQ','비동기 연산을 병렬적으로 수행하려고 `Promise.all`에서 배열 안의 거부를 처리하고 나머지 요청은 계속 진행시키는 코드 조각을 보았습니다. 그 구조에 맞게 다음 중 어떤 방법이 올바르게 동작할까요?
+```ts
+const results = await Promise.all(promises.map(p => p.catch(err => console.error(''Failed'', err))));```
+','["모든 promise들이 catch 되어 처리되며 나머지는 진행됨.","Promise.any로 대체되어야 함.","catch 안에서의 에러 처리는 각각 별개라는 점을 고려해야 하므로, 비효율적입니다.","결과 배열이 undefined들로 채워질 것입니다."]','{"correct":2}','ANALYZE',0.75,'["typescript-promise-handling"]'),
+('NODE_TYPESCRIPT','MCQ','다음 Node.js 코드에서 ''cluster'' 모듈을 사용하여 쓰레드 별로 분산 처리를 수행하는데, 각 워커 프로세스는 어떻게 서로 다른 요청들을 처리할 수 있나?
+```ts
+const cluster = require(''cluster'');
+count = 1;
+if (cluster.isMaster) {
+    console.log(`Master ${count} is running`);
+    count++;
+ 
+   for(let i=0; i<4; i++){
+       const worker = cluster.fork();
+       worker.send(''some data'');
+      }
+}
+else if(cluster.isWorker){
+  process.on(''message'', function(data) {
+    console.log(`Received ${data} from master`); 
+});```
+','["워커 프로세스는 채널을 통해 서로 통신하며, 각각 다른 요청을 처리한다.","마스터가 워커에게 특정 작업을 분배하는 로직이 필요하다.","워커들은 공유 메모리 공간을 사용하여 상태를 유지하며 서로 다른 요청을 다룬다.","각 마스터와 워커는 별도의 프로세서에서 실행되어 독립적으로 동작한다."]','{"correct":1}','ANALYZE',0.75,'["node-cluster-module"]'),
+('NODE_TYPESCRIPT','MCQ','다음 스트림 코드 스니펫에서 `pipeline` 메소드의 역할은 무엇인가?
+
+```typescript
+const fs = require(''fs'');
+const { pipeline } = require(''stream''); 
+pipeline(  // 파일을 읽고, 변환하여 쓰기 위한 파이프라인이 생성됨.
+    fs.createReadStream(''/etc/passwd''),   
+    new Transform({                 
+        objectMode: true,
+        transform(chunk, enc, cb) {
+            this.push(`Received ${chunk.toString()}\n`);
+            return cb();
+        }
+    }),  
+    fs.createWriteStream(''/file/output'') ,
+    (err) => { if (err) console.error(''pipeline failed'', err);});
+```
+- 이 스트림 코드에서 `pipeline()` 메소드의 주요 기능은?','["스트림들을 연결하고, 순차적으로 처리 및 쓰기","스트림들을 병렬로 동시에 처리한다.","쓰레드를 생성하여 각 스트림을 독립적으로 관리","스트림들 사이의 데이터 전송만 수행"]','{"correct":0}','ANALYZE',0.76,'["node-streams-and-buffers"]'),
+('NODE_TYPESCRIPT','MCQ','Express API에서 다음 코드 조각이 어떤 작동을 하는지 설명하십시오.
+
+```typescript
+app.get(''/users'', (req, res) => {
+  User.find({}, function(err: any, users?: Array<any>) { 
+    if (!err && users.length > 0) {
+      res.json(users);
+    } else {
+      res.status(404).send(''Not Found'');
+    }
+  });
+});
+```
+- 이 코드에서 만약 DB 쿼리가 실패하거나, 유저 목록이 비어있다면 HTTP 응답은?','["200 OK 상태와 유저들 JSON 배열","404 Not Found","500 Internal Server Error","301 Moved Permanently"]','{"correct":1}','ANALYZE',0.78,'["node-web-frameworks","http-api"]'),
+('NODE_TYPESCRIPT','MCQ','다음 TypeScript 코드 스니펫에서 `AbortController` 객체가 어떻게 활용되는지 설명하십시오.
+
+```typescript
+class NetworkClient {
+  private controller?: AbortController;
+ 
+  async request(url: string, signal: AbortSignal) {
+    this.controller = new AbortController();
+    const abortTimeoutId = setTimeout(() => {this.abortRequest() },1000);
+    return fetch(url, {signal}); // 비동기 요청이 여기서 발생
+}
+  
+ private abortRequest(){
+     console.log(''Request timed out.'');
+     this.controller?.abort();
+ }
+```
+- 위 코드에서 `AbortController` 객체는 어떤 역할을 수행하며 타이머에 의해 비동기 요청은 어떻게 처리되는지?','["타이머 후 abort() 메소드를 호출하여 모든 요청 취소","비동기 콜백만 중단되고, 다른 요청들은 계속 진행","request method에서 제공된 `AbortSignal`을 통해 요청의 상태를 확인","''abort'' 이후에도 fetch request가 완료될 때까지 기다림"]','{"correct":0}','ANALYZE',0.78,'["node-asynchronous-control","http-api"]'),
+('NODE_TYPESCRIPT','MCQ','다음의 TypeScript code 스니펫에서 `Promise.all`과 Promise 객체들이 어떻게 작동하는지 설명하십시오.
+
+```typescript
+const promises: Array<Promise<number>> = [];
+promises.push(Promise.resolve(1));
+promises.push(new Promise((resolve) => setTimeout(() => resolve(2), 500)));
+promises.push(Promise.reject(3)); 
+await Promise.all(promises); // 이 코드가 실행될 때 발생하는 결과는?','["결과 배열 [1, undefined]을 반환하고 모든 promise 가 해결됨","Promise.all 은 첫 번째 거부를 받고 즉시 종료한다.","첫 번째 거부 이후 비동기 처리 후의 2를 포함한 결괏값이 반환됨","무한히 실행된다"]','{"correct":1}','ANALYZE',0.79,'["node-asynchronous-control"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js의 비동기 I/O 작업과 스트림 버퍼링 사이에서 발생할 수 있는 백프레셔(backpressure) 문제를 해결하기 위한 적절한 방법은?
+```ts
+const readable = fs.createReadStream(''bigfile.txt'', { highWaterMark: 256 });
+readable.on(''data'', chunk => process.stdout.write(chunk));```
+위 코드에서 백프레셔가 발생하지 않게 하기 위해서는?','["process.stdout.write에 Buffer를 직접 넘겨준다","chunk의 크기를 줄여 스트림의 highWaterMark 값을 낮춘다.","chunks 사이에 적절한 기록을 추가한다.","data 이벤트 핸들러에서 읽어온 데이터를 처리하는 비동기 작업이 완료될 때까지 대기를 강제로 한다"]','{"correct":3}','ANALYZE',0.8,'["node-stream-backpressure"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드에서 발생할 오류를 설명하라.
+
+```typescript
+import fs from ''fs'';
+const data = fs.readFileSync(''/nonexistent/file'', {encoding: ''utf8''});
+class DataProcessor {
+    constructor(private rawData: string) {}
+}
+new DataProcessor(data);
+```
+위 코드의 실행 결과는 무엇인가?','["1. 에러 없이 정상 동작.","2. `fs.readFileSync` 호출 시 파일이 존재하지 않아서 런타임 오류 발생.","3. TypeScript 컴파일 타입 검사에서 데이터가 undefined로 초기화되지 않을 경우의 경고를 받는다.","4. 자바스크립트 엔진이 프로세스 종료시에 비정상적으로 종료된다."]','{"correct":2}','EVALUATE',0.9,'["typescript-strict-null-checks"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드 조각은 어떤 문제를 나타내나?
+```typescript
+import type { Pool } from ''pg'';
+class DatabaseConnection {
+  private pool: Promise<Pool>;
+  constructor() {
+    this.pool = new Promise((resolve) => {
+      require(''pg'').connect(process.env.DATABASE_URL, (err, client) => resolve(client));
+    });
+  }
+
+  public async query(sqlQuery: string): Promise<object[]> { 
+    const poolClient = await this.pool; // 비동기적으로 클라이언트를 획득합니다.
+    try {
+      return (await poolClient.query(sqlQuery)).rows;
+    } finally {
+      poolClient.release();
+    }
+  }
+}
+```
+- 위 코드는 PostgreSQL Client 객체와 Promise의 구문을 이용한 비동기 데이터베이스 연결입니다.','["비동기적으로 획득된 클라이언트 `poolClient`를 동일하게 처리하려는 시도로 인해 실수성 높은 코드가 됩니다.","쿼리 결과로 받아온 객체 배열 `rows`의 타입 정보가 명시되어 있지 않아서 TypeScript 컴파일러에 의해 문제가 발생합니다.","`query` 메소드에서 Promise 사용 시 비동기 처리를 제대로 이해하지 못해 비정상적인 프로그램 흐름이 발생할 수 있습니다.","비동기 처리 과정에서 잘못된 클라이언트 반환으로 인해 실제 데이터베이스 연결의 문제가 발생합니다."]','{"correct":1}','EVALUATE',0.9,'["db-orm"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드 조각에서, 어떤 타입의 문제가 발생하나?
+```typescript
+function getUserProfile(userId: string): Promise<User | null> {
+  return db.query(`SELECT * FROM users WHERE id = $1`, [userId], (error, results) => {
+    if(error) throw error;
+    return results.rows[0];
+  });
+}
+```','["사용자가 존재하지 않을 때 `null`을 반환하기 때문에 타입 오류가 발생한다.","결과 객체의 형상이 명시적으로 지정되지 않아서 코드는 컴파일할 수 없다.","Promise 결과에 대한 타입 정보가 부족하여 TypeScript가 이를 검증할 수 없다.","db.query 호출 시 전달되는 콜백 함수에서 반환하는 값의 타입과 Promise 의 리턴 타입이 불일치한다."]','{"correct":3}','EVALUATE',0.9,'["typescript-type-system"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드 스니펫에서 어떤 부분이 안정적인 연결 관리를 위한 최선의 방법을 제안하지 못하고 있나?
+```typescript
+import { Pool } from ''pg'';
+class DBConnection {
+  pool: Pool;
+  constructor(connectionString) {
+    this.pool = new Pool({ connectionString });
+  }
+}
+class UserManagementDB extends DBConnection {
+  async getUserProfile(userId): Promise<UserProfile> {
+    const result = await this.query(`SELECT * FROM users WHERE user_id=$1`, [userId]);
+    return { userId: result.rows[0].user_id, name: result.rows[0].name };
+  }
+}
+class AuthDB extends DBConnection {
+  async authenticate(username, password): Promise<JwtToken> {
+    // 여기서 JWT 토큰 발급 로직이 있음
+  }
+}```
+- 위 코드 스니펫은 여러 데이터베이스 연결을 위해 클래스와 확장 클래스를 이용한 설계입니다.','["`DBConnection` 생성자의 `this.pool = new Pool({ connectionString });` 부분에서 비동기 작업 처리가 제대로 이루어지지 않음","클래스 확장을 통해 인터페이스로 교체할 수 있는 코드 구조임에도 불구하고 실제 구현부는 클래스 기반인 문제점","비밀번호 확인 로직이 별도의 비즈니스 로직으로 분리되지 않은 흔한 보안 취약점 이슈","`UserManagementDB.authenticate()`에서 인자 타입 추론 오류로 인해 런타임에 문제가 발생할 수 있음."]','{"correct":0}','EVALUATE',0.9,'["typescript-type-system"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드 스니펫은 어떤 문제점을 드러내나?
+```typescript
+const db = require(''pg'').Pool;
+
+db.query(`SELECT * FROM users WHERE active=true`, (err, result) => {
+  if(err) throw err;
+  console.log(result.rows);
+});
+```
+- `db`는 PostgreSQL 데이터베이스 풀 객체입니다.','["결과 집합의 모든 행을 내부적으로 메모리에 로드하므로 대용량 데이터 처리 시 성능 저하가 발생한다.","비동기 쿼리를 동기식으로 처리하려고 하여 Node.js 이벤트 루프를 차단할 위험이 있다.","`active=true` 조건문에서 타입 안전성이 보장되지 않아서 컴파일 오류가 발생합니다.","결과 객체 `result.rows`에 대한 접근이 동기적으로 이루어지므로 결과 처리 시간 지연이 있을 수 있다."]','{"correct":0}','EVALUATE',0.9,'["buffer-streams"]'),
+('NODE_TYPESCRIPT','MCQ','다음 코드 스니펫에서 어떤 부분이 잘못 작성되었나?
+```typescript
+import { strict as assert } from ''assert'';
+type Config = {
+  port: number;
+  dbUrl: string;
+}
+const configFromEnv: Partial<Config> = process.env.NODE_ENV === ''test''
+  ? { port: 4001, mockDbUrl: ''mock://db'' }
+  : { realPort: parseInt(process.env.PORT as unknown as string), dbUrl: process.env.DATABASE_URL! };
+assert.deepEqual(configFromEnv.port !== undefined && configFromEnv.dbUrl !== undefined);```
+- `process.env`는 환경 변수 객체입니다.','["Partial 타입을 사용하면서 모든 필드를 정의하지 않아서 Assertion 오류가 발생한다.","Assertion 확인 부분이 잘못 작성되어 있어 실제로는 아무런 검증도 이루어지지 않는다.","환경 변수에서 값에 대한 형변환 처리 과정에서 runtime error 가 발생할 가능성이 있다.","dbUrl 키 값을 무시한 채로 mockDbUrl을 사용하려 하여 타입 오류가 발생한다."]','{"correct":1}','EVALUATE',0.9,'["typescript-type-system"]'),
+('NODE_TYPESCRIPT','MCQ','Node.js에서 비동기 작업을 제어하는 방법 중 가장 효과적인 하나가 무엇인가?
+```typescript
+import { AbortController } from ''abort-controller'';
+const controller = new AbortController();
+const signal = controller.signal;
+
+fetch(''https://example.com/api'', {
+  signal,
+}).then(response => response.json()).catch(error => console.log(`Request aborted: ${error.message}`));
+controller.abort(); // 요청 중단
+```','["Promise.all()를 사용하여 여러 작업을 동시에 실행한다.","setTimeout 또는 setInterval로 주기적으로 비동기 작업의 상태를 체크한다.","process.nextTick()을 사용해 동기적 코드 블록에서 바로 다음 단계로 이동시킨다.","abortController와 signal API를 통해 특정 요청의 중간에 그만두는 것을 가능하게 한다."]','{"correct":3}','EVALUATE',0.9,'["web-frameworks"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `foo` 함수가 호출되면 반환하는 값은 무엇인가?
+
+```typescript
+function foo() {
+  return new Promise((resolve, reject) => setTimeout(() => resolve(10), 50));
+}
+```
+
+setTimeout이 주어진 시간 이후에 실행되므로, `foo` 함수에서 반환되는 promise는 `then` 메서드를 통해 결과가 반환된다.','["Promise 객체","number 10","undefined","null"]','{"correct":1}','REMEMBER',0.1,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드가 실행될 때 프로세스 이벤트 루프에서 발생하는 단계를 고려하세요.
+
+setTimeout(() => {
+  console.log(''timer task'');
+}, 0);
+process.nextTick(() => {
+  console.log(''nextTick task'');
+});
+console.log(''immediate task'');','["''immediate task'', ''timer task'', ''nextTick task''","''immediate task'', ''nextTick task'', ''timer task''","''nextTick task'', ''immediate task'', ''timer task''","''nextTick task'', ''timer task'', ''immediate task''"]','{"correct":2}','REMEMBER',0.1,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `createReadStream()` 메서드를 사용하여 파일을 읽으려고 할 때 발생하는 동작은 무엇인가?
+
+```typescript
+const fs = require(''fs'');
+const readStream = fs.createReadStream(''/path/to/file'', {encoding: ''utf8''});
+readStream.on(''data'', (chunk) => {
+  console.log(chunk.length);
+});```
+
+이 코드는 데이터가 버퍼로 읽혀진 후 이벤트 핸들러를 통해 콘솔에 출력된다.','["파일의 전체 길이가 한 번에 콘솔에 출력됨","데이터가 별도의 페이치 단위로 버퍼링되고, 각각이 ''data'' 이벤트에서 처리됨","파일 내용이 직접 메모리에 로드되어 읽힘","스트림 작업이 실패하고 에러 발생"]','{"correct":1}','REMEMBER',0.2,'["node-streams-buffers"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드는 비동기 호출의 순서를 출력합니다.
+
+async function logOrder() {
+    console.log(''First'');
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    console.log(''Second'');
+    process.nextTick(() => console.log(''Third''));
+}
+logOrder();
+
+이 코드의 실행 결과로 올바른 것은?
+','["First Second Third","First Third Second","Third First Second","First Second"]','{"correct":0}','UNDERSTAND',0.3,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드는 스트림을 사용하여 파일을 읽고 쓰려 합니다.
+
+const fs = require(''fs'');
+const readStream = fs.createReadStream(''input.txt'', {encoding: ''utf-8''});
+codepipeline(readStream, fs.createWriteStream(''output.txt''));
+function codepipeline(stream, out) {
+    stream.on(''data'', (chunk) => {
+        out.write(chunk.toUpperCase());
+    });
+}
+
+위 코드에서 백프레셔(backpressure)가 발생할 수 있는 상황은?
+','["출력 파일이 느리게 쓰일 때","입력 스트림 데이터를 정상적으로 읽을 때","시스템 메모리를 완전히 사용할 때","파일 시스템에 오류가 발생했을 때"]','{"correct":0}','UNDERSTAND',0.3,'["node-streams-buffers"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드는 비동기 콜백으로 오류 처리를 시도합니다.
+
+async function readData() {
+    try{
+        const data = await fs.promises.readFile(''file.txt'');
+        console.log(data.toString());
+    } catch (error) {
+        console.error(`Error reading file: ${error.message}`);
+    }
+}
+readData();
+
+이 코드에서 unhandled rejection 오류가 발생하는 상황은 어떤 것인가요?
+','["데이터 파일이 존재하지 않을 때","데이터를 읽을 수 없는 시스템 제한에 도달했을 때","예외 처리 블록 안에서 예외가 무시되었을 때","위 모든 경우"]','{"correct":0}','UNDERSTAND',0.3,'["node-error-handling"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드 스니펫의 동작으로 옳은 것을 선택하세요.
+
+```typescript
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(() => resolve(), ms));
+}
+
+async function example() {
+  console.log(''Start'');
+  await delay(100);
+  console.log(''Mid'');
+  await delay(200);
+  console.log(''End'');
+}
+```
+`example()` 함수의 출력 순서는 무엇인가요?','["''Start''       ''Mid''     ''End''","''Start'';  100ms 뒤 ''Mid'';  200ms 뒤 ''End''","''Start'';  300ms 뒤 전체적으로 한번에 '' ''Mid '' ''End;","위 코드는 오류를 발생시킵니다."]','{"correct":1}','UNDERSTAND',0.35,'["nodejs-timers"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드는 비동기 콜백을 사용하여 작업의 상태를 확인합니다.
+
+function checkFile(file, callback) {
+    fs.stat(file, (err, stats) => {
+        if (!err && stats.isFile())
+            callback(null, true);
+        else if(err)
+            return callback(`Error: ${err}`);
+        else 
+            callback(null, false);  // 이 라인은 파일이 디렉토리일 때 처리됨
+    });
+}
+checkFile(''some/path'', (message, isFile) => {
+    console.log(message ? message : `${isFile} file detected`);
+}); 
+위 코드에서 callback 함수가 실행될 시점과 파라미터는?
+','["파일이 존재하지 않을 때 실패 메시지 전달","파일의 경로에 접근할 수 없는 경우 오류 메세지를 반환","파일이 디렉토리인 경우, isFile을 false로 처리하고 메세지 없음.","위 모두"]','{"correct":3}','UNDERSTAND',0.4,'["node-error-handling","callback-functions"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드는 비동기 호출의 결과를 출력합니다.
+
+async function logResult() {
+    try{
+        console.log(''Start'');
+        await new Promise((resolve) => setTimeout(resolve, 0)); // 주의: 여기서 바로 실행되지 않을 수 있습니다.
+        console.log(''Middle'');
+    } catch (error) {} 
+    console.log(''End'');
+}
+logResult();
+
+이 코드의 예상 출력 결과는 무엇인가요?
+','["Start Middle End","Start End Middle","Start End","Error Start End"]','{"correct":2}','UNDERSTAND',0.4,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드가 비동기를 처리하는 방식은 무엇인가?
+
+const fetchData = async () => {
+  try{
+    const response = await fetch(''http://example.com/data'');
+    return response.json();
+  } catch(error) {
+    console.error(`Error fetching data: ${error}`);
+  }
+};','["비동기 요청에서 오류가 발생할 때 예외를 처리하고 로그를 기록한다.","비동기 요청의 결과를 단순히 반환하거나 콘솔에 출력한다.","비동기 작업을 순차적으로 실행하며, 하나의 작업이 실패하면 모두 중단된다.","비동기 호출에서 오류가 발생해도 아무런 처리 없이 통과한다."]','{"correct":0}','APPLY',0.5,'["async-await"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 함수에서 Promise.allSettled의 역할은 무엇인가?
+
+const promises = [
+  fetch(''http://api.example.com/data1''),
+  fetch(''http://api.example.com/data2'')
+];
+Promise.allSettled(promises).then(results => {
+  results.forEach(result => console.log(`Result: ${result.status}`));
+});','["비동기 작업들이 모두 완료되었을 때, 각 요청의 성공 여부와 상태를 수집한다.","여러 비동기 작업들 중 하나라도 실패하면 모든 나머지 작업들을 취소하고 오류 처리 후 종료한다.","모든 Promise가 동시에 실행되도록 보장하며 그 결과는 첫 번째로 해결된 순서대로 반환된다.","비동기적인 모든 태스크들이 완료되어야만 다음 단계를 진행하도록 스프링보드 역할을 한다."]','{"correct":0}','APPLY',0.5,'["promise-allsettled"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 비동기 작업의 실행 순서는 어떻게 되나?
+
+```typescript
+function asyncTask1() {
+  return new Promise((resolve) => setTimeout(resolve, 20));
+}
+function asyncTask2() {
+  return new Promise((resolve) => process.nextTick(resolve));
+}
+asynctask2().then(() => console.log(''async task2 resolved''));
+asynctask1().then(() => console.log(''async task1 resolved''));
+```','["process.nextTick이 먼저 실행되고, 그 후에 setTimeout으로 인해 Promise가 해결된다.","setTimeout이 먼저 실행되지만, process.nextTick을 통해 즉시 처리된 다음에 코드가 계속 진행된다.","두 함수 모두 동기적으로 실행되어 두 작업은 동시에 해결된다.","결과는 랜덤하며 실행 환경에 따라 달라진다."]','{"correct":1}','APPLY',0.5,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 스트림 코드의 동작으로 옳은 것은?
+
+const fs = require(''fs'');
+fs.createReadStream(''./bigfile.txt'')
+  .on(''data'', chunk => {
+    console.log(`Chunk received: ${chunk.length} bytes`);
+  })
+  .pipe(fs.createWriteStream(''./output.txt''));
+','["스트림은 대량의 데이터를 메모리에 모두 로딩하지 않고 부분적으로 처리할 수 있다.","스트림이 개별 채크로 전달되는 모든 데이터는 파일 시스템에서 즉시 순서대로 덮어쓰기 된다.","스트림을 처리하는 동안 다른 스트림 작업은 중단되며, 이 작업 이후에만 재개된다.","스트림에서 읽어온 뒤 작성하는 과정이 완전히 비동기를 유지한다."]','{"correct":0}','APPLY',0.5,'["stream-processing"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드 스니펫에서, `process.nextTick` 이 호출되면 바로 실행되는 것은 어떤 작업을 의미합니까?
+
+```typescript
+function task() {
+  console.log(''Task started'');
+}
+
+setTimeout(() => {
+  process.nextTick(task);
+}, 0);
+```
+','["마이크로태스크로서 직접 실행됨","매크로태스크의 끝에서 직접 실행됨","다음 이벤트 루프 루턴에 등록됨","타이머 설정 후 바로 실행됨"]','{"correct":0}','APPLY',0.5,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 process.nextTick 과 setTimeout(0) 의 차이는 무엇인가?
+
+process.nextTick(() => console.log(''Next tick'')); // 1.
+setTimeout(() => { console.log(''Timeout''); }, 0); // 2.
+console.log(''Immediate execution'');
+','["timeout은 비동기 작업으로 기능이 실행되는데, nextTick는 동기적으로 코드 블록 내에서 처리된다.","두 개의 호출 모두 즉시 이벤트 루프 타스크 콜백 테이블에 추가되고 순서대로 실행된다.","process.nextTick은 같은 CPU 사이클 내에서 실행하지만 setTimeout는 기다려야 함.","timeout(0)과 nextTick은 비슷한 동작을 하지만 timeout은 더 느리고 우선순위가 낮다."]','{"correct":2}','APPLY',0.5,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드의 `process.nextTick` 와 `Promise` 가 섞인 순서로 출력되는 메시지를 정확히 선택하시오.
+
+```typescript
+function logAfterDelay(ms: number, message: string) {
+  setTimeout(() => console.log(message), ms);
+}
+
+logAfterDelay(0, ''timeout delay 0'');
+process.nextTick(() => console.log(''next tick''));
+promise1 = new Promise(resolve => resolve()).then(() => console.log(''promise then''));
+promise2 = new Promise((resolve) => setTimeout(resolve, 5, ''delayed resolve'')).then(() => {
+  logAfterDelay(0, ''inside promise timeout delay 0'');
+});```
+','["''next tick'', ''timeout delay 0'', ''promise then'', ''inside promise timeout delay 0''","''timeout delay 0'', ''next tick'', ''promise then'', ''inside promise timeout delay 0''","''next tick'', ''promise then'', ''timeout delay 0'', ''inside promise timeout delay 0''","순서가 불확실해 예측할 수 없습니다."]','{"correct":0}','APPLY',0.54,'["node-event-loop"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 TypeScript 코드 스니펫을 분석하고 결과를 추론하라.
+
+```typescript
+interface Person {
+  name: string;
+}
+type Greeting<T> = T extends {name: infer U} ? `Hello, ${U}` : never;
+class Greeter<P extends Person> {
+  greet(person: P): void {
+    console.log(Greeting<Person & Record<"age", number>>);
+  }
+}
+```','["결과는 ''never'' 타입이 된다.","결과로 `Hello, ${string}`와 같은 문자열 리터럴 타입을 갖는다.","코드가 컴파일 에러를 일으킨다. 타입 추론에 실패한다.","결과값은 ''any''타입으로 표기된다."]','{"correct":1}','APPLY',0.56,'["typescript-utilities"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 비동기 처리의 문제점으로 무엇을 지목하시나요?
+
+```typescript
+function readStreamChunkByChunk(stream: Readable) {
+  stream.on(''data'', (chunk) => console.log(`Chunk received ${chunk}`));
+}
+readStreamChunkByChunk(fs.createReadStream(''largefile.txt''));```
+','["버퍼를 넘겨받은 데이터가 너무 많아 메모리 부족을 일으킬 수 있음","스트림 이벤트의 동작이 예상보다 느려 타임아웃 문제가 발생할 수 있음.","읽기 스트림에서 읽어오는 모든 chunk들이 console.log로 출력되지 않을 가능성이 있다.","스트림 이벤트 핸들러가 비동기 호출을 제대로 처리하지 못해 오류를 일으킬 가능성"]','{"correct":0}','APPLY',0.59,'["stream-handling-in-nodejs"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `fetchData` 함수가 호출될 때, HTTP 요청을 처리하는 콜백이 정상적으로 동작하며 응답 데이터를 완전히 다룰 수 있는지 분석하십시오. 
+
+```typescript
+function fetchData(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const req = require(''https'').request(url, (res: any) => {
+      let data = '''';
+      res.on(''data'', chunk => { data += chunk; });
+      res.once(''end'', () => resolve(data)); // 완료 시 `resolve` 호출
+    }).on(''error'', err => reject(err));
+  });
+}
+```','["완전한 응답 데이터를 받아 처리하려면, ''data'' 이벤트에 대한 핸들러가 필요하다.","응답 스트림이 완료될 때까지 기다린 후 `resolve` 호출을 해야 한다.","HTTP 요청 콜백은 항상 성공적으로 동작하며 `resolve(data)`로 끝난다.","스트림 처리의 병렬성에 의해 응답 데이터가 잘못 조립되는 경우가 있다."]','{"correct":1}','ANALYZE',0.7,'["http-request-callbacks"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드 스니펫은 어떤 동작을 수행하나 선택하세요.
+
+const readFile = () => {
+ fs.readFile(''data.json'', ''utf8'', (err, data) => { // 주석 부착 위치
+ if (err) throw err;
+ console.log(JSON.parse(data));
+ });
+};','["주어진 파일이 UTF-8 형식으로 읽혀지며 정상적으로 콘솔에 출력된다.","readFile 함수는 비동기로 동작하므로, 데이터 처리가 이전 로직을 대기시키지 않는다.","비동기 콜백에서 에러 처리를 하지 않아 프로그램 전체의 실행이 중단될 위험이 있다.","주석 부착된 라인은 fs.readFile 메소드를 동기적으로 호출하여 파일 읽기를 수행한다."]','{"correct":2}','ANALYZE',0.73,'["fs-modules"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 비동기 호출에 대한 순차적인 복잡성과 실행 순서가 어떻게 영향을 미치는지 분석하십시오. 
+
+```typescript
+const processQueue = async () => {
+  let remainingTasks: number;
+  while (remainingTasks--) await performTask();
+};
+```
+`processQueue` 함수에서 발생하는 가장 중요한 문제를 지목하십시오.','["동기 `while` 루프는 비동기 작업을 제대로 처리하지 못한다.","비동기 호출은 반드시 `await` 키워드로 순차적으로 실행되어야 한다.","`remainingTasks--`가 끝나면 프로그램이 종료된다.","여러번의 호출 후에 모든 태스크가 정상적으로 완료되지 않을 수 있다."]','{"correct":0}','ANALYZE',0.75,'["asynchronous-execution"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드를 분석하여 주석이 부착된 라인에 문제점은 무엇인지 선택하세요.
+
+const fetchUser = async (userId: string) => {
+ try {
+ const response = await axios.get(`/users/${userId}`);
+ if (!response.data.user) throw new Error(''No user found'');
+ return response.data.user;
+ } catch (error) { // 주석 부착 위치
+ console.error(error);
+ }
+};','["비동기 오류가 콘솔 로그만 출력되고, 이를 처리하는 라우터 미들웨어에서 접근할 수 없다.","외부 호출이 실패했을 때 사용자에게 적절한 HTTP 상태 코드를 리턴하지 못한다.","응답 데이터에 대한 검증 단계가 누락되어 잘못된 입력으로 인해 오류가 발생할 위험이 있다.","위 모든 문제점들을 포함하고 있으며, 콘솔 로그는 비동기 처리 과정에서 중요한 정보를 제거한다."]','{"correct":1}','ANALYZE',0.75,'["http-api"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `Promise.all`이 여러 비동기 작업의 결과를 처리하는 방식과 각각의 Promise가 실패할 경우 전체 작업 흐름에 어떤 영향을 미치는지 분석하십시오. 
+
+```typescript
+const tasks = [
+  () => fetch(''https://api.example.com/tasks/1''),
+  () => fetch(''https://api.example.com/tasks/2'')
+];
+promiseAllTasks(tasks)
+```
+definition of `promiseAllTasks`:
+```typescript
+function promiseAllTasks(taskPromises: (() => Promise<any>)[]): void {
+  return new Promise(async resolve => {
+    const results = await Promise.all(taskPromises.map(promiseGenerator => promiseGenerator()));
+    console.log(results);
+ });
+}
+```
+promiseAllTasks에서 일부 작업이 실패했을 때 전체 프로세스의 작동을 분석하십시오.','["모든 작업이 완료될 때까지 `Promise.all`은 결과를 정상적으로 반환한다.","한 개라도 비정상 종료되거나 거부되면, 모든 Promise가 실패하고 에러 처리 중지된다.","각 작업은 독립적이므로 하나의 작업만 성공하면 전체 프로세스는 성공으로 간주되어야 한다.","실패하는 한 가지도 각 작업을 병렬적으로 계속 실행해야 한다."]','{"correct":1}','ANALYZE',0.75,'["promise-parallel-execution"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `AbortController`를 사용하여 비동기 함수 호출을 취소하는 메커니즘이 어떻게 작동하는지 분석하십시오. 
+
+```typescript
+const controller = new AbortController();
+function longRunningTask(signal: any) {
+  return new Promise((resolve, reject) => setTimeout(() => resolve(''done''), 5000));
+}
+longRunningTask(controller.signal).then(result => console.log(result)).catch(error => console.error(error));
+clearTimeout(setImmediate(() => controller.abort()));```
+위 코드에서 비동기 작업이 정상적으로 완료되는지, 아니면 `AbortController`가 호출되어 일찍 종료될 수 있는지를 분석하십시오.','["비동기 태스크는 항상 `AbortController`에 의해 취소된다.","`clearTimeout(setImmediate(() => controller.abort()));`에서 발생하는 오류로 인해 비동기 작업이 중단될 수 있다.","타임아웃을 정상적으로 설정하고 이벤트 핸들러를 통해 비동기작업이 실행되는지 분석해야 한다.","비동기 태스크는 `AbortController.signal`의 취소 신호에 의해 일찍 종료되거나 완전히 수행될 수 있다."]','{"correct":3}','ANALYZE',0.75,'["async-cancelation"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 TypeScript 함수에서 주석 부착된 줄의 동작은 무엇인가 선택하세요.
+
+const processPayment = async (order: Order) => {
+ try {
+ await db.transaction(async tx => { // 주석 부착 위치
+ const paymentResult = await tx.executeSql(`INSERT INTO payments (orderId, amount) VALUES (?, ?)`, [order.id, order.amount]);
+ return paymentResult;
+ });
+ } catch (error) {
+ console.error(''Failed to process payment:'', error);
+ }
+};','["트랜잭션에서 발생한 모든 오류는 외부의 catch 블록으로 전달된다.","외부 콜백 함수가 트랜잭션 내에서 실행되는 동안 비동기 작업을 처리한다.","db.transaction 함수는 항상 성공하고, 주어진 SQL 명령은 반드시 데이터베이스에 적용된다.","데이터베이스 트랜잭션이 중단되면 주석된 라인에서는 오류가 발생하지 않고 정상적으로 반환된다."]','{"correct":0}','ANALYZE',0.78,'["prisma-transactions"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 순환 참조가 발생하는 경우 프로세스 모델이 어떻게 동작하는지 분석하십시오. 
+
+```typescript
+import { Worker } from ''worker_threads'';
+const worker = new Worker(__filename);
+```
+위 코드의 `Worker` 생성 과정에서 순환 참조가 발생하고, 이로 인해 프로세스 모델이 어떻게 영향을 받는지를 분석하십시오.','["순환 참조에 의해 작업자가 잘못 초기화된다.","프로세스 스레드가 별도로 동작하기 때문에 문제 없다.","`Worker_threads`에서 생성된 모든 작업은 순환 참조를 방지한다.","프로세스의 메모리 누수가 발생하고, 이는 프로세스 모델에 영향을 미친다."]','{"correct":3}','ANALYZE',0.78,'["process-model-threading"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 HTTP 요청이 성공적으로 완료되었는지를 분석하십시오. 
+
+```typescript
+import { request } from ''https'';
+function performRequest(url: string) {
+  return new Promise((resolve, reject) => {
+    const req = request({ method: ''GET'', host: ''example.com'', path: url }, res => {
+      let data;
+      res.on(''data'', chunk => { if(data === undefined) data = ''''; });
+      res.once(''end'', () => resolve(`Data received`));
+    }).on(''error'', err => reject(err.message || ''Request error''));
+  });
+}
+```
+data 변수가 정상적으로 초기화되어 데이터를 받는지 분석하십시오.','["데이터 처리에서 `data === undefined` 체크로 인해 빈 문자열에 할당이 제대로 이루어진다.","`data = ''''` 부분은 항상 실행되므로 비정상적인 조건에서도 정상적으로 작동한다.","HTTP 요청의 `end` 이벤트가 발생할 때만 데이터를 받는다.","코드에서 첫 번째 `chunk` 를 처리하지 못하면 결과로 빈 문자열이 반환된다."]','{"correct":0}','ANALYZE',0.8,'["http-request-handling"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 `Promise.all` 이 반환하는 값과 각 promise의 상태를 설명하세요.
+
+const p1 = Promise.resolve(42);
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => resolve(''resolved''), 500);
+});
+const p3 = new Promise((resolve, reject) => {
+  console.log(''P3 start'');
+  process.nextTick(() => {
+    throw new Error(''Error in promise P3'')
+  });
+});
+promisesArray = [p1,p2,p3];
+Promise.all(promisesArray).then(values => {console.log(`Promise all result: ${values}`)}).
+catch(error => console.error(''Uncaught error:'', error));','["Promise.all은 모든 프로미스가 성공적으로 해결되면 결과 배열을 반환한다.","결과 배열에는 오류와 같이 문제가 발생한 promise의 정보도 포함된다.","`p3`에서의 예외는 `all` 내부에 unhandled rejection이 되어 catch 블록으로 전달된다.","Promise.all은 첫 번째 비동기 작업 완료 후 결과를 반환한다."]','{"correct":2}','EVALUATE',0.9,'["async-control"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드에서 프로세스가 종료되는 시점과 원인에 대해 설명하세요.
+
+const worker = require(''worker_threads'');
+node { 
+  process.on(''SIGTERM'', () => {
+    console.log(''Worker received SIGTERM signal.'');
+    throw new Error(''Uncaught exception in worker thread.'')});
+}
+if (worker.isMainThread) {
+  setTimeout(() => {
+    console.log(`Main thread sending SIGTERM to worker`);
+    process.kill(worker.threadId, ''SIGTERM'');}, 500);','["프로세스는 main thread 의 `setTimeout`이 실행된 후에 종료된다.","프로세스는 worker thread 에서 예외가 발생한 시점에서 종료된다.","worker thread 가 SIGTERM 신호를 받은 즉시 종료된다.","프로세스는 모든 작업 완료 후 정상적으로 종료된다."]','{"correct":1}','EVALUATE',0.9,'["process-model"]'),
+('NODE_TYPESCRIPT','CODE_READING','다음 코드의 동작과 결과를 설명하세요.
+
+const fs = require(''fs'');
+class DataProcessor {
+  process() {
+    const dataStream = fs.createReadStream(''./largeFile.txt'', {encoding: ''utf8''});
+    let bufferString = '''';
+    return new Promise((resolve, reject) => {
+      dataStream.on(''data'', (chunk) => {
+        console.log(`Received chunk ${Buffer.from(chunk).toString()}`);
+      });
+      dataStream.once(''end'', () => resolve(bufferString));
+    }).then(result => {console.log(`Processed file content: ${result}.`)}, error=>{console.error(error)})} }','["스트림이 읽히는 대로 버퍼링하며 파일 내용을 완전히 처리한다.","스트림은 데이터를 부분적으로만 처리하고 파일의 일부가 누락될 수 있다.","`once(''end'')` 이벤트 핸들러에서 `resolve(bufferString)` 가 호출됨으로써 결과 전체가 전달된다.","스트림이 콜백을 종료할 때 프로세싱에 필요한 모든 데이터는 완전히 읽힌다."]','{"correct":1}','EVALUATE',0.9,'["streams-buffers"]'),
+('DATA_AI','MCQ','딥러닝에서 학습률(learning rate)이 크면 어떤 영향을 미칠까요?','["빠른 수렴","느린 수렴","진동(converge oscillation)","불안정한 훈련"]','{"correct":0}','REMEMBER',0.1,'["deep-learning-hyperparameters"]'),
+('DATA_AI','MCQ','pandas의 loc 인덱싱은 행과 열 레이블로 데이터를 선택합니다.','["행 레벨만 가능","열 레벨만 가능","행과 열 둘 다 가능","형식에 따라 다르다"]','{"correct":2}','REMEMBER',0.1,'["pandas-indexing"]'),
+('DATA_AI','MCQ','SQL에서 NULL 값을 포함한 열을 선택할 때 사용되는 연산자 또는 함수는 무엇입니까?','["IS NOT NULL","COALESCE(NULL, 값)","NULLIF(값, NULL)","NVL(값, 대체값)"]','{"correct":0}','REMEMBER',0.1,'["sql-nulls"]'),
+('DATA_AI','MCQ','pandas에서 시리즈(series)의 값에 접근할 때, 인덱스 이름을 사용하는 메서드는 무엇인가?','["loc","iloc","at","iat"]','{"correct":0}','REMEMBER',0.1,'["pandas-indexing"]'),
+('DATA_AI','MCQ','numpy 배열에서 축(axis) 0은 어떤 방향을 가리킵니다.','["행 방향","열 방향","깊이(dimensions)","위치(position)"]','{"correct":1}','REMEMBER',0.1,'["numpy-axis"]'),
+('DATA_AI','MCQ','데이터 누수(leakage)가 발생한 모델을 진단하는 방법 중 하나는 무엇입니까?','["모델의 정확도 향상 확인","검증 데이터와 학습 데이터간 특성 상관관계 분석","학습 데이터의 크기 증가","훈련 시간 점검"]','{"correct":1}','REMEMBER',0.2,'["data-leakage"]'),
+('DATA_AI','MCQ','차원 축소 기법인 PCA(principal component analysis)가 사용될 때 주의해야 할 사항은 무엇입니까?','["데이터 스케일링 무시","데이터 특성 간 상관 관계 고려","문제 해결 능력 향상","모델 복잡도 증가"]','{"correct":1}','REMEMBER',0.2,'["pca-dimensionality-reduction"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 결측치를 처리하기 위해 사용할 수 있는 방법은?','["dropna() 메서드로 행을 삭제함","fillna(0)으로 모든 결측값에 0을 할당함","bfill 또는 ffill 매개변수로 이웃 값으로 채움","isnull().sum() 함수를 사용하여 결측치의 개수를 확인"]','{"correct":1}','UNDERSTAND',0.3,'["pandas-missing-values-handling"]'),
+('DATA_AI','MCQ','pandas에서 `loc` 인덱싱과 `iloc` 인덱싱의 주요 차이는 무엇인가요?','["row와 column 모두 명시적 레이블을 사용한다.","row와 column 모두 위치 기반 인덱스를 사용한다.","row는 명시적 레이블, column은 위치 기반 인덱스를 사용한다.","row는 위치 기반 인덱스, column은 명시적 레이블을 사용한다."]','{"correct":0}','UNDERSTAND',0.3,'["pandas-indexing"]'),
+('DATA_AI','MCQ','pandas의 merge 함수에서 조인 유형에 대해 설명합니다. 어떤 옵션이 외부 조인(outer join)을 나타냅니다.','["''inner''","''left''","''right''","''outer''"]','{"correct":3}','UNDERSTAND',0.3,'["pandas-merge"]'),
+('DATA_AI','MCQ','통계 기초로, 분산과 표준 편차의 의미와 이해력을 평가합니다.','["분산은 데이터 세트에서 중앙값으로부터 각 값들의 거리제곱합을 말한다.","표준편차는 분산보다 더 쉬운 해석성 때문에 통계학적으로 유용하다고 알려져 있다.","데이터의 범위(최대-최소)가 작다면, 그 데이터 세트의 표준 편차 역시 작은 값을 가질 것이다.","중앙값과 최빈값이 모두 동일한 위치에 있으면 분산은 0으로 계산된다."]','{"correct":1}','UNDERSTAND',0.3,'["statistics-basics"]'),
+('DATA_AI','MCQ','SQL에서 GROUP BY 절과 HAVING 절의 차이는?','["GROUP BY는 결과 집합을 그룹화하고, HAVING은 해당 그룹을 필터링함","HAVING은 데이터베이스에 저장된 값을 조건으로 제한하며, GROUP BY는 실행 계획에 영향을 줌","GROUP BY와 HAVING은 같은 기능을 수행하지만 서로 다른 동작 방식을 가짐","GROUP BY는 개별 행을 그룹화하고, HAVING은 결과 집합의 전체를 필터링함"]','{"correct":0}','UNDERSTAND',0.3,'["sql-group-by-having-clause"]'),
+('DATA_AI','MCQ','데이터 시리즈의 결측치 처리에 대해 어떤 접근법이 가장 적합한가요?','["결측값을 모두 제거합니다.","결측값 위치를 찾아 해당 행을 삭제합니다.","평균 또는 중앙 값으로 결측 값을 채웁니다.","결측 값 치수로 인공 변수를 생성하여 해결합니다."]','{"correct":2}','UNDERSTAND',0.3,'["pandas-handling-missing-values"]'),
+('DATA_AI','MCQ','데이터프레임에서 중복되는 관측치를 제거하는 가장 일반적인 방법은 무엇인가요?','["중복되는 행을 모두 제거하기 위해 unique() 메서드 사용.","drop_duplicates() 함수로 중복된 행 제거.","groupby(\"변수\") 쿼리 이용 후 dropna().","데이터프레임의 모든 항목이 유일한지 확인하는 set() 활용."]','{"correct":1}','UNDERSTAND',0.3,'["pandas-drop-duplicates"]'),
+('DATA_AI','MCQ','numpy의 random 모듈에서 난수 시드(seed) 설정이 왜 중요한가요?','["일관된 실험 결과 재현을 가능하게 함.","컴퓨터 성능 향상을 위해 필요하다.","데이터 분석 과정에 불필요한 요소이다.","모델 학습 속도를 빠르게 하기 위함."]','{"correct":0}','UNDERSTAND',0.3,'["numpy-random-seed"]'),
+('DATA_AI','MCQ','데이터 프레임에서 ''loc''과 ''iloc''의 주요 차이는 무엇인가요?','["''loc''는 인덱스 이름을 기준으로, ''iloc''은 위치를 기준으로 행을 선택합니다.","''loc''와 ''iloc'' 모두 인덱스 이름을 사용하여 데이터 프레임에서 행을 선택합니다.","두 방법은 동일하게 작동하며, 차이점이 없습니다.","''loc''는 정수를 사용하고, ''iloc''는 문자열 인덱서를 기준으로 합니다."]','{"correct":0}','UNDERSTAND',0.3,'["pandas-loc-vs-ilocation"]'),
+('DATA_AI','MCQ','numpy에서 배열의 크기나 형태 변경에 대해 이해하는 능력을 평가합니다.','["np.shape()을 사용하여 배열의 높이와 너비 정보를 얻을 수 있다.","reshape 함수는 원본 배열의 모양만 바꾸고 복사하지 않는다.","np.resize()은 배열 크기를 증가시키거나 감소시킬 때 완전히 새로운 배열을 생성한다.","broadcasting 과정에서 축(axis) 차원이 늘어나면서 배열 형태 변경도 가능하다."]','{"correct":1}','UNDERSTAND',0.3,'["numpy-shape-resize"]'),
+('DATA_AI','MCQ','데이터 처리 중에 pandas의 SettingWithCopyWarning 경고가 발생하면 이를 해결하기 위한 가장 좋은 방법은 무엇인가요?','["경고를 무시하고 계속 진행할 것.","''copy()'' 메서드를 사용하여 복사본을 만들 것입니다.","원래 데이터프레임에서 동일한 작업을 다시 수행합니다.","데이터 프레임의 카피 방식을 변경하는 옵션을 조정해야 합니다."]','{"correct":1}','UNDERSTAND',0.35,'["pandas-copy-warning"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 ''loc''과 ''iloc''에 대한 이해도를 평가합니다.','["loc은 레이블을 기준으로 인덱싱하며, iloc는 위치번호를 기준으로 인덱싱한다.","loc은 위치번호를 기준으로 인덱싱하고, iloc는 레이블을 기준으로 인덱스한다.","두 방법 모두 위치 번호로 인덱싱할 수 있다.","loc와 iloc의 차이는 단순히 이름뿐이며 실제 동작에는 차이가 없다."]','{"correct":0}','UNDERSTAND',0.35,'["pandas-iloc-vs-loc"]'),
+('DATA_AI','MCQ','SQL에서 윈도 함수를 사용하여 특정 기준의 순위를 매기는 키워드는 무엇인가요?','["COUNT()","SUM()","ROW_NUMBER()","AVG()"]','{"correct":2}','UNDERSTAND',0.35,'["sql-window-functions-rank"]'),
+('DATA_AI','MCQ','SQL 쿼리를 작성하면서, NULL 값을 포함하는 필드를 처리할 때 가장 효과적인 방법은 무엇인가요?','["WHERE 절에서 모든 NULL 값에 대해 IS NULL 조건 추가.","IFNULL() 함수를 사용하여 NULL을 다른 특정값으로 대체하고 그 후 WHERE로 필터링.","COALESCE(컬럼, 빌드인)함수 활용이 일반적이다. 이는 제공된 인자의 첫 번째 NON-NULL 값을 반환한다.","LEFT JOIN과 함께 COALESCE 사용으로 두 테이블 간의 NULL을 대체하는 방법."]','{"correct":2}','UNDERSTAND',0.35,'["sql-null-handling"]'),
+('DATA_AI','MCQ','SQL에서 윈도 함수를 사용하여 특정 행의 순위와 프레임을 이해합니다.','["ROW_NUMBER()은 동일한 값이 있는 경우 첫 번째 행만 고려한다.","RANK()는 동일한 값을 가진 모든 행에 대해 같은 랭크를 지정하며, 순서가 정해지지 않은 동일한 값도 처리된다.","DENSE_RANK()과 RANK()의 차이는 구조적 측면에서만 존재하고 실제 결과에는 변화 없다.","ROW_NUMBER(), RANK(), DENSE_RANK() 모두 프레임 기본값이 다르다."]','{"correct":1}','UNDERSTAND',0.35,'["sql-window-functions"]'),
+('DATA_AI','MCQ','데이터 파이프라인에서 스키마 변경 대응 능력을 평가합니다.','["스키마 변경은 데이터의 일관성 유지에 중요한 요소로, 무작위 수정이 가능하다.","배치 프로세싱과 스트리밍 프로세싱 모두 같은 방식으로 스키마 변경을 관리할 수 있다.","불변형(immutable) 저장 메커니즘이나 버전 제어를 통해 더 안정적인 대응방법을 제공한다.","데이터 파이프라인에서 단순히 새로운 컬럼 추가에만 집중해야 한다."]','{"correct":2}','UNDERSTAND',0.35,'["data-pipeline-schema-change"]'),
+('DATA_AI','MCQ','pandas의 DataFrame에서 특정 행과 열을 선택하려고 할 때, `loc`와 `iloc`는 어떻게 다릅니다.','["loc은 레이블 인덱싱만 가능하고 iloc은 위치 기반 인덱싱이다.","iloc은 레이블 인덱스로 작업할 수 있고 loc은 위치 기반 인덱싱으로만 작동한다.","loc과 iloc 모두 둘 다 위치기반 및 라벨인덱스를 지원하지만, loc는 라벨을 우선적으로 사용한다.","loc와 iloc 모두 위치기반 인덱싱만 가능하다."]','{"correct":0}','UNDERSTAND',0.35,'["pandas-iloc-vs-loc"]'),
+('DATA_AI','MCQ','데이터 누수(leakage)에 대한 이해를 평가합니다.','["트레이닝 데이터에서 결측치 처리 후 테스트 세트에서도 동일한 방식으로 처리해야 함.","상관관계 계산시 두 변수 사이의 공통 영향을 고려해 양자 모두 변동량이 있음을 확인해야 한다.","모델 학습 시, 향후 레코드의 정보를 이용하여 과적합 현상을 일으키지 않도록 주의할 필요가 있다.","데이터셋 분리 전에 스케일링을 적용하면, 나중에 새로운 데이터에 모델을 악용하는 것이 가능하다."]','{"correct":3}','UNDERSTAND',0.4,'["data-leakage"]'),
+('DATA_AI','MCQ','머신러닝에서 데이터세트가 분포 불균형을 일으키면, 어떤 평가 지표가 무효화되거나 신뢰성이 떨어질까요?','["정밀도(Precision)","재현율(Recall)","ROC-AUC","정확도(Accuracy)"]','{"correct":3}','UNDERSTAND',0.4,'["evaluation-metrics-imbalanced-dataset"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치 처리에 pandas의 fillna 메서드가 사용됩니다. fillna로 행별로 다른 값을 채워넣을 수 있는 방법은?','["fillna()를 호출할 때 매개변수 method=''ffill'' 또는 ''bfill''을 통해 가능하다.","fillna() 메소드에 칼럼 이름과 대체값으로 이루어진 딕셔너리를 전달하면 된다.","fillna() 함수에서 parameter axis=1를 설정하여 각 행별로 다른 값을 할당할 수 있다.","위 3가지 방법 모두 사용이 불가능하다."]','{"correct":1}','APPLY',0.5,'["pandas-fillna"]'),
+('DATA_AI','MCQ','numpy 배열에서 브로드캐스트가 발생하면 빠른 연산이 가능합니다. 하지만 잘못된 차원 사이즈 설정으로 인해 오류가 날 수 있습니다. 어떤 경우 브로드캐스팅이 성립하는지 설명해주세요.','["배열 간 크기 차이를 갖더라도 1인 축을 가진 배열의 차원은 다른 차원과 호환 가능하다","numpy 배열끼리 연산 수행시, 모든 차원이 동일한 값으로 구성되어야만 브로드캐스팅이 성립한다.","브로드캐스트는 항상 성립하며, 크기가 맞지 않아도 numpy가 자동으로 해결해준다.","2차원 배열에서 1차원 행 벡터와 연산할 때 그 차원은 무시된다."]','{"correct":0}','APPLY',0.5,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','pandas의 `loc` 인덱싱과 `iloc` 인덱싱은 어떤 차이가 있나?','["인덱스를 기준으로 하지 않는 경우, loc는 레이블을 사용하고 iloc는 위치 값을 사용한다.","열만 선택할 수 있다.","결측치 처리에 더 효과적이다.","loc와 iloc는 동일하다."]','{"correct":0}','APPLY',0.5,'["pandas-indexing"]'),
+('DATA_AI','MCQ','pandas에서 뷰(view)와 복사(copy)의 차이는 무엇인가요?','["뷰는 원본 데이터프레임을 변경하지 않고, 복사는 별도로 새로운 객체를 생성한다.","뷰는 독립된 객체이며 복사는 원본에 영향을 준다.","원본은 뷰와 복사 모두를 바라보므로 변화가 반영된다.","뷰는 불변이고 복사는 변할 수 있다."]','{"correct":0}','APPLY',0.5,'["pandas-view-copy"]'),
+('DATA_AI','MCQ','pandas의 데이터프레임에서 loc 인덱싱과 iloc 인덱싱은 다르게 작동합니다. 두 가지 방법 중 어떤 차이를 가진 것인가요?','["loc는 레이블 기반으로 행을 선택하고, iloc는 정수 위치 기반으로 행을 선택한다.","loc는 정수 위치 기반으로 행을 선택하며, iloc는 레이블 기반으로 행을 선택한다.","두 방법은 모두 레이블 기반이다.","두 방법은 모두 정수 위치 기반이다."]','{"correct":0}','APPLY',0.5,'["pandas-loc-vs-iloc"]'),
+('DATA_AI','MCQ','pandas DataFrame에서 `loc`과 `iloc`의 주요 차이는 무엇인가?','["''loc''은 인덱스 레이블을 기준으로, ''iloc''은 정수 위치를 기반으로 데이터에 접근한다.","''loc''는 인덱스 위치로만 작동하며, ''iloc''는 레이블로만 사용된다.","두 인덱싱 방법 모두 레이블과 위치를 혼용하여 사용할 수 있다.","정확히 같은 방식으로 동작하므로 차이는 없다."]','{"correct":0}','APPLY',0.5,'["pandas-loc-vs-iloc"]'),
+('DATA_AI','MCQ','pandas에서 loc와 iloc를 사용해 데이터프레임의 행과 열을 인덱싱할 때, loc는 포함된 라벨을 기준으로 인덱싱하고 iloc는 정수 위치를 기준으로 인덱싱합니다. 다음 중 pandas DataFrame의 인덱스로 정확히 0부터 시작하는 경우에만 사용 가능한 접근법은?
+','["loc","iloc","both loc and iloc","none of the above"]','{"correct":1}','APPLY',0.5,'["pandas-loc-iloc"]'),
+('DATA_AI','MCQ','numpy 배열의 브로드캐스팅에 대한 설명 중 맞는 것은?','["브로드캐스트는 항상 동일한 크기의 배열끼리만 적용된다.","차원이 작은 배열은 더 큰 차원으로 확장되어 연산을 수행한다.","브로드캐스트는 특정 축(axis)에서만 발생하며, 그 외에는 일치해야 한다.","numpy에서는 브로드캐스팅 기능을 사용할 수 없다."]','{"correct":1}','APPLY',0.5,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','데이터프레임에서 `merge` 함수를 사용하여 DataFrame을 합칠 때, 키 중복이 발생할 경우 어떻게 행의 개수가 증가하는지 설명해주세요.','["키 중복 없이 정확한 결합만 가능하다. 키 값 중복은 합침 기법에 의존한다","키값 중복시 각 데이터프레임에서 중복되는 key의 모든 combination이 결과 DataFrame으로 반영되어 행 수가 증가할 수 있다.","중복된 키를 가진 열 하나만 합치면 원본과 동일한 개수의 행을 유지하게 된다","키값 중복시 각 데이터프레임에서 중복되는 key는 무시하여 결과로 반환된다."]','{"correct":1}','APPLY',0.5,'["pandas-merge-duplicates"]'),
+('DATA_AI','MCQ','SQL의 GROUP BY와 HAVING 구문에 대한 설명 중 올바른 것은?','["GROUP BY는 여러 행을 하나로 그룹화하고, HAVING은 해당 그룹에서 조건을 필터링한다.","HAVING은 데이터베이스 테이블을 선택적으로 필터링하는 데 사용된다.","GROUP BY와 같은 컬럼만 HAVING에 사용할 수 있다.","GROUP BY는 단일 행만 처리하며 여러 행의 집합에서는 쓸 수 없다."]','{"correct":0}','APPLY',0.5,'["sql-group-by-having"]'),
+('DATA_AI','MCQ','데이터 분석에서 pandas의 groupby와 agg 함수를 사용할 때, 서로 다른 통계값을 각 그룹에 적용하려면 어떻게 해야 하는가?
+','["그룹별로 개별적으로 agg 메서드를 호출한다.","agg 메서드 내부에서 딕셔너리를 사용해 여러 통계 값을 지정한다.","groupby() 후 pandas.Series.apply() 를 이용하여 그룹에 따른 함수 적용한다.","pd.concat([df.groupby().agg(func), df.groupby().agg(another_func)])을 사용한다."]','{"correct":1}','APPLY',0.52,'["pandas-groupby-aggregate"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치 값을 채우기 위해 fillna 함수와 replace 함수를 각각 사용할 때, 어떤 차이가 있는지 설명해주세요. 다음 중 제대로 된 문장은?
+','["fillna는 결측치만 대체하고, replace는 모든 값에 대해 대체 가능.","replace는 결측치만 대체하고, fillna는 모든 값에 대해 대체 가능.","두 함수 모두 결측치와 일반값을 모두 대체할 수 있다.","두 함수 모두 결측치 만 대체한다."]','{"correct":0}','APPLY',0.52,'["pandas-fillna-replace"]'),
+('DATA_AI','MCQ','numpy의 브로드캐스팅(broadcasting)은 어떤 경우에 발생하는가?','["두 배열 중 하나가 스칼라인 경우.","두 배열의 차원이 일치하지 않아도 상수 차원을 늘려 맞출 수 있는 경우.","모든 배열이 동일한 크기여야 하는 경우.","브로드캐스팅은 모든 배열에서 발생한다."]','{"correct":1}','APPLY',0.53,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','numpy 배열에서 연산의 브로드캐스트(broadcasting)가 성립하기 위한 조건은 무엇인가?','["두 배열이 같은 모양(shape)을 가져야 한다.","하나 이상의 차원에서 다른 배열의 차원 크기가 1인 경우에만 가능하다.","모든 차원에서 두 배열 사이의 차원 크기는 동일하거나 하나의 차원 크기 값이 1여야 한다.","브로드캐스트는 언제든지 성립하며 특별한 조건은 필요 없다."]','{"correct":2}','APPLY',0.54,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','데이터프레임의 특정 열에서 중복 값을 찾고 싶을 때 사용하는 pandas 기능은?
+','["duplicated() 메서드","drop_duplicates() 메서드","unique() 메서드","value_counts() 메서드"]','{"correct":0}','APPLY',0.54,'["pandas-duplicates"]'),
+('DATA_AI','MCQ','데이터프레임에서 결측치를 채우거나 제거할 때 가장 적절한 방법은?
+','["dropna(axis=0) 이용하여 행을 삭제한다.","fillna(value=''Unknown'')로 단일 값으로 대체한다.","interpolate() 메서드를 사용해 근처 값을 보간한다.","value_counts(normalize=True)로 빈도 분포를 확인한다."]','{"correct":2}','APPLY',0.56,'["pandas-fillna-dropna"]'),
+('DATA_AI','MCQ','데이터 누수(data leakage)를 방지하기 위해, 학습 데이터에 fit 메소드를 적용해야 하는 모델의 예는 무엇인가?','["임베딩 모델","스케일러 객체(StandardScaler)","클러스터링 알고리즘(k-means)","위 모든 옵션이 적절함."]','{"correct":1}','APPLY',0.57,'["data-leakage-prevention"]'),
+('DATA_AI','MCQ','numpy 배열에서 브로드캐스팅이 발생하는 경우에 대해 설명해주세요. 다음 중 맞지 않은 문장은?
+','["두 배열의 차원수는 일치하지 않아도 됨.","브로드캐스팅은 작은 배열을 큰 배열과 동일한 크기로 늘림.","브로드캐스트가 발생하면 항상 성공적으로 계산됨.","결과값이 원래 큰 배열의 형태를 유지함."]','{"correct":2}','APPLY',0.58,'["numpy-broadcasting"]'),
+('DATA_AI','MCQ','머신러닝에서 특성 스케일링(feature scaling)은 언제 필요한가?','["모든 데이터 전처리 단계에 적용되어야 한다.","분할된 학습(training)과 테스트(testing) 데이터에 각각 따로 수행해야한다.","학습 데이터(train data)에만 적용하고, 테스트 데이터에는 학습시킨 스케일러를 사용하여 변환해야한다.","데이터 분할 전에 모든 특성을 일괄적으로 스케일링 처리해야 한다."]','{"correct":2}','APPLY',0.58,'["feature-scaling"]'),
+('DATA_AI','MCQ','차원 축소 기법으로 k-means와 PCA를 사용할 때 두 알고리즘이 서로 다른 목적이 무엇인지 설명해주세요.','["PCA는 비지도 학습에서 차원을 감소시키는데 사용되며, k-means는 군집화에 적합하다","k-means와 PCA 모두 주성분 분석 기법을 통해 데이터의 큰 특징만 표현한다","PCA는 선형적이고 높은 설명력을 가지지만, 비지도 클러스터링에 대해선 성능이 좋지 않다.","PCA를 사용하면 군집화가 더 잘되며 k-means보다 효율성이 좋은 결과 도출을 가능하게 한다."]','{"correct":0}','APPLY',0.6,'["kmeans-pca"]'),
+('DATA_AI','MCQ','SQL 문장을 사용하여 데이터베이스 내 테이블 간 연결을 수행할 때 ON 조건과 USING 조건은 어떻게 다를까요? 두 가지 방법의 차이점을 설명해주세요.','["ON 조건으로는 특정 컬럼만 선택하지만, USING에서는 모든 공통된 칼럼이 사용된다","USING은 테이블 간 동일한 이름을 가진 레코드들을 자동적으로 연결하고, ON은 명시적인 릴레이션 조건을 지정한다.","ON과 USING 모두 완전히 똑같으며 차이점 없음.","SQL에서 ON 조건과 USING 조건은 유사하지만, 복잡한 연결 상황에서는 다르게 작동함."]','{"correct":1}','APPLY',0.6,'["sql-on-vs-using"]'),
+('DATA_AI','MCQ','데이터프레임(df)에서 groupby-agg를 사용하여 계산한 그룹별 평균은 어떤 형태로 반환되나요?
+예시 코드:
+```python
+result = df.groupby(''category'').mean()```
+그 결과는 어떻게 표현되는가?','["각 카테고리에 대한 각 컬럼의 평균이 딕셔너리 형식으로 나타난다.","데이터프레임의 모든 행과 그룹별로 계산된 개별 열만 포함한 데이터프레임이다.","계산 결과가 하나뿐인 값만 반환된다.","각 카테고리를 키로 하는 그룹들의 평균을 갖는 pandas.Series 객체를 반환한다."]','{"correct":1}','ANALYZE',0.7,'["pandas-groupby-agg"]'),
+('DATA_AI','MCQ','SQL 윈도 함수(`SUM() OVER ()`)는 어떤 역할을 수행하나요?
+예시 SQL 코드:
+```sql
+SELECT department, 
+       employee_name,
+       salary, 
+       SUM(salary) OVER (PARTITION BY department ORDER BY hire_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total```
+위 SQL 구문에서 `SUM() OVER ()` 함수가 어떤 기능을 수행하는지 설명해보세요.','["동일 부서 내 직원들의 누적 급여를 표시한다.","부서별로 각 사원의 급여 합계를 계산하여 나타낸다.","데이터베이스 트랜잭션 처리 중 데이터 변경사항을 추적합니다.","비교할 수 없는 새로운 열을 생성한다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions-sum-over"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 경우는 어떤 상황인가요?','["훈련 데이터에서 특성 엔지니어링을 수행한 후, 테스트 세트에서도 같은 전처리를 적용하지 않음.","비지도 학습 모델에서는 항상 데이터 누수 문제가 생기지 않습니다.","테스트 세트의 레이블 정보가 훈련 과정에 미리 노출되어 있음.","데이터 분할 시, 시간 순서 상관 관계를 고려하지 않아 미래 데이터가 학습에 사용됨."]','{"correct":3}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','pandas 브로드캐스팅을 사용하면 계산 결과가 어떻게 바뀌게 되나요?
+예시 코드:
+```python
+import pandas as pd
+A = pd.DataFrame({''a'': [1, 2], ''b'':[3,4]})
+B = A + 5```
+위 스니펫에서 `pd.DataFrame B`는 어떻게 이루어질까요?','["결과 값이 행렬로 표현되어 각 열에 5가 더해진다.","전체 DataFrame의 shape를 유지하고 원래 키값을 모두 그대로 둔다.","B와 A 사이에 연산 중 오류가 발생하게 된다.","새롭게 만들어진 B는 각각 a, b 열과 기존 인덱스 및 컬럼명이 동일한 값들만 가지게 된다."]','{"correct":0}','ANALYZE',0.75,'["pandas-broadcasting"]'),
+('DATA_AI','MCQ','SQL 윈도 함수(`ROW_NUMBER()`)는 어떤 역할을 수행하나요?
+예시 SQL 코드:
+```sql
+SELECT ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS row_num,
+       employee_name, 
+       department, 
+       salary 
+FROM employees```
+위 코드에서 `ROW_NUMBER()` 함수가 어떤 기능을 수행하는지 설명해보세요.','["임의로 순서를 매긴다.","동일한 부서 내 소속 사원들의 급여에 대한 랭킹을 제공한다.","상태별로 데이터 행을 정렬한다.","데이터베이스 트랜잭션을 처리하며 데이터를 보장해 준다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions-row-number"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 다음과 같은 코드 스니펫의 문제점은 무엇인가요?
+```python
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)```
+위 코드에서 `x_train`과 `x_test` 사이에 데이터 누수가 발생할 수 있는 이유는 무엇인가요?','["데이터 분리 이후 스케일러를 학습시키기 때문에 x_train의 특성이 x_test에도 영향을 줄 수 있다.","스케일링은 비지도학습 방법이므로 원본 데이터에 직접적인 변경이 발생한다.","x_train과 x_test 사이에는 아무런 연결 관계가 없으므로 문제는 없다.","스케일러를 만들어 학습시키지 않아서 스케일링 과정에서 오류가 생긴다."]','{"correct":0}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 Python 코드 조각은?
+```python
+X_train, X_test, y_train, y_test = train_test_split(X_all, y_all)
+scale_X_train = scaler.fit_transform(X_train)
+scale_X_test = scaler.transform(X_test)
+y_pred = model.predict(scale_X_test)
+```','["train_test_split() 이전에 스케일러를 fit 했다.","스케일링 직후 모델을 학습시켰다.","훈련 및 검증 데이터가 모두 분리되었다.","scale_X_train 과 scale_X_test 는 동일한 범위로 스케일 되었다."]','{"correct":0}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 누수가 발생하는 한 가지 예시를 고르세요.','["학습 데이터에서 정답을 미리 이용해 모델 파라미터 튜닝","검증 세트의 정보를 학습 과정에 반영하여 하이퍼파라미터 선택","테스트 세트에서 얻은 성능 지표로 매개변수 조절","학습 데이터와 테스트 데이터 사이 특성 불일치"]','{"correct":1}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','MCQ','SQL 윈도 함수 `ROW_NUMBER()`와 `RANK()` 사이에서 차이점을 설명하는 올바른 문장은 무엇인가요?','["ROW_NUMBER()는 중복된 값에 대해 연속 숫자를 할당하지만, RANK()는 중복값 간 동일한 순위를 부여합니다.","ROW_NUMBER()와 RANK() 모두 중복된 값을 무시하고 다음 번호로 넘깁니다.","ROW_NUMBER()은 중복되지 않은 각 행에 고유의 이전 번호를 배정하지만, RANK()는 중복값 간 동일한 순위를 부여합니다.","ROW_NUMBER()와 RANK() 모두 모든 값이 고유하게 처리되며 중복된 값을 복잡한 알고리즘으로 처리합니다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','MCQ','딥러닝 모델의 과적합 문제에 대처하기 위한 전략 중 한 가지는 무엇인가요.','["데이터 세트에서 훈련 데이터 비율을 늘리는 것","훈련 단계에서 학습률을 점진적으로 증가시키는 것","드롭아웃(dropout) 또는 조기 종료(early stopping)을 사용하여 과적합 방지","모델 복잡도를 무시하고 신경망의 모든 레이어를 사용하는 것"]','{"correct":2}','ANALYZE',0.76,'["deep-learning-overfitting"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 머신러닝에서, pandas를 사용하여 DataFrame ''df''에 대해 다음 Python 코드 조각은 어떤 동작을 수행하는지 분석하시오.
+```python
+df[''group''] = df.apply(lambda x: sum(x), axis=1)
+df.groupby(''group'').agg({''value'':''mean''})```
+ 이 코드가 발생할 수 있는 문제점과 효과는 무엇인가?','["그룹화 후 각 그룹의 평균 값을 계산한다.","df[''a''] 와 df[''b''] 열 값이 모두 0으로 설정된다.","원본 데이터프레임이 변경되어 체이닝 인덱싱 문제가 발생할 수 있다.","groupby와 agg 메서드 사용 시, 동일한 그룹 내에서 중복된 행의 처리가 잘못될 가능성이 있다."]','{"correct":3}','ANALYZE',0.76,'["pandas-merge-grouping"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 데이터 사이언스에서 다음 쿼리는 어떤 역할을 하는지 분석하시오.
+```sql
+SELECT * FROM customer_orders WHERE order_date BETWEEN ''2023-01-01'' AND ''2023-12-31''
+```','["사용자 주문 데이터의 특정 기간 동안 수집된 데이터를 필터링한다.","새로운 고객이 등록되는 날짜를 반환한다.","주문별로 사용자가 상품을 얼마나 구매했는지를 계산하여 반환한다.","특정 제품에 대한 판매량을 집계하고 정렬한다."]','{"correct":0}','ANALYZE',0.78,'["sql-window-functions"]'),
+('DATA_AI','MCQ','스트리밍 데이터 파이프라인에서 발생할 수 있는 주요 문제 중 하나를 선택하세요.','["데이터 로스 없음","불균형 데이터 처리 불가능","의미 없는 임시 테이블 생성","데이터 정확성과 일관성 유지"]','{"correct":2}','ANALYZE',0.78,'["streaming-data-pipeline"]'),
+('DATA_AI','MCQ','딥러닝에서 학습률이 너무 높을 때 발생할 수 있는 한 가지 문제점을 고르세요.','["경사하강법의 스텝 크기가 작아져 최적점에 도달하는 시간이 길어짐","모델 파라미터가 잔잔하게 업데이트 되면서 미세 조정 필요함","학습 과정에서 오버슈팅이 발생하여 최적점을 지나치는 현상","비용 함수의 볼록성이 약화되어 최소점 찾기가 어려워짐"]','{"correct":2}','ANALYZE',0.79,'["deep-learning-optimization"]'),
+('DATA_AI','MCQ','데이터 누리미디어와 머신러닝에서, 다음 Python 코드 조각은 어떤 동작을 수행하는지 분석하시오.
+```python
+import pandas as pd
+data = [{''a'':1},{''b'':2,''a'':3}]df = pd.DataFrame(data)
+df[''c''] = df.apply(lambda x: sum(x), axis=1)```
+ 이 코드가 발생할 수 있는 문제점은 무엇인가?','["결측치 처리를 수행한다.","데이터프레임의 모든 열을 합산하여 새로운 열 ''c'' 를 생성한다.","원본 데이터프레임이 변경되지 않아 체이닝 인덱싱 문제가 발생할 수 있다.","df[''a''] 와 df[''b''] 열 값을 모두 0으로 설정하고 새로 행을 추가한다."]','{"correct":1}','ANALYZE',0.79,'["pandas-view-copy"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 수 있는 다음과 같은 코드 스니펫에서 어떤 것이 문제를 일으키는지 설명하십시오.
+```python
+from sklearn.pipeline import Pipeline
+pipeline = make_pipeline(preprocessor, scaler, estimator)
+pipeline.fit(X_train, y_train)```
+위와 같이 학습 데이터에 대해 파이프라인을 적용한 경우, 테스트 데이터에 대한 평가 결과는 어떻게 되는지?','["평가에서의 성능이 개선됨.","데이터 누수가 발생하여 실제 테스트 세트를 학습 과정에서 사용하게 됨.","테스트 시에는 특성이 변환되지 않아 차이나게 될 가능성이 있다.","결과가 정확도와 재현율을 동시에 측정한다."]','{"correct":1}','ANALYZE',0.8,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 파이프라인에서 멱등성(Indempotence)을 구현하려면 어떤 특성을 가져야 하나요?','["비동기 작업의 결과가 여러 번 실행되어도 동일한 효과를 가진다.","모든 시퀀스 작업이 순차적으로 수행되며 중복은 없어야 한다.","데이터가 한 번 처리되면 그 이후에도 같은 데이터는 무시한다.","처리된 테이블에서 새로운 레코드만 추가할 수 있다."]','{"correct":0}','EVALUATE',0.9,'["data-pipelines"]'),
+('DATA_AI','MCQ','데이터 누러(leakage)를 방지하기 위해, 학습 데이터와 테스트 데이터 간의 특성 분포 불일치를 왜 피해야 할까요?','["특성 분포가 일정하지 않으면 모델이 과적합될 위험이 있다.","테스트 데이터에서 볼 수 없는 값에 대한 예측을 오류로 만들 수 있다.","분산과 편향의 균형이 깨질 위험이 있다.","모든 옵션이 정답이다."]','{"correct":1}','EVALUATE',0.9,'["data-leakage"]'),
+('DATA_AI','MCQ','데이터 재현성(Reproducibility)을 위해 어떤 요소들을 고려해야 할까요?','["고정된 랜덤 시드를 사용한다.","모델의 버전 관리를 철저히 한다.","학습 데이터와 전처리 프로세스가 일관되게 유지된다.","위 모두이다."]','{"correct":3}','EVALUATE',0.9,'["reproducibility"]'),
+('DATA_AI','MCQ','A/B 테스트를 설계할 때 표본 크기를 정하는 데 어떤 요소들이 고려되어야 하나요?','["효과를 감지하기 위한 충분한 이벤트 수","검증 통계의 유의수준(p-value) 설정","표시된 차이가 실제로 의미 있는지를 판단할 수 있게 하기 위해","위 모두이다."]','{"correct":3}','EVALUATE',0.9,'["ab-testing"]'),
+('DATA_AI','MCQ','데이터 누수가 발생할 때, 어떤 조치가 효과적이지 않을까요?','["훈련 데이터와 테스트 데이터 간의 시간적 격리","훈련 데이터에서 직접 생성된 피처를 다시 훈련에 사용하기","피처 엔지니어링 과정에서 비즈니스 로직을 고려하지 않기","데이터 수집 시점을 주의 깊게 고려하여 누수 가능성을 최소화하기"]','{"correct":1}','EVALUATE',0.9,'["data-leakage"]'),
+('DATA_AI','MCQ','시계열 분석에서 리샘플링 재료의 시점 품질을 유지하기 위해 어떤 방법들이 사용될까요?','["불균형 데이터 대비 로짓 회귀","특성 스케일 조정 후 모델 학습","데이터 누러를 피한 특성 선택","변환 전후 데이터 분포 일치 보장"]','{"correct":3}','EVALUATE',0.9,'["time-series-analysis"]'),
+('DATA_AI','MCQ','데이터 과적합(Overfitting)을 방지하는 전략 중 어떤 것이 효과적인가요?','["많은 특성을 사용해 훈련 데이터에 맞추는 것","교차 검증(cross-validation)으로 일반화 성능 평가","모델 복잡도를 무시하고 모든 변수를 사용하기","학습과 테스트 데이터셋의 구분을 제거한다."]','{"correct":1}','EVALUATE',0.9,'["overfitting"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리는 CTE(Common Table Expression)를 사용하여 고객들의 구매 내역을 집계한 후 특정 조건에 만족하는 고객들을 필터링합니다.
+
+```
+WITH purchases AS (
+    SELECT customer_id, SUM(amount) as total_amount FROM orders GROUP BY customer_id)
+SELECT * FROM purchases WHERE total_amount > 100;
+```','["이 쿼리는 각 고객의 구매 내역에서 금액 합계가 100원 이상인 경우에만 결과를 반환합니다.","SQL 문법 오류로 실행할 수 없습니다.","CTE 부분은 무시되고 마지막 SELECT문 만 수행됩니다.","결과는 모든 주문을 포함하고 특정 조건 없이 고객당 총 금액을 계산한다."]','{"correct":0}','REMEMBER',0.1,'["sql-cte"]'),
+('DATA_AI','CODE_READING','다음 코드는 데이터프레임 df에서 ''date'' 열의 값에 따라 길이가 다른 그룹을 생성하고 각 그룹별로 특정 작업을 수행합니다.
+
+```
+df.groupby(df[''date''].dt.floor(''D'')).agg({''value'':''sum''})
+```','["코드는 date를 일 단위로 라운드 후 value 열의 합계를 계산한다.","이 코드는 실행할 수 없는 오류가 있다.","각 그룹은 연도별로만 분리되며, 날짜 값에 따라 세분화되지 않는다.","df[''date'']와 df[''value''] 중 하나만 사용하여 길이 단위 그룹을 만든다."]','{"correct":0}','REMEMBER',0.1,'["pandas-resampling"]'),
+('DATA_AI','CODE_READING','다음 코드가 데이터프레임 df에서 ''A''와 ''B'' 열의 값이 모두 0인 행을 필터링합니다.
+
+```
+pd.DataFrame(df[(df[''A''] == 0) & (df[''B''] == 0)])
+```','["코드는 df에서 A, B 두 칼럼값이 모두 0인 모든 행만 선택한다.","코드에는 오류가 있어 실행할 수 없다.","df[''A'']와 df[''B''] 중 하나의 열 값이 0인 행을 필터링한다.","이 코드는 A열과 B열 각각에 대해 0인 값을 가진 항목들만 따로 저장한다."]','{"correct":0}','REMEMBER',0.1,'["pandas-boolean-indexing"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장의 실행 결과에 대해서 옳은 것은?
+
+```sql
+SELECT ROW_NUMBER() OVER (ORDER BY salary DESC) AS row_num, name 
+FROM employees;
+```
+ROW_NUMBER() 함수를 사용하여 순위를 계산합니다.','["직원들의 이름을 급여 기준으로 정렬한 후 행 번호를 반환합니다","salary가 가장 낮은 직원부터 모든 직원의 이름과 고유번호를 반환합니다","row_num 컬럼이 없으면 오류 메시지를 던집니다","ROW_NUMBER()는 데이터베이스에서 사용되지 않는 함수입니다"]','{"correct":0}','UNDERSTAND',0.3,'["sql-window-functions-row-number"]'),
+('DATA_AI','CODE_READING','다음 pandas 코드의 실행 결과로 옳은 것은?
+
+```python
+import pandas as pd
+
+data = {''A'': [1, 2], ''B'': [-30, -4]}
+df = pd.DataFrame(data)
+squared_df = df.apply(lambda x: x**2)
+```
+물론 `squared_df`의 각 열은 원래 값을 제곱한 새로운 Series가 됩니다.','["각 행을 순서대로 제곱합니다","df에서 결측치를 제거하고 난수로 채웁니다","df의 모든 원소를 제곱하여 새로운 DataFrame을 만듭니다","원본 데이터프레임 df에 직접 값을 업데이트합니다"]','{"correct":2}','UNDERSTAND',0.3,'["pandas-apply-method"]'),
+('DATA_AI','CODE_READING','다음 코드가 주어졌을 때 `transform` 과 `agg` 의 차이를 설명합니다.
+
+```python
+import pandas as pd
+
+df = pd.DataFrame({''A'': [1, 2], ''B'': [-30, -4]})
+groups = df.groupby(''A'')
+a_result = groups.transform(lambda x: x**2)
+b_result = groups.agg(sum)
+```
+`transform` 과 `agg` 는 그룹을 기준으로 다른 동작을 수행합니다.','["변환은 각 그룹에 대해 Series를 반환하고, 애그리는 DataFrame의 집계값을 반환합니다","두 메서드 모두 Series로 결과를 반환하며 결측치 처리를 달리 합니다","애그리는 시리즈와 같은 값만 변환하지만, 변환은 그렇지 않습니다.","변환과 애그는 유사하게 동작하므로 서로 대체할 수 있습니다"]','{"correct":0}','UNDERSTAND',0.35,'["pandas-groupby-transform-aggregate"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장에서 `SUM` 함수가 하는 동작은 무엇입니까?
+
+```sql
+SELECT SUM(column) FROM table WHERE column IS NOT NULL;
+```
+SQL 문장을 실행하면 다음과 같은 결과를 얻게 됩니다.','["column이 null인 행만 합산합니다","column의 모든 값을 합한 뒤 결측치는 제외됩니다","결과 집합에서 중복을 일으키고, sum은 각 unique row에 대한 합계를 반환합니다","WHERE 절이 쓰이는 순간에는 더 이상 데이터가 없어집니다"]','{"correct":1}','UNDERSTAND',0.35,'["sql-aggregate-functions-sum-nulls"]'),
+('DATA_AI','CODE_READING','다음 코드가 주어졌을 때, 데이터 누수(data leakage)의 위험성을 설명하세요.
+
+```python
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+
+data = {''A'': [1, 2], ''B'': [-30, -4]}
+df = pd.DataFrame(data)
+scale_df = df.copy()
+scaler = StandardScaler().fit(scale_df[''B'']) 
+```
+위 코드의 문제점은 스케일러를 훈련 데이터에 맞출 때 범주형 피처가 포함되어 있을 수 있다는 점입니다.','["스케일링 전 후, 모든 원래 값이 동일한 분포를 유지합니다","훈련용과 검증/테스트 용 데이터셋 간의 특성이 일치하지 않게 됩니다","결측치로 인해 모델 학습에 문제가 발생할 수 있습니다","스케일링은 피처 간 상호작용을 무효화하지 않습니다"]','{"correct":1}','UNDERSTAND',0.35,'["data-leakage-solution-preprocessing-techniques"]'),
+('DATA_AI','CODE_READING','다음 SQL 문장은?
+
+```sql
+SELECT DISTINCT a.id, b.name 
+FROM table_a AS a INNER JOIN table_b AS b ON a.key = b.foreign_key;
+```
+INNER JOIN을 사용하여 두 테이블에서 중복되지 않는 결합된 결과를 얻습니다.','["중복되는 모든 id와 이름을 가져옵니다","각 행의 유일한 조합만 반환합니다(중복 제거)","표 a와 b 간의 외래키에 의존하는 모든 레코드를 검색합니다","table_a에서 중복된 ID만 선택합니다"]','{"correct":1}','UNDERSTAND',0.35,'["sql-distinct-clause"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+def split_data(df):
+    X = df.drop(''target'', axis=1)
+    y = df[''target'']
+    return train_test_split(X, y, test_size=0.2, random_state=42)','["분할된 데이터셋에서 학습 세트와 테스트 세트 사이에는 데이터 누수가 발생하지 않는다.","훈련시킬 때 모든 특성 스케일링을 적용해야 한다.","스플릿 후 원본 훈련 데이터의 분산이 변한다.","테스트 세트가 전체 데이터의 80%를 차지할 것이다."]','{"correct":0}','APPLY',0.51,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음 Python pandas 코드 스니펫은 데이터 프레임 df의 특정 열 ''A''를 기준으로 분리를 수행하며, 그 결과를 새로운 딕셔너리 변수 dict_var에 저장하는 과정입니다.
+
+dict_var = {key: value for key, value in df[''A''].iteritems()}
+
+해당 코드 스니펫의 실행 결과로 옳은 설명은?
+','["df의 열 ''A''를 기준으로 데이터를 딕셔너리 형태로 저장합니다.","새 DataFrame을 생성하여 반환합니다.","각 행에 결측치가 있는지를 확인한 후 삭제합니다.","정확도 스코어를 계산합니다."]','{"correct":0}','APPLY',0.51,'["pandas-iteritems-dict"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def process_missing_values(df):
+    df[''column_a''].fillna(df.groupby(''grouping_key'')[''column_a''].transform(lambda x: x.fillna(x.mean())), inplace=True)
+    return df','["결측값이 있는 모든 행을 제거한다.","결측치가 있는 칼럼의 값은 그룹별로 평균으로 채워진다.","주어진 데이터프레임 전체에서 결측치의 평균 값을 사용하여 채운다.","groupby 와 transform 을 사용했으므로 각각의 행에 다른 값이 대체된다."]','{"correct":1}','APPLY',0.53,'["data-preprocessing"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def handle_data_leakage(df):
+    df[''target''] = (df[''date''] > ''2023-01-01'').astype(int)
+    train, test = train_test_split(df, test_size=0.2, random_state=42)
+    return train,test','["불필요한 정보가 훈련 세트와 테스트 세트 사이로 누출될 수 있다.","훈련세트는 80%이며 테스트 세트는 전체 데이터의 20%를 차지한다.","''date'' 칼럼이 ''target'' 칼럼으로 변환되어 정확한 예측을 만드는데 사용된다.","테스트 세트에서 target 값은 항상 1이다."]','{"correct":0}','APPLY',0.54,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+def scale_data(df):
+    scaler = StandardScaler()
+    scaled_features = scaler.fit_transform(df[[''feature1'', ''feature2'']])
+    df[''scaled_feature1''] = scaled_features[:, 0]
+    df[''scaled_feature2''] = scaled_features[:, 1]
+    return df','["스케일링된 피처의 평균은 이제 0이다.","df에서 기존 피처는 변형되지 않는다.","새로운 데이터 샘플이 입력될 때 스케일러를 다시 학습해야 한다.","결측값을 처리하지 못한다."]','{"correct":0}','APPLY',0.56,'["feature-scaling"]'),
+('DATA_AI','CODE_READING','다음 pandas 코드는 결측치가 있는 DataFrame에서 결측치 행을 제거하는 작업입니다.
+
+filtered_data = data.dropna()
+
+data에는 여러 열이 있으며, 일부 레코드에 결측값(NULL)이 있을 수 있습니다. dropna()를 적용한 결과로 옳은 설명은?
+','["결측치가 있는 모든 행을 제거합니다.","모든 열의 결측치만 제거하고 나머지 데이터는 그대로 보존합니다.","data라는 새로운 DataFrame이 생성되어 반환됩니다.","전체 데이터프레임에 결측치를 0으로 채웁니다."]','{"correct":0}','APPLY',0.56,'["pandas-dropna"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리의 동작으로 옳은 것은?
+
+SELECT AVG(score), student_id FROM exam_results GROUP BY student_id HAVING COUNT(*) > 1','["학생별로 중복된 레코드가 없는 평균 점수를 반환한다.","특정 학생이 여러 시험을 친 경우 그들의 평균 점수가 계산된다.","평균 점수가 가장 낮은 학생들만 반환한다.","학년별로 중복된 레코드가 없는 평균 점수를 반환한다."]','{"correct":1}','APPLY',0.57,'["sql-aggregation"]'),
+('DATA_AI','CODE_READING','다음 코드는 pandas DataFrame df에 대해 특정 조건에 따라 행을 필터링한 후, 그룹별로 평균값을 계산합니다.
+
+filtered = df[df[''column1''] > 5]
+grouped_mean = filtered.groupby(''category'').mean()
+
+df에는 ''column1''과 ''category'' 열이 있습니다. 코드가 실행된 결과로 옳은 설명은?
+','["groupby() 메서드는 필터링한 데이터의 각 그룹별 평균을 계산합니다.","필터링 후 전체 DataFrame df에 직접 적용됩니다.","그룹별로 최대값을 계산합니다.","df라는 새로운 DataFrame이 생성되어 반환됩니다."]','{"correct":0}','APPLY',0.57,'["pandas-groupby-mean"]'),
+('DATA_AI','CODE_READING','다음 코드에서 동작으로 옳은 것은?
+
+import pandas as pd
+
+def apply_window_function(df):
+    df[''rank''] = df.groupby(''group_key'').cumcount() + 1
+    return df','["각 그룹 내의 레코드는 누적 카운트 순서대로 정렬된다.","그룹 내의 각 행에 ''rank'' 열이 추가되며, 전체 데이터 프레임의 누적 개수로 계산된다.","단일 그룹에서만 적용 가능하다.","각 그룹별로 마지막 레코드를 반환한다."]','{"correct":0}','APPLY',0.59,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 코드가 시계열 데이터의 특정 주기를 분할하려고 한다.
+
+from sklearn.model_selection import TimeSeriesSplit
+import pandas as pd
+
+times = pd.date_range(''2021-03'', periods=5, freq=''M'')
+data = pd.DataFrame({''value'': range(5)}, index=times)
+splits = list(TimeSeriesSplit(n_splits=4).split(data.index))
+question: 주어진 코드에서 time_series_split 은 적절한 분할을 제공하나요?','["주어진 데이터를 시계열 기반으로 안전하게 분리한다.","데이터의 연속성을 보장하지 못하여 잘못된 결과를 생성한다.","분할 갯수 n_splits 가 올바르지 않아 에러가 발생한다.","시계열 데이터에 적용하기 위해서는 별도로 날짜 처리가 필요하다."]','{"correct":1}','ANALYZE',0.7,'["time-series-cross-validation"]'),
+('DATA_AI','CODE_READING','다음 코드는 데이터프레임에서 `NULL` 값이 있는 행들을 처리하려고 합니다.
+
+```python
+df.dropna(inplace=True)
+```
+이 코드가 실행될 때 어떤 일이 발생할까요?','["데이터 프레임의 모든 `NULL` 값을 제거하여, 데이터 품질을 개선합니다.","코드는 오류를 일으킵니다. dropna 메서드는 inplace 옵션을 지원하지 않습니다.","`dropna()` 함수가 적용되어 데이터프레임에서 ''key'' 칼럼의 모든 NULL 값이 제거됩니다.","데이터 프레임 내 `NULL` 행들만 삭제되며, 그 외에는 원래 데이터셋에 영향을 미치지 않습니다."]','{"correct":3}','ANALYZE',0.7,'["sql-null-operations"]'),
+('DATA_AI','CODE_READING','다음 Python 코드가 수행할 때 어떤 문제가 생길까요?
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+df = pd.read_csv(''data.csv'') # 가상의 데이터 세트
+X = df[[''feature1'', ''feature2'']]
+y = df[''target'']
+scaler = StandardScaler()
+scaler.fit(X)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)','["train-test 분할 후 스케일링이 적용되지 않았다.","train-test 분할 전에 이미 전체 데이터를 스케일링 했다.","scaler가 별도의 테스트 세트를 생성해야 한다.","모든 프로세스는 올바르게 수행되었다."]','{"correct":1}','ANALYZE',0.75,'["data-leakage"]'),
+('DATA_AI','CODE_READING','다음은 SQL 윈도우 함수를 사용한 예시 코드입니다.
+
+```sql
+SELECT ROW_NUMBER() OVER (ORDER BY timestamp ASC) as row_num,
+       value, 
+       timestamp FROM table;
+```
+위 쿼리의 동작 결과는 무엇인가요?','["각 행에 대해 데드록이 발생할 수 있는 순서대로 번호를 부여합니다.","날짜 기준으로 정렬된 각 행에 대한 고유 번호(ROW_NUMBER)와 해당 값을 반환합니다.","쿼리는 성공하지만, ROW_NUMBER 함수는 사용되지 않은 채로 남아 있습니다.","해당 테이블의 모든 열을 포함하는 SELECT 문입니다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 쿼리의 동작으로 옳은 것은?
+
+SELECT ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS rank,
+       employee_id, name, department, salary 
+FROM employees;
+
+question: 이 쿼리는 무엇을 구현하나요?','["각 부서 내에서 급여 순위를 매긴다.","각 직원의 고유 ID와 이름만 반환한다.","전체 기업 전체로 가장 높은 급여자를 찾는다.","데이터베이스에 새로운 열 rank을 생성한다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 코드가 수행할 때 어떤 효과가 있을까요?
+
+WITH cumulative_sales AS (
+    SELECT order_date,
+           product_id,
+           SUM(quantity) OVER (PARTITION BY product_id ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) as cumul_sum
+    FROM orders)
+SELECT * 
+FROM cumulative_sales','["기간 동안 각 상품별 누적 판매량을 나타낸다.","일정 기간 내에서 최대 순위를 가진 상품만 뽑아 낸다.","주문 날짜 별로 가장 많이 팔린 제품을 정렬한다.","누적 합계가 포함된 모든 주문을 보여준다."]','{"correct":0}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 SQL 코드에서 row_number() 함수는 어떤 역할을 할까요?
+
+WITH ranked_sales AS (
+    SELECT order_date,
+           product_id, 
+           SUM(quantity) as total_quantity,
+           ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY SUM(quantity)) as rank
+FROM orders)
+SELECT * FROM ranked_sales','["product_id에 따른 주문 날짜의 순서를 매긴다.","quantity 합계가 가장 높은 제품 순으로 등록번호 부여한다.","주문마다 다른 상품을 판매한 횟수를 센다.","상품별로 모든 주문 데이터를 정렬한다."]','{"correct":1}','ANALYZE',0.75,'["sql-window-functions"]'),
+('DATA_AI','CODE_READING','다음 Python 코드가 수행할 때 어떤 문제가 있을까요?
+
+import numpy as np
+x = np.array([1, 2, 3])
+y = np.array([[4], [5], [6]])
+z = x * y
+print(z)','["결과는 차원에 맞게 broadcasting 되어서 곱셈이 가능하다.","모든 요소가 브로드캐스팅되어 (1*4, 2*5, 3*6)의 결과를 생성한다.","차원 크기가 일치하지 않아 ValueError 가 발생할 것이다.","결과는 x와 y가 같은 형태를 가지도록 broadcasting 되지만 값이 잘못 계산된다."]','{"correct":2}','ANALYZE',0.75,'["numpy-broadcasting"]'),
+('DATA_AI','CODE_READING','다음 코드는 pandas를 사용하여 데이터프레임에 새로운 칼럼을 추가하는 과정입니다.
+
+```python
+df[''new_column''] = df.groupby(''key'')[''value''].transform(lambda x: (x - x.mean()) / x.std())```
+이 코드가 수행할 동작은 무엇인가요?','["새로운 칼럼을 생성하여, 각 그룹별로 표준화된 값들을 대입합니다.","데이터프레임에 새로운 칼럼이 추가되지만, 모든 행의 값을 0으로 채웁니다.","코드는 실행 중 오류를 일으킵니다. `transform` 함수가 해당 방식의 lambda 표현을 지원하지 않기 때문입니다.","새로운 칼럼은 생성되지 않습니다. 이 코드는 기존 카테고리형 값에 레이블 인코딩을 수행합니다."]','{"correct":0}','ANALYZE',0.8,'["pandas-groupby-transform"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+import pandas as pd
+
+df = pd.read_csv(''data.csv'')
+grouped_df = df.groupby([''category''])[''sales''].agg({''total_sales'': ''sum'', ''min_price'': lambda x: min(x.dropna())})','["''total_sales''는 카테고리별로 판매액의 합을 계산한다.","''min_price''는 각 카테고리를 기준으로 가장 작은 가격 값을 추출한다.","각 그룹에서 ''sales''를 제외하고 나머지 컬럼에 대한 처리가 이뤄진다.","카테그리별로 판매액의 합과 최소 가격을 함께 계산한다."]','{"correct":3}','EVALUATE',0.9,'["groupby-aggregation"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+from sklearn.datasets import make_classification
+X, y = make_classification(random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+scores = cross_val_score(LogisticRegression(), X, y, cv=5)','["각 교차검증 폴드에서 훈련 및 검정 데이터세트를 분리한다.","훈련 데이터 전체에 대해 검증 점수가 계산된다.","교차검증의 각 단계에서는 모든 샘플이 한 번씩 검사된다.","모델을 5번 학습하고, 매 폴드마다 훈련 세트로 다른 샘플 사용."]','{"correct":0}','EVALUATE',0.9,'["cross-validation"]'),
+('DATA_AI','CODE_READING','다음 코드의 동작으로 옳은 것은?
+
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+df = pd.read_csv(''data.csv'')
+x, x_val, y, y_val = train_test_split(df.drop(columns=[''target'']), df[''target''], test_size=0.2)
+scaler = StandardScaler()
+x_scaled = scaler.fit_transform(x.append(x_val))','["스케일러를 학습할 때 테스트 데이터가 누설된다.","테스트 데이터와 동일한 스케일을 적용한다.","모델의 성능이 과적합될 것이다.","분리된 훈련과 검증데이터 사이에 특성누수가 발생한다."]','{"correct":0}','EVALUATE',0.9,'["training-serving-skew"]');

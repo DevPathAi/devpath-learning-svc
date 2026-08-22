@@ -11,7 +11,9 @@ public final class QuestionQuota {
       "MOBILE_FLUTTER",
       "DEVOPS",
       "FULLSTACK",
-      "PYTHON_BACKEND");
+      "PYTHON_BACKEND",
+      "NODE_TYPESCRIPT",
+      "DATA_AI");
 
   public static final Map<String, Integer> TYPE_TARGETS = Map.of(
       "MCQ", 70,

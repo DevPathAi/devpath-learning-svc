@@ -16,14 +16,19 @@ public class GenerateQuestionsCommand {
     var output = Path.of("tools/content-gen/generated/raw/questions.draft.jsonl");
     Files.createDirectories(output.getParent());
 
+    // 트랙당 한 번에 100개를 요구하면 모델이 한 형태로 붕괴한다(실측: NODE_TYPESCRIPT 355줄 중
+    // 고유 16건, PYTHON_BACKEND 1차 30줄 중 고유 6건). 쿼터 셀 단위 소배치로 나눠 거둔다.
+    var attempts = Integer.getInteger("harvest.attempts", 4);
+    var harvester = new QuestionHarvester(client, attempts);
+    System.out.println("Harvest attempts per cell: " + attempts);
     var draft = new StringBuilder();
     for (String track : tracks) {
       var trackPrompt = Files.readString(
           Path.of("tools/content-gen/prompts/tracks/" + slug(track) + ".md"));
-      draft.append(client.generate(track, QuestionQuota.PER_TRACK, systemPrompt + "\n\n" + trackPrompt));
-      if (!draft.toString().endsWith("\n")) {
-        draft.append("\n");
-      }
+      var harvested = harvester.harvest(track, systemPrompt + "\n\n" + trackPrompt);
+      harvested.forEach(line -> draft.append(line).append("\n"));
+      System.out.println("Harvested " + harvested.size() + "/" + QuestionQuota.PER_TRACK
+          + " questions for " + track);
     }
     Files.writeString(output, draft.toString());
     System.out.println("Wrote draft questions for " + tracks + " to " + output);

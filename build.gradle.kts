@@ -8,6 +8,9 @@ group = "ai.devpath"
 version = "0.0.1-SNAPSHOT"
 description = "DevPath AI learning services (onboarding, path engine, content, mentor)"
 
+val devpathSharedVersion = providers.gradleProperty("devpathSharedVersion").get()
+val devpathSharedCoordinate = "ai.devpath:devpath-shared:$devpathSharedVersion"
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -15,6 +18,9 @@ java {
 }
 
 repositories {
+	providers.gradleProperty("immutableSharedRepository").orNull?.let { repository ->
+		maven { url = uri(repository) }
+	}
 	mavenCentral()
 	maven {
 		url = uri("https://maven.pkg.github.com/DevPathAi/devpath-shared")
@@ -23,12 +29,6 @@ repositories {
 			password = providers.gradleProperty("gpr.token").orElse(providers.environmentVariable("GITHUB_TOKEN")).orNull
 		}
 	}
-}
-
-// devpath-shared는 SNAPSHOT이고 자주 발행된다. Gradle이 changing 모듈을 24시간 캐시하면
-// 최신 아티팩트를 받지 못해 스키마 불일치로 테스트가 깨질 수 있다(2026-08-14 실측: CHECK 8값 확장 발행 후 CI 8건 실패).
-configurations.all {
-	resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }
 
 val contentGenSourceSet = sourceSets.create("contentGen") {
@@ -77,7 +77,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("ai.devpath:devpath-shared:0.0.1-SNAPSHOT")
+	implementation(devpathSharedCoordinate)
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
@@ -156,6 +156,12 @@ tasks.register<JavaExec>("generateQuestionsLocal") {
 		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
 		providers.gradleProperty("track").orElse("").get()
 	)
+	// JavaExec 은 별도 JVM 이라 Gradle JVM 의 -D 를 물려받지 않는다. 명시로 넘겨야
+	// 셀당 재시도 예산이 실제로 적용된다.
+	systemProperty(
+		"harvest.attempts",
+		providers.gradleProperty("harvest.attempts").orElse("4").get()
+	)
 }
 
 tasks.register<JavaExec>("validateContents") {
@@ -188,6 +194,11 @@ tasks.register<JavaExec>("generateContentsLocal") {
 	args(
 		providers.gradleProperty("ollama.model").orElse("qwen2.5:7b").get(),
 		providers.gradleProperty("track").orElse("").get()
+	)
+	// JavaExec 은 별도 JVM 이라 Gradle JVM 의 -D 를 물려받지 않는다.
+	systemProperty(
+		"harvest.attempts",
+		providers.gradleProperty("harvest.attempts").orElse("4").get()
 	)
 }
 

@@ -17,6 +17,13 @@ public class OllamaQuestionDraftClient implements QuestionDraftClient {
   private final String baseUrl;
   private final String model;
 
+  /**
+   * 같은 요청을 되풀이하면 모델도 같은 답을 되풀이한다(실측: 355줄 중 고유 16건).
+   * 호출마다 seed 를 옮겨 재시도가 실제로 다른 표본을 뽑게 한다.
+   */
+  private final java.util.concurrent.atomic.AtomicLong seed =
+      new java.util.concurrent.atomic.AtomicLong(1);
+
   public OllamaQuestionDraftClient(String baseUrl, String model) {
     this.baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
     this.model = model;
@@ -29,6 +36,14 @@ public class OllamaQuestionDraftClient implements QuestionDraftClient {
     var body = mapper.writeValueAsString(Map.of(
         "model", model,
         "stream", false,
+        // num_predict 가 없으면 한 호출이 끝없이 늘어질 수 있다(콘텐츠 쪽에서 70분 실측).
+        // 셀 배치는 최대 6문항이라 이 상한이면 충분하다.
+        "options", Map.of(
+            "seed", seed.getAndIncrement(),
+            "num_predict", 2048,
+            "temperature", 0.9,
+            "top_p", 0.95,
+            "repeat_penalty", 1.15),
         "messages", List.of(
             Map.of("role", "system", "content", prompt),
             Map.of("role", "user", "content", userPrompt))));

@@ -10,16 +10,20 @@ import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class LearningPathQueryService {
+  private static final int CURRENT_MISSION_MAX_BYTES = 20 * 1024;
+
   private final LearningPathRepository paths;
   private final LatestDiagnosisRepository diagnoses;
   private final ContentRepository contents;
+  private final CurrentMissionQueryRepository currentMissions;
   private final JsonMapper jsonMapper;
 
   public LearningPathQueryService(LearningPathRepository paths, LatestDiagnosisRepository diagnoses,
-      ContentRepository contents, JsonMapper jsonMapper) {
+      ContentRepository contents, CurrentMissionQueryRepository currentMissions, JsonMapper jsonMapper) {
     this.paths = paths;
     this.diagnoses = diagnoses;
     this.contents = contents;
+    this.currentMissions = currentMissions;
     this.jsonMapper = jsonMapper;
   }
 
@@ -44,11 +48,15 @@ public class LearningPathQueryService {
 
   @Transactional(readOnly = true)
   public ThisWeekView thisWeek(long userId) {
-    LearningPathView view = current(userId);
-    MilestoneView first = view.milestones().stream()
-        .filter(m -> m.weekNum() == 1).findFirst()
-        .orElseThrow(() -> new NoSuchElementException("week 1 milestone 없음"));
-    return new ThisWeekView(view.pathId(), first.weekNum(), first.tasks());
+    ThisWeekView view = currentMissions.findForUser(userId);
+    try {
+      if (jsonMapper.writeValueAsBytes(view).length <= CURRENT_MISSION_MAX_BYTES) {
+        return view;
+      }
+    } catch (Exception ignored) {
+      // 직렬화할 수 없는 projection도 정상 응답으로 노출하지 않고 malformed로 닫는다.
+    }
+    return ThisWeekView.malformed(view.pathId());
   }
 
   @Transactional(readOnly = true)
@@ -85,7 +93,8 @@ public class LearningPathQueryService {
           Content content = t.getContentId() == null ? null : contentById.get(t.getContentId());
           return new WeeklyTaskView(t.getOrderNum(), t.getTaskType(), t.getTitle(),
               Boolean.TRUE.equals(t.getRequired()), t.getContentId(),
-              content == null ? null : content.getSlug(), t.getCompletedAt() != null);
+              content == null ? null : content.getSlug(), t.getCompletedAt() != null,
+              t.getId(), t.getCompletedAt());
         }).toList())).toList();
 
     LearningPathView.DiagnosisView diagnosisView = diagnosis == null ? null
