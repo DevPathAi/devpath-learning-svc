@@ -1,5 +1,7 @@
 package ai.devpath.learning.path;
 
+import java.time.Instant;
+
 public record WeeklyTaskView(
     Integer orderNum,
     String taskType,
@@ -7,6 +9,8 @@ public record WeeklyTaskView(
     boolean required,
     Long contentId,
     String contentSlug,
-    boolean completed
+    boolean completed,
+    Long taskId,
+    Instant completedAt
 ) {
 }
