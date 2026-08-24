@@ -115,10 +115,26 @@ tasks.named("compileTestJava") {
 
 tasks.register<JavaExec>("validateQuestions") {
 	group = "content generation"
-	description = "Validate approved MD2 diagnostic question JSONL."
+	description = "Validate approved MD2 diagnostic question JSONL (fact-verification manifest included)."
 	classpath = contentGenSourceSet.runtimeClasspath
 	mainClass.set("ai.devpath.learning.contentgen.question.ValidateQuestionsCommand")
-	args("tools/content-gen/generated/approved/questions.jsonl")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		"tools/content-gen/generated/approved/question_verifications.jsonl"
+	)
+}
+
+tasks.register<JavaExec>("stampQuestionVerifications") {
+	group = "content generation"
+	description = "Record fact-verification PASS stamps AFTER the review loop. Do not run in CI."
+	classpath = contentGenSourceSet.runtimeClasspath
+	mainClass.set("ai.devpath.learning.contentgen.question.StampQuestionVerificationsCommand")
+	args(
+		"tools/content-gen/generated/approved/questions.jsonl",
+		"tools/content-gen/generated/approved/question_verifications.jsonl",
+		(project.findProperty("track") as String? ?: ""),
+		(project.findProperty("reviewer") as String? ?: "")
+	)
 }
 
 tasks.register<JavaExec>("reviewQuestionsLocal") {
