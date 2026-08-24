@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -34,13 +35,24 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public ReleaseInternalAuthenticationFilter releaseInternalAuthenticationFilter(
+      @Value("${devpath.auth.internal-token:}") String internalToken) {
+    return new ReleaseInternalAuthenticationFilter(internalToken);
+  }
+
+  @Bean
+  public SecurityFilterChain securityFilterChain(
+      HttpSecurity http,
+      ReleaseInternalAuthenticationFilter releaseInternalAuthenticationFilter) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/onboarding/assessments/guest/**", "/actuator/health", "/actuator/health/**").permitAll()
+            .requestMatchers("/internal/release/**").hasRole("INTERNAL")
             .requestMatchers("/internal/**").permitAll()
             .anyRequest().authenticated())
+        .addFilterBefore(
+            releaseInternalAuthenticationFilter, BearerTokenAuthenticationFilter.class)
         .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
     return http.build();
   }
