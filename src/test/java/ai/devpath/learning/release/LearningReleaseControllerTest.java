@@ -16,7 +16,13 @@ class LearningReleaseControllerTest {
     LearningReleaseRegistry registry = mock(LearningReleaseRegistry.class);
     LearningReleaseVerificationService verification = mock(
         LearningReleaseVerificationService.class);
-    LearningReleaseController controller = new LearningReleaseController(registry, verification);
+    LearningReleaseFixtureService fixtures = mock(LearningReleaseFixtureService.class);
+    LearningReleaseController controller = new LearningReleaseController(
+        registry, verification, fixtures);
+
+    assertThat(controller.prepare(candidate, run, Map.of("user_id", 42L)))
+        .containsEntry("accepted", true);
+    verify(fixtures).prepare(candidate, run, 42L);
 
     assertThat(controller.command(
         candidate, run, "replay-claim", Map.of("user_id", 42L)))
