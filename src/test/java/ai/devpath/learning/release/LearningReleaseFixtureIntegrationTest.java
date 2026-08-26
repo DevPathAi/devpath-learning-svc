@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import ai.devpath.learning.path.CurrentMissionOutcome;
 import ai.devpath.learning.path.CurrentMissionQueryRepository;
 import ai.devpath.learning.path.LearningPathRepository;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,13 +27,19 @@ class LearningReleaseFixtureIntegrationTest {
   @Transactional
   void preparedFixtureIsARealIdempotentContentLinkedCurrentMission() {
     long userId = Math.abs(System.nanoTime());
-    long contentId = jdbc.queryForObject("""
+    jdbc.update("""
         INSERT INTO contents(slug, title, track, content_md, estimated_minutes, difficulty,
           bloom_level, concept_tags, status)
         VALUES (?, 'Release fixture content', 'BACKEND_SPRING', '## body', 10, 0.4,
           'APPLY', '[]'::jsonb, 'PUBLISHED')
-        RETURNING id
-        """, Long.class, "release-fixture-" + userId);
+        """, "release-fixture-" + userId);
+    Map<String, Object> expectedContent = jdbc.queryForMap("""
+        SELECT id, slug
+        FROM contents
+        WHERE track='BACKEND_SPRING' AND status='PUBLISHED'
+        ORDER BY id ASC
+        LIMIT 1
+        """);
     String candidate = "a".repeat(64);
     String run = "R".repeat(43);
 
@@ -47,7 +54,8 @@ class LearningReleaseFixtureIntegrationTest {
     var current = missions.findForUser(userId);
     assertThat(current.outcome()).isEqualTo(CurrentMissionOutcome.AVAILABLE);
     assertThat(current.nextTask()).isNotNull();
-    assertThat(current.nextTask().contentId()).isEqualTo(contentId);
-    assertThat(current.nextTask().contentSlug()).isEqualTo("release-fixture-" + userId);
+    assertThat(current.nextTask().contentId())
+        .isEqualTo(((Number) expectedContent.get("id")).longValue());
+    assertThat(current.nextTask().contentSlug()).isEqualTo(expectedContent.get("slug"));
   }
 }
