@@ -25,6 +25,7 @@ class LearningReleaseSecurityTest {
   @Autowired MockMvc mvc;
   @MockitoBean LearningReleaseRegistry release;
   @MockitoBean LearningReleaseVerificationService verification;
+  @MockitoBean LearningReleaseFixtureService fixtures;
 
   @Test
   void releaseCheckpointRequiresWorkloadAuthWhileOtherInternalContractIsUnchanged()
