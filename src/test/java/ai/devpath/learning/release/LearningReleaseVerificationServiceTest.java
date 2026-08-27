@@ -1,6 +1,7 @@
 package ai.devpath.learning.release;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -113,5 +114,36 @@ class LearningReleaseVerificationServiceTest {
         CANDIDATE, RUN, "contentless-advanced-once")).isTrue();
     assertThat(registry.checkpoint(
         CANDIDATE, RUN, "completion-replays-noop")).isTrue();
+  }
+
+  @Test
+  void contentLinkedReplayRejectsASecondContentLinkedTask() {
+    WeeklyTaskView first = new WeeklyTaskView(
+        1, "READ", "first", true, 20L, "first", false, 10L, null);
+    WeeklyTaskView second = new WeeklyTaskView(
+        2, "READ", "second", true, 21L, "second", false, 11L, null);
+    when(missions.findForUser(42L)).thenReturn(
+        new ThisWeekView(1L, 1, List.of(first, second),
+            CurrentMissionOutcome.AVAILABLE, first, false),
+        new ThisWeekView(1L, 1, List.of(first, second),
+            CurrentMissionOutcome.AVAILABLE, second, false));
+    when(facts.countCompletedTasks(42L)).thenReturn(0, 1, 1);
+    Instant completedAt = Instant.parse("2026-08-27T00:00:00Z");
+    when(facts.taskCompletedAt(10L)).thenReturn(completedAt, completedAt);
+    when(progress.find(42L, 20L)).thenReturn(Optional.of(
+        new ContentProgressRepository.ProgressRow(
+            20L, 0.9, 60, completedAt, completedAt)));
+    when(content.upsertProgress(
+        org.mockito.ArgumentMatchers.eq(42L),
+        org.mockito.ArgumentMatchers.eq("20"),
+        org.mockito.ArgumentMatchers.any()))
+        .thenReturn(new UpsertContentProgressResponse(
+            20L, 0.9, 60, true, completedAt, 0));
+
+    assertThat(verification.checkpoint(
+        CANDIDATE, RUN, 42L, "authoritative-first-task")).isTrue();
+    assertThatThrownBy(() -> verification.replayContentLinked(CANDIDATE, RUN, 42L))
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("release successor task is not contentless");
   }
 }

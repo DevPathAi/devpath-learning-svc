@@ -106,7 +106,11 @@ public class LearningReleaseVerificationService {
     int after = facts.countCompletedTasks(userId);
     Instant afterCompletedAt = facts.taskCompletedAt(snapshot.firstTaskId());
     ThisWeekView current = missions.findForUser(userId);
-    Long nextTaskId = current.nextTask() == null ? null : current.nextTask().taskId();
+    WeeklyTaskView successor = current.nextTask();
+    if (successor == null || successor.contentId() != null) {
+      throw new IllegalStateException("release successor task is not contentless");
+    }
+    Long nextTaskId = successor.taskId();
     boolean stable = replayed.completed()
         && replayed.taskCompletedCount() == 0
         && completedAt != null
