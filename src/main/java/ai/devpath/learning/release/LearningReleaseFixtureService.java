@@ -58,13 +58,20 @@ public class LearningReleaseFixtureService {
     milestone.setWhyThisOrder("Deterministic release ordering");
     milestone.setExpectedOutcome("Open one content-linked mission");
 
-    PathWeeklyTask task = new PathWeeklyTask();
-    task.setOrderNum(1);
-    task.setContentId(content.getId());
-    task.setTaskType("READ");
-    task.setTitle(content.getTitle());
-    task.setRequired(true);
-    milestone.addTask(task);
+    PathWeeklyTask linkedTask = new PathWeeklyTask();
+    linkedTask.setOrderNum(1);
+    linkedTask.setContentId(content.getId());
+    linkedTask.setTaskType("READ");
+    linkedTask.setTitle(content.getTitle());
+    linkedTask.setRequired(true);
+    milestone.addTask(linkedTask);
+
+    PathWeeklyTask contentlessTask = new PathWeeklyTask();
+    contentlessTask.setOrderNum(2);
+    contentlessTask.setTaskType("QUIZ");
+    contentlessTask.setTitle("Release completion checkpoint");
+    contentlessTask.setRequired(true);
+    milestone.addTask(contentlessTask);
     path.addMilestone(milestone);
     paths.saveAndFlush(path);
   }
