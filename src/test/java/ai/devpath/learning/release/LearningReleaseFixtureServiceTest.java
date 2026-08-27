@@ -19,7 +19,7 @@ class LearningReleaseFixtureServiceTest {
   private static final String RUN = "R".repeat(43);
 
   @Test
-  void createsOneContentLinkedActiveMissionForTheBoundWorkspaceUser() {
+  void createsContentLinkedThenContentlessMissionsForTheBoundReleaseUser() {
     LearningPathRepository paths = mock(LearningPathRepository.class);
     ContentRepository contents = mock(ContentRepository.class);
     LearningReleaseRegistry registry = mock(LearningReleaseRegistry.class);
@@ -43,9 +43,14 @@ class LearningReleaseFixtureServiceTest {
     assertThat(path.getTrack()).isEqualTo("BACKEND_SPRING");
     assertThat(path.getStatus()).isEqualTo("ACTIVE");
     assertThat(path.getMilestones()).hasSize(1);
-    assertThat(path.getMilestones().getFirst().getTasks()).hasSize(1);
-    assertThat(path.getMilestones().getFirst().getTasks().getFirst().getContentId())
-        .isEqualTo(73L);
+    var tasks = path.getMilestones().getFirst().getTasks();
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).getOrderNum()).isEqualTo(1);
+    assertThat(tasks.get(0).getContentId()).isEqualTo(73L);
+    assertThat(tasks.get(0).getTaskType()).isEqualTo("READ");
+    assertThat(tasks.get(1).getOrderNum()).isEqualTo(2);
+    assertThat(tasks.get(1).getContentId()).isNull();
+    assertThat(tasks.get(1).getTaskType()).isEqualTo("QUIZ");
   }
 
   @Test

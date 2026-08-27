@@ -25,7 +25,7 @@ class LearningReleaseFixtureIntegrationTest {
 
   @Test
   @Transactional
-  void preparedFixtureIsARealIdempotentContentLinkedCurrentMission() {
+  void preparedFixtureIsAnIdempotentLinkedThenContentlessMissionSequence() {
     long userId = Math.abs(System.nanoTime());
     jdbc.update("""
         INSERT INTO contents(slug, title, track, content_md, estimated_minutes, difficulty,
@@ -57,5 +57,26 @@ class LearningReleaseFixtureIntegrationTest {
     assertThat(current.nextTask().contentId())
         .isEqualTo(((Number) expectedContent.get("id")).longValue());
     assertThat(current.nextTask().contentSlug()).isEqualTo(expectedContent.get("slug"));
+    var tasks = jdbc.queryForList("""
+        SELECT task.id, task.order_num, task.content_id, task.task_type
+        FROM path_weekly_tasks task
+        JOIN path_milestones milestone ON milestone.id = task.milestone_id
+        JOIN learning_paths path ON path.id = milestone.path_id
+        WHERE path.user_id=? AND path.status='ACTIVE'
+        ORDER BY task.order_num
+        """, userId);
+    assertThat(tasks).hasSize(2);
+    assertThat(tasks.get(0).get("content_id"))
+        .isEqualTo(expectedContent.get("id"));
+    assertThat(tasks.get(1).get("content_id")).isNull();
+    assertThat(tasks.get(1).get("task_type")).isEqualTo("QUIZ");
+
+    jdbc.update(
+        "UPDATE path_weekly_tasks SET completed_at=now() WHERE id=?",
+        tasks.get(0).get("id"));
+    var next = missions.findForUser(userId);
+    assertThat(next.outcome()).isEqualTo(CurrentMissionOutcome.AVAILABLE);
+    assertThat(next.nextTask()).isNotNull();
+    assertThat(next.nextTask().contentId()).isNull();
   }
 }
